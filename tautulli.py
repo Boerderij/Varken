@@ -17,13 +17,13 @@ sessions = {d['session_id']: d for d in activity['sessions']}
 
 influx_payload = [
     {
-        "measurement": "Plex",
+        "measurement": "Tautulli",
         "tags": {
-            "server": "Tautulli"
+            "type": "stream_count"
         },
         "time": current_time,
         "fields": {
-            "stream_count": int(activity['stream_count'])
+            "current_streams": int(activity['stream_count'])
         }
     }
 ]
@@ -32,11 +32,11 @@ for session in sessions.keys():
     lookup = requests.get('http://freegeoip.net/json/{}'.format(sessions[session]['ip_address_public'])).json()
     influx_payload.append(
         {
-            "measurement": "Plex",
+            "measurement": "Tautulli",
             "tags": {
-                "server": "Tautulli",
                 "type": "Session",
-                "region_code": lookup['region_code']
+                "region_code": lookup['region_code'],
+                "name": sessions[session]['friendly_name']
             },
             "time": current_time,
             "fields": {
@@ -48,7 +48,6 @@ for session in sessions.keys():
             }
         }
     )
-
 
 influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'plex')
 influx.write_points(influx_payload)

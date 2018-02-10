@@ -25,9 +25,8 @@ for show in tv_shows.keys():
 for show, id in missing:
     influx_payload.append(
         {
-            "measurement": "Plex",
+            "measurement": "Sonarr",
             "tags": {
-                "server": "Sonarr",
                 "type": "Missing",
                 "sonarrId": id
             },

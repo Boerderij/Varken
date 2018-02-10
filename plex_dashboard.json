@@ -231,7 +231,7 @@
                   "type": "tag"
                 }
               ],
-              "measurement": "Plex",
+              "measurement": "Tautulli",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -631,7 +631,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Plex",
+              "measurement": "Tautulli",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -640,7 +640,7 @@
                 [
                   {
                     "params": [
-                      "stream_count"
+                      "current_streams"
                     ],
                     "type": "field"
                   }
@@ -648,9 +648,9 @@
               ],
               "tags": [
                 {
-                  "key": "server",
+                  "key": "type",
                   "operator": "=",
-                  "value": "Tautulli"
+                  "value": "stream_count"
                 }
               ]
             }
@@ -788,7 +788,7 @@
               "targetBlank": true,
               "title": "Ombi",
               "type": "absolute",
-              "url": "https://request.domain.tld/requests"
+              "url": "https://request.cajun.pro/requests"
             }
           ],
           "mappingType": 1,
@@ -828,7 +828,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Plex",
+              "measurement": "Ombi",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -845,9 +845,9 @@
               ],
               "tags": [
                 {
-                  "key": "server",
+                  "key": "type",
                   "operator": "=",
-                  "value": "Ombi"
+                  "value": "Requests"
                 }
               ]
             }
@@ -888,7 +888,7 @@
               "targetBlank": true,
               "title": "Tautulli",
               "type": "absolute",
-              "url": "https://plexpy.domain.tld/home"
+              "url": "https://plexpy.dirtycajunrice.com/home"
             }
           ],
           "minSpan": 6,
@@ -985,7 +985,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Plex",
+              "measurement": "Tautulli",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -1049,7 +1049,7 @@
               "targetBlank": true,
               "title": "Sonarr",
               "type": "absolute",
-              "url": "https://sonarr.domain.tld/wanted/missing"
+              "url": "https://sonarr.dirtycajunrice.com/wanted/missing"
             }
           ],
           "minSpan": 4,
@@ -1088,7 +1088,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Plex",
+              "measurement": "Sonarr",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -1105,12 +1105,6 @@
               ],
               "tags": [
                 {
-                  "key": "server",
-                  "operator": "=",
-                  "value": "Sonarr"
-                },
-                {
-                  "condition": "AND",
                   "key": "type",
                   "operator": "=",
                   "value": "Missing"
@@ -1134,7 +1128,7 @@
               "targetBlank": true,
               "title": "Radarr",
               "type": "absolute",
-              "url": "https://radarr.domain.tld/wanted/missing"
+              "url": "https://radarr.dirtycajunrice.com/wanted/missing"
             }
           ],
           "minSpan": 3,
@@ -1182,7 +1176,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Plex",
+              "measurement": "Radarr",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -1199,12 +1193,6 @@
               ],
               "tags": [
                 {
-                  "key": "server",
-                  "operator": "=",
-                  "value": "Radarr"
-                },
-                {
-                  "condition": "AND",
                   "key": "type",
                   "operator": "=",
                   "value": "Missing"
@@ -1263,5 +1251,5 @@
   },
   "timezone": "browser",
   "title": "Plex",
-  "version": 25
+  "version": 28
 }
