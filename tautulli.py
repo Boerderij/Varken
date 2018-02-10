@@ -10,9 +10,8 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
-headers = {'apikey': 'xxxxxxxxxxxxxx',
-           'cmd': 'get_activity'}
-activity = requests.get('https://plexpy.domain.tld/api/v2', headers=headers).json()['response']['data']
+payload = {'apikey': 'xxxxxxxxxxxxxx', 'cmd': 'get_activity'}
+activity = requests.get('https://plexpy.domain.tld/api/v2', params=payload).json()['response']['data']
 
 sessions = {d['session_id']: d for d in activity['sessions']}
 
