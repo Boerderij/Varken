@@ -23,9 +23,8 @@ for movie in movies.keys():
 for movie, id in missing:
     influx_payload.append(
         {
-            "measurement": "Plex",
+            "measurement": "Radarr",
             "tags": {
-                "server": "Radarr",
                 "type": "Missing",
                 "tmdbId": id
             },
@@ -35,7 +34,6 @@ for movie, id in missing:
             }
         }
     )
-
 
 influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'plex')
 influx.write_points(influx_payload)

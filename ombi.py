@@ -24,9 +24,8 @@ for movie in get_movie_requests:
 
 influx_payload = [
     {
-        "measurement": "Plex",
+        "measurement": "Ombi",
         "tags": {
-            "server": "Ombi",
             "type": "Requests"
         },
         "time": current_time,
@@ -35,7 +34,6 @@ influx_payload = [
         }
     }
 ]
-
 
 influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'plex')
 influx.write_points(influx_payload)
