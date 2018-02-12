@@ -8,7 +8,6 @@ mount_points = ['/mnt/raid6-a', '/mnt/raid6-b']
 # Do not edit below this line #
 influx_payload = []
 devices = {
-    'md': mdstat.parse()['devices'].keys(),
     'mount_points': {}
 }
 
