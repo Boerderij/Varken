@@ -1,36 +1,37 @@
-import requests
-import psutil
 import mdstat
-
-from datetime import datetime, timezone, timedelta
-
+import platform
+from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
-# noinspection PyUnresolvedReferences
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-# noinspection PyUnresolvedReferences
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+mount_points = ['/mnt/raid6-a', '/mnt/raid6-b']
 
-raid6 = psutil.disk_usage('/mnt')
+# Do not edit below this line #
+influx_payload = []
+devices = {
+    'md': mdstat.parse()['devices'].keys(),
+    'mount_points': {}
+}
 
-influx_payload = [
-    {
-        "measurement": "Storage Servers",
-        "tags": {
-            "server": "SAN2"
-        },
-        "time": datetime.now(timezone.utc).astimezone().isoformat(),
-        "fields": {
-            "Name": '/mnt',
-            "bytes Used": raid6.used,
-            "bytes Free": raid6.free,
-            "bytes Total": raid6.total,
-            "Utilization": raid6.percent,
-            "Non Degraded Disks":  mdstat.parse()['devices']['md127']['status']['raid_disks'] /  mdstat.parse()['devices']['md127']['status']['non_degraded_disks'] * 100,
-            "IO_Wait": psutil.cpu_times_percent().iowait
-        }
+for mount in mount_points:
+    devices['mount_points'][mount] = {
+        'usage': psutil.disk_usage(mount)
     }
-]
+    influx_payload.append(
+        {
+            "measurement": "Storage Servers",
+            "tags": {
+                "server": platform.uname()[1],
+                "mount_point": mount
+            },
+            "time": datetime.now(timezone.utc).astimezone().isoformat(),
+            "fields": {
+                "bytes Used": devices['mount_points'][mount]['usage'].used,
+                "bytes Free": devices['mount_points'][mount]['usage'].free,
+                "bytes Total": devices['mount_points'][mount]['usage'].total,
+                "Utilization": devices['mount_points'][mount]['usage'].percent
+            }
+        }
+    )
 
 influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'storage_server')
 influx.write_points(influx_payload)
