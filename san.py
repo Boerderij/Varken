@@ -1,5 +1,5 @@
-import mdstat
 import platform
+import psutil
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
