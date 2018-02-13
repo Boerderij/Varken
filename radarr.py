@@ -1,17 +1,14 @@
+# Do not edit this script. Edit configuration.py
 import requests
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
-# noinspection PyUnresolvedReferences
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-# noinspection PyUnresolvedReferences
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import configuration
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
 
-api_key = 'xxxxxxxxxxxxxxxxxxxxxxxx'
-headers = {'X-Api-Key': api_key}
-get_movies = requests.get('https://radarr.domain.tld/api/movie',  headers=headers).json()
+headers = {'X-Api-Key': configuration.radarr_api_key}
+get_movies = requests.get('{}/api/movie'.format(configuration.radarr_url),  headers=headers).json()
 movies = {d['tmdbId']: d for d in get_movies}
 missing = []
 influx_payload = []
@@ -35,6 +32,7 @@ for movie, id in missing:
         }
     )
 
-influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'plex')
+influx = InfluxDBClient(configuration.grafana_url, configuration.grafana_port, configuration.grafana_username,
+                        configuration.grafana_password, configuration.radarr_grafana_db_name)
 influx.write_points(influx_payload)
 
