@@ -1,25 +1,18 @@
+# Do not edit this script. Edit configuration.py
 import requests
-
 from datetime import datetime, timezone
-
 from influxdb import InfluxDBClient
 
-# noinspection PyUnresolvedReferences
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-# noinspection PyUnresolvedReferences
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import configuration
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
 
 stats = {
-    "name": 'router',
-    "ip": 'X.X.X.X'
+    'token': requests.post('{}/api/tokenservices'.format(configuration.asa_url),
+                           auth=(configuration.asa_username, configuration.asa_password), verify=False)
 }
-
-stats['token'] = requests.post('https://{}/api/tokenservices'.format(stats['ip']), auth=('username', 'password'),
-                               verify=False)
 stats['headers'] = {'X-Auth-Token': stats['token'].headers['X-Auth-Token']}
-stats['outside_interface'] = requests.get('https://{}/api/monitoring/device/interfaces/Outside'.format(stats['ip']),
+stats['outside_interface'] = requests.get('{}/api/monitoring/device/interfaces/Outside'.format(configuration.asa_url),
                                           headers=stats['headers'], verify=False).json()
 
 influx_payload = [
@@ -36,7 +29,8 @@ influx_payload = [
     }
 ]
 
-influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'firewall')
+influx = InfluxDBClient(configuration.grafana_url, configuration.grafana_port, configuration.grafana_username,
+                        configuration.grafana_password, configuration.asa_grafana_db_name)
 influx.write_points(influx_payload)
 
 

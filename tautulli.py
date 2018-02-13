@@ -1,17 +1,13 @@
+# Do not edit this script. Edit configuration.py
 import requests
-import geohash
-
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
-# noinspection PyUnresolvedReferences
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-# noinspection PyUnresolvedReferences
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import configuration
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
-payload = {'apikey': 'xxxxxxxxxxxxxx', 'cmd': 'get_activity'}
-activity = requests.get('https://plexpy.domain.tld/api/v2', params=payload).json()['response']['data']
+payload = {'apikey': configuration.tautulli_api_key, 'cmd': 'get_activity'}
+activity = requests.get('{}/api/v2'.format(configuration.tautulli_url), params=payload).json()['response']['data']
 
 sessions = {d['session_id']: d for d in activity['sessions']}
 
@@ -49,6 +45,7 @@ for session in sessions.keys():
         }
     )
 
-influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'plex')
+influx = InfluxDBClient(configuration.grafana_url, configuration.grafana_port, configuration.grafana_username,
+                        configuration.grafana_password, configuration.tautulli_grafana_db_name)
 influx.write_points(influx_payload)
 

@@ -1,17 +1,13 @@
+# Do not edit this script. Edit configuration.py
 import requests
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
-# noinspection PyUnresolvedReferences
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-# noinspection PyUnresolvedReferences
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import configuration
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
-
-api_key = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'
-headers = {'X-Api-Key': api_key}
-get_tv_shows = requests.get('https://sonarr.domain.tld/api/wanted/missing/?pageSize=1000',
+headers = {'X-Api-Key': configuration.sonarr_api_key}
+get_tv_shows = requests.get('{}/api/wanted/missing/?pageSize=1000'.format(configuration.sonarr_url),
                             headers=headers).json()['records']
 tv_shows = {d['id']: d for d in get_tv_shows}
 missing = []
@@ -37,6 +33,7 @@ for show, id in missing:
         }
     )
 
-influx = InfluxDBClient('grafana.domain.tld', 8086, 'root', 'root', 'plex')
+influx = InfluxDBClient(configuration.grafana_url, configuration.grafana_port, configuration.grafana_username,
+                        configuration.grafana_password, configuration.sonarr_grafana_db_name)
 influx.write_points(influx_payload)
 
