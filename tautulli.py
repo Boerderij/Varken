@@ -26,6 +26,9 @@ influx_payload = [
 
 for session in sessions.keys():
     lookup = requests.get('http://freegeoip.net/json/{}'.format(sessions[session]['ip_address_public'])).json()
+    decision = sessions[session]['transcode_decision']
+    if decision == 'copy':
+        decision = 'direct stream'
     influx_payload.append(
         {
             "measurement": "Tautulli",
@@ -39,7 +42,8 @@ for session in sessions.keys():
                 "name": sessions[session]['friendly_name'],
                 "title": sessions[session]['full_title'],
                 "quality": '{}p'.format(sessions[session]['video_resolution']),
-                "transcode_decision": sessions[session]['transcode_decision'],
+                "transcode_decision": decision.title(),
+                "quality_profile": sessions[session]['quality_profile'],
                 "location": lookup['city'],
             }
         }
