@@ -1,0 +1,10 @@
+### Modify paths as appropriate
+### to edit your crontab entry, do not modify /var/spool/cron/crontabs/<user> directly, use `crontab -e`
+###
+* * * * * /usr/bin/python3 /path-to-grafana-scripts/ombi.py
+* * * * * ( sleep 30 ; /usr/bin/python3 /path-to-grafana-scripts/ombi.py )
+* * * * * /usr/bin/python3 /path-to-grafana-scripts/taurulli.py
+* * * * * ( sleep 30 ; /usr/bin/python3 /path-to-grafana-scripts/tautulli.py )
+*/30 * * * * /usr/bin/python3 /path-to-grafana-scripts/radarr.py
+*/30 * * * * /usr/bin/python3 /path-to-grafana-scripts/sonarr.py
+#*/30 * * * * /usr/bin/python3 /path-to-grafana-scripts/sickrage.py
