@@ -25,3 +25,7 @@ asa_url = 'https://firewall.domain.tld'
 asa_username = 'cisco'
 asa_password = 'cisco'
 asa_grafana_db_name = 'asa'
+
+sickrage_url = 'https://sickrage.domain.tld/'
+sickrage_api_key = 'xxxxxxxxxxxxxxx'
+sickrage_grafana_db_name = 'plex'
