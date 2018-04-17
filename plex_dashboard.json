@@ -788,7 +788,7 @@
               "targetBlank": true,
               "title": "Ombi",
               "type": "absolute",
-              "url": "https://request.cajun.pro/requests"
+              "url": "https://ombi.domain.tld/requests"
             }
           ],
           "mappingType": 1,
@@ -888,7 +888,7 @@
               "targetBlank": true,
               "title": "Tautulli",
               "type": "absolute",
-              "url": "https://plexpy.dirtycajunrice.com/home"
+              "url": "https://tautulli.domain.tld/home"
             }
           ],
           "minSpan": 6,
@@ -1049,7 +1049,7 @@
               "targetBlank": true,
               "title": "Sonarr",
               "type": "absolute",
-              "url": "https://sonarr.dirtycajunrice.com/wanted/missing"
+              "url": "https://sonarr.domain.tld/wanted/missing"
             }
           ],
           "minSpan": 4,
@@ -1128,7 +1128,7 @@
               "targetBlank": true,
               "title": "Radarr",
               "type": "absolute",
-              "url": "https://radarr.dirtycajunrice.com/wanted/missing"
+              "url": "https://radarr.domain.tld/wanted/missing"
             }
           ],
           "minSpan": 3,
