@@ -15,7 +15,7 @@ influx_payload = []
 
 for show in tv_shows.keys():
     seriesTitle = '{}'.format(tv_shows[show]['series']['title'])
-    sxe = 'S{:0>2} - E{:0>2}'.format(tv_shows[show]['seasonNumber'],tv_shows[show]['episodeNumber'])
+    sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'],tv_shows[show]['episodeNumber'])
     missing.append((seriesTitle, sxe, tv_shows[show]['id'], tv_shows[show]['title']))
 
 for seriesTitle, sxe, id, title in missing:
@@ -43,7 +43,7 @@ influx_payload2 = []
 
 for show in upcoming_shows.keys():
     seriesTitle = '{}'.format(upcoming_shows[show]['series']['title'])
-    sxe = 'S{:0>2} - E{:0>2}'.format(upcoming_shows[show]['seasonNumber'],upcoming_shows[show]['episodeNumber'])
+    sxe = 'S{:0>2}E{:0>2}'.format(upcoming_shows[show]['seasonNumber'],upcoming_shows[show]['episodeNumber'])
     upcoming.append((seriesTitle, sxe, upcoming_shows[show]['id'], upcoming_shows[show]['title'], upcoming_shows[show]['airDate']))
 
 for seriesTitle, sxe, id, title, airDate  in upcoming:
