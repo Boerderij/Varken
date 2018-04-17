@@ -201,7 +201,7 @@
             "#c15c17",
             "#890f02"
           ],
-          "datasource": "Plex",
+          "datasource": "plex",
           "decimals": 0,
           "esLocationName": "",
           "esMetric": "$tag_counter",
@@ -487,7 +487,7 @@
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Plex",
+          "datasource": "plex",
           "format": "percent",
           "gauge": {
             "maxValue": 100,
@@ -536,7 +536,7 @@
             {
               "dsType": "influxdb",
               "groupBy": [],
-              "measurement": "Plex",
+              "measurement": "plex",
               "orderByTime": "ASC",
               "policy": "default",
               "refId": "A",
@@ -582,7 +582,7 @@
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Plex",
+          "datasource": "plex",
           "format": "none",
           "gauge": {
             "maxValue": 30,
@@ -772,7 +772,7 @@
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Plex",
+          "datasource": "plex",
           "format": "none",
           "gauge": {
             "maxValue": 20,
@@ -788,7 +788,7 @@
               "targetBlank": true,
               "title": "Ombi",
               "type": "absolute",
-              "url": "https://request.cajun.pro/requests"
+              "url": "https://ombi.domain.tld/requests"
             }
           ],
           "mappingType": 1,
@@ -879,7 +879,7 @@
       "panels": [
         {
           "columns": [],
-          "datasource": "Plex",
+          "datasource": "plex",
           "fontSize": "100%",
           "hideTimeOverride": true,
           "id": 9,
@@ -888,7 +888,7 @@
               "targetBlank": true,
               "title": "Tautulli",
               "type": "absolute",
-              "url": "https://plexpy.dirtycajunrice.com/home"
+              "url": "https://tautulli.domain.tld/home"
             }
           ],
           "minSpan": 6,
@@ -1040,7 +1040,7 @@
         },
         {
           "columns": [],
-          "datasource": "Plex",
+          "datasource": "plex",
           "fontSize": "100%",
           "hideTimeOverride": true,
           "id": 10,
@@ -1049,7 +1049,7 @@
               "targetBlank": true,
               "title": "Sonarr",
               "type": "absolute",
-              "url": "https://sonarr.dirtycajunrice.com/wanted/missing"
+              "url": "https://sonarr.domain.tld/wanted/missing"
             }
           ],
           "minSpan": 4,
@@ -1119,7 +1119,7 @@
         },
         {
           "columns": [],
-          "datasource": "Plex",
+          "datasource": "plex",
           "fontSize": "100%",
           "hideTimeOverride": true,
           "id": 11,
@@ -1128,7 +1128,7 @@
               "targetBlank": true,
               "title": "Radarr",
               "type": "absolute",
-              "url": "https://radarr.dirtycajunrice.com/wanted/missing"
+              "url": "https://radarr.domain.tld/wanted/missing"
             }
           ],
           "minSpan": 3,
