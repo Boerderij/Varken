@@ -1,15 +1,18 @@
-# grafana-scripts
+# Grafana Scripts
 Repo for api scripts written (both pushing and pulling) to aggregate data into influxdb for grafana
 
-Requirements: Grafana, Python3, InfluxDB
+Requirements /w install links: [Grafana](http://docs.grafana.org/installation/), [Python3](https://www.python.org/downloads/), [InfluxDB](https://docs.influxdata.com/influxdb/v1.5/introduction/installation/)
 
-Install Grafana: http://docs.grafana.org/installation/
-Install InfluxDB: https://docs.influxdata.com/influxdb/v1.5/introduction/installation/
-Install python3: use your distro's package management tool or compile from source
+## Quick Setup
+1. Install requirements
+2. Create your plex database in influx
+    ```sh
+    user@server: ~$ influx
+    > CREATE DATABASE plex
+    > quit
+    ```
+3. After completing the [getting started](http://docs.grafana.org/guides/getting_started/) portion of grafana, create your datasource for influxdb. At a minimum, you will need the plex database.
+4. Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
 
-
-After completing the getting started portion of grafana (http://docs.grafana.org/guides/getting_started/), create your datasource for influxdb. At a minimum, you will need the plex database.
-
-Now, click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
-
+## Notes
 To run the python scripts, I leverage crontab. I run tautulli and ombi every 30seconds and radarr/sickrage/sonarr/couchpotato every 30 minutes
