@@ -1,5 +1,10 @@
 # Do not edit this script. Edit configuration.py
+import os
+import shutil
+import tarfile
 import requests
+import urllib.request
+import geoip2.database
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
@@ -10,6 +15,27 @@ payload = {'apikey': configuration.tautulli_api_key, 'cmd': 'get_activity'}
 activity = requests.get('{}/api/v2'.format(configuration.tautulli_url), params=payload).json()['response']['data']
 
 sessions = {d['session_id']: d for d in activity['sessions']}
+
+
+
+def GeoLite2db(ipaddress):
+    dbfile = 'GeoLite2-City.mmdb'
+
+    if not os.path.isfile('GeoLite2-City.mmdb'):
+        urllib.request.urlretrieve('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz', 'GeoLite2-City.tar.gz')
+        tar = tarfile.open('GeoLite2-City.tar.gz', "r:gz")
+        tar.extractall()
+        tar.close()
+        tempfolder = next(d for d in os.listdir(os.getcwd()) if 'GeoLite2' in d)
+        tempfullpath = os.path.join(tempfolder, dbfile)
+        os.rename(tempfullpath, dbfile)
+        shutil.rmtree(tempfolder)
+    
+    reader = geoip2.database.Reader(dbfile)
+    geodata = reader.city(ipaddress)
+    
+    return geodata
+        
 
 influx_payload = [
     {
@@ -25,7 +51,7 @@ influx_payload = [
 ]
 
 for session in sessions.keys():
-    lookup = requests.get('http://freegeoip.net/json/{}'.format(sessions[session]['ip_address_public'])).json()
+    geodata = GeoLite2db(sessions[session]['ip_address_public'])
     decision = sessions[session]['transcode_decision']
     if decision == 'copy':
         decision = 'direct stream'
@@ -34,7 +60,7 @@ for session in sessions.keys():
             "measurement": "Tautulli",
             "tags": {
                 "type": "Session",
-                "region_code": lookup['region_code'],
+                "region_code": geodata.city.geoname_id,
                 "name": sessions[session]['friendly_name']
             },
             "time": current_time,
@@ -44,7 +70,7 @@ for session in sessions.keys():
                 "quality": '{}p'.format(sessions[session]['video_resolution']),
                 "transcode_decision": decision.title(),
                 "quality_profile": sessions[session]['quality_profile'],
-                "location": lookup['city'],
+                "location": geodata.city.name,
             }
         }
     )
@@ -52,4 +78,3 @@ for session in sessions.keys():
 influx = InfluxDBClient(configuration.grafana_url, configuration.grafana_port, configuration.grafana_username,
                         configuration.grafana_password, configuration.tautulli_grafana_db_name)
 influx.write_points(influx_payload)
-
