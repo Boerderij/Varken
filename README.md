@@ -4,7 +4,7 @@ Repo for api scripts written (both pushing and pulling) to aggregate data into i
 Requirements /w install links: [Grafana](http://docs.grafana.org/installation/), [Python3](https://www.python.org/downloads/), [InfluxDB](https://docs.influxdata.com/influxdb/v1.5/introduction/installation/)
 
 ## Quick Setup
-1. Install requirements
+1. Install requirements (If using tautulli.py you need to `pip3 install geoip2`)
 2. Create your plex database in influx
     ```sh
     user@server: ~$ influx
