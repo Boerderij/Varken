@@ -60,7 +60,7 @@ for session in sessions.keys():
             "measurement": "Tautulli",
             "tags": {
                 "type": "Session",
-                "region_code": geodata.city.geoname_id,
+                "region_code": geodata.subdivisions.most_specific.iso_code,
                 "name": sessions[session]['friendly_name']
             },
             "time": current_time,
