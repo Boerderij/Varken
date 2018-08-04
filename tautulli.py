@@ -61,6 +61,7 @@ for session in sessions.keys():
             "tags": {
                 "type": "Session",
                 "region_code": geodata.subdivisions.most_specific.iso_code,
+                "session_id": sessions[session]['session_id'],
                 "name": sessions[session]['friendly_name']
             },
             "time": current_time,
@@ -71,6 +72,7 @@ for session in sessions.keys():
                 "transcode_decision": decision.title(),
                 "quality_profile": sessions[session]['quality_profile'],
                 "location": geodata.city.name,
+                "progress_percent": sessions[session]['progress_percent']
             }
         }
     )
