@@ -18,7 +18,7 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 1. Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
 
 ## Scripts
-`sonarr.py` Gathers data from Sonarr and pushes it to influxdb. Switches are mandatory.
+`sonarr.py` Gathers data from Sonarr and pushes it to influxdb.
 - Notes:
   - You cannot stack the arguments. ie. `sonarr.py --missing --queue`
   - Arguments are mandatory
@@ -33,7 +33,7 @@ optional arguments:
                         Get missing TV shows in X pass days
   --upcoming            Get upcoming TV shows
   --today               Get TV shows on today
-  --queue               Get movies in queue
+  --queue               Get TV shows in queue
 ```
 
 `radarr.py` Gathers data from Radarr and pushes it to influxdb
@@ -78,6 +78,8 @@ To run the python scripts crontab is currently leveraged. Examples:
 ### It is bad practice to run any cronjob more than once a minute. For timing help: https://crontab.guru/
 * * * * * /usr/bin/python3 /path-to-grafana-scripts/ombi.py --total
 * * * * * /usr/bin/python3 /path-to-grafana-scripts/tautulli.py
+* * * * * /usr/bin/python3 /path-to-grafana-scripts/radarr.py --queue
+* * * * * /usr/bin/python3 /path-to-grafana-scripts/sonarr.py --queue
 */30 * * * * /usr/bin/python3 /path-to-grafana-scripts/radarr.py --missing
 */30 * * * * /usr/bin/python3 /path-to-grafana-scripts/sonarr.py --missing
 */30 * * * * /usr/bin/python3 /path-to-grafana-scripts/sickrage.py
