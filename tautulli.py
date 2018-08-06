@@ -11,11 +11,12 @@ from influxdb import InfluxDBClient
 import configuration
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
+
 payload = {'apikey': configuration.tautulli_api_key, 'cmd': 'get_activity'}
+
 activity = requests.get('{}/api/v2'.format(configuration.tautulli_url), params=payload).json()['response']['data']
 
 sessions = {d['session_id']: d for d in activity['sessions']}
-
 
 
 def GeoLite2db(ipaddress):
@@ -69,7 +70,7 @@ for session in sessions.keys():
             "tags": {
                 "type": "Session",
                 "region_code": geodata.subdivisions.most_specific.iso_code,
-                "name": sessions[session]['friendly_name']
+                "session_key": sessions[session]['session_key']
             },
             "time": current_time,
             "fields": {
@@ -78,6 +79,7 @@ for session in sessions.keys():
                 "quality": '{}p'.format(sessions[session]['video_resolution']),
                 "video_decision": sessions[session]['stream_video_decision'],
                 "transcode_decision": decision.title(),
+                "platform": sessions[session]['platform'],
                 "product_version": sessions[session]['product_version'],
                 "quality_profile": sessions[session]['quality_profile'],
                 "location": geodata.city.name,
