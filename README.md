@@ -30,7 +30,7 @@ optional arguments:
   -h, --help            show this help message and exit
   --missing             Get all missing TV shows
   --missing_days MISSING_DAYS
-                        Get missing TV shows in X pass days
+                        Get missing TV shows in past X days
   --upcoming            Get upcoming TV shows
   --today               Get TV shows on today
   --queue               Get TV shows in queue
@@ -65,7 +65,7 @@ optional arguments:
   --counts    Get the count of pending, approved, and available requests
 ```
 
-`tautulli.py` Gathers data from Tautulli and pushes it to influxdb
+`tautulli.py` Gathers data from Tautulli and pushes it to influxdb. On initial run it will download the geoip2 DB and use it for locations.
 
 `sickrage.py` Gathers data from Sickrage and pushes it to influxdb
 
