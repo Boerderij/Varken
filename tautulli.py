@@ -30,12 +30,12 @@ def GeoLite2db(ipaddress):
         tempfullpath = os.path.join(tempfolder, dbfile)
         os.rename(tempfullpath, dbfile)
         shutil.rmtree(tempfolder)
-    
+
     reader = geoip2.database.Reader(dbfile)
     geodata = reader.city(ipaddress)
-    
+
     return geodata
-        
+
 
 influx_payload = [
     {
@@ -51,10 +51,18 @@ influx_payload = [
 ]
 
 for session in sessions.keys():
-    geodata = GeoLite2db(sessions[session]['ip_address_public'])
+    try:
+        geodata = GeoLite2db(sessions[session]['ip_address_public'])
+    except ValueError:
+        if configuration.tautulli_failback_ip:
+            geodata =GeoLite2db(configuration.tautulli_failback_ip)
+        else:
+            geodata = GeoLite2db(requests.get('http://ip.42.pl/raw').text)
+
     decision = sessions[session]['transcode_decision']
     if decision == 'copy':
         decision = 'direct stream'
+
     influx_payload.append(
         {
             "measurement": "Tautulli",
@@ -68,13 +76,15 @@ for session in sessions.keys():
                 "name": sessions[session]['friendly_name'],
                 "title": sessions[session]['full_title'],
                 "quality": '{}p'.format(sessions[session]['video_resolution']),
+                "video_decision": sessions[session]['stream_video_decision'],
                 "transcode_decision": decision.title(),
+                "product_version": sessions[session]['product_version'],
                 "quality_profile": sessions[session]['quality_profile'],
                 "location": geodata.city.name,
             }
         }
     )
 
-influx = InfluxDBClient(configuration.grafana_url, configuration.grafana_port, configuration.grafana_username,
-                        configuration.grafana_password, configuration.tautulli_grafana_db_name)
+influx = InfluxDBClient(configuration.influxdb_url, configuration.influxdb_port, configuration.influxdb_username,
+                        configuration.influxdb_password, configuration.tautulli_influxdb_db_name)
 influx.write_points(influx_payload)
