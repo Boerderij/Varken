@@ -1,0 +1,11 @@
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+configuration.py
+__pycache__
+GeoLite2-City.mmdb
+GeoLite2-City.tar.gz
