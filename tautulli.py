@@ -88,6 +88,7 @@ for session in sessions.keys():
                 "platform": sessions[session]['platform'],
                 "product_version": sessions[session]['product_version'],
                 "quality_profile": sessions[session]['quality_profile'],
+                "progress_percent": sessions[session]['progress_percent'],
                 "location": geodata.city.name,
             }
         }
