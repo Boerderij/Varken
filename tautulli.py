@@ -7,7 +7,6 @@ import urllib.request
 import geoip2.database
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
-
 import configuration
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
@@ -70,6 +69,18 @@ for session in sessions.keys():
     if decision == 'copy':
         decision = 'direct stream'
 
+    video_resolution = sessions[session]['video_resolution']
+
+    # If the video resolution is empty. Asssume it's an audio stream
+    if not video_resolution:
+        video_resolution = sessions[session]['container']
+
+    elif video_resolution == '4k':
+        video_resolution = sessions[session]['video_resolution']
+
+    else:
+        video_resolution = '{}p'.format(sessions[session]['video_resolution'])
+
     influx_payload.append(
         {
             "measurement": "Tautulli",
@@ -82,7 +93,7 @@ for session in sessions.keys():
             "fields": {
                 "name": sessions[session]['friendly_name'],
                 "title": sessions[session]['full_title'],
-                "quality": '{}p'.format(sessions[session]['video_resolution']),
+                "quality": video_resolution,
                 "video_decision": sessions[session]['stream_video_decision'],
                 "transcode_decision": decision.title(),
                 "platform": sessions[session]['platform'],
