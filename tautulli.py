@@ -25,12 +25,15 @@ def GeoLite2db(ipaddress):
     if not os.path.isfile('GeoLite2-City.mmdb'):
         urllib.request.urlretrieve('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz', 'GeoLite2-City.tar.gz')
         tar = tarfile.open('GeoLite2-City.tar.gz', "r:gz")
-        tar.extractall()
-        tar.close()
-        tempfolder = next(d for d in os.listdir(os.getcwd()) if 'GeoLite2' in d)
-        tempfullpath = os.path.join(tempfolder, dbfile)
-        os.rename(tempfullpath, dbfile)
-        shutil.rmtree(tempfolder)
+        for files in tar.getmembers():
+            if dbfile in files.name:
+                files.name = os.path.basename(files.name)
+                tar.extract(files, '{}/'.format(os.path.dirname(os.path.realpath(__file__))))
+
+    reader = geoip2.database.Reader(dbfile)
+    geodata = reader.city(ipaddress)
+
+    return geodata
 
     reader = geoip2.database.Reader(dbfile)
     geodata = reader.city(ipaddress)
@@ -46,7 +49,10 @@ influx_payload = [
         },
         "time": current_time,
         "fields": {
-            "current_streams": int(activity['stream_count'])
+            "current_streams": int(activity['stream_count']),
+            "transcode_streams": int(activity['stream_count_transcode']),
+            "direct_play_streams": int(activity['stream_count_direct_play']),
+            "direct_streams": int(activity['stream_count_direct_stream'])
         }
     }
 ]
