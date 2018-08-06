@@ -1,0 +1,7 @@
+#---------------------------------------------------------
+# Potential requirements.
+# pip3 install -r requirements.txt
+#---------------------------------------------------------
+requests
+geoip2
+influxdb
