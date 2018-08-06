@@ -283,7 +283,7 @@ if __name__ == "__main__":
         help='Get all missing TV shows')
 
     parser.add_argument("--missing_days", type=int,
-        help='Get missing TV shows in X past days')
+        help='Get missing TV shows in past X days')
 
     parser.add_argument("--upcoming", action='store_true',
         help='Get upcoming TV shows')
