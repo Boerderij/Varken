@@ -29,8 +29,6 @@ influx_payload = [
     }
 ]
 
-influx = InfluxDBClient(configuration.grafana_url, configuration.grafana_port, configuration.grafana_username,
-                        configuration.grafana_password, configuration.asa_grafana_db_name)
+influx = InfluxDBClient(configuration.influxdb_url, configuration.influxdb_port, configuration.influxdb_username,
+                        configuration.influxdb_password, configuration.asa_influxdb_db_name)
 influx.write_points(influx_payload)
-
-
