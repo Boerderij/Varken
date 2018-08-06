@@ -64,6 +64,7 @@ def get_all_missing_shows():
 
     return influx_payload
 
+
 def get_missing_shows(days_past):
     # Set the time here so we have one timestamp to work with
     now = now_iso()
@@ -190,9 +191,9 @@ def get_today_shows():
             series_title = '{}'.format(tv_shows[show]['series']['title'])
             dl_status = int(tv_shows[show]['hasFile'])
             sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'], tv_shows[show]['episodeNumber'])
-            air_today.append((series_title, dl_status, sxe, tv_shows[show]['id']))
+            air_today.append((series_title, dl_status, sxe, tv_shows[show]['title'],  tv_shows[show]['id']))
 
-        for series_title, dl_status, sxe, id in air_today:
+        for series_title, dl_status, sxe, title, id in air_today:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -204,12 +205,13 @@ def get_today_shows():
                     "time": now,
                     "fields": {
                         "name": series_title,
+                        "epname": title,
                         "sxe": sxe,
                         "downloaded": dl_status
                     }
                 }
             )
-        # Empty today and downloaded or else things get foo bared
+        # Empty air_today or else things get foo bared
         air_today = []
 
     return influx_payload
@@ -267,7 +269,7 @@ def get_queue_shows():
                 }
             )
 
-        # Empty missing or else things get foo bared
+        # Empty queue or else things get foo bared
         queue = []
 
     return influx_payload

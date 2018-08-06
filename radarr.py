@@ -32,7 +32,8 @@ def get_missing_movies():
 
         for movie in movies.keys():
             if not movies[movie]['downloaded']:
-                missing.append((movies[movie]['title'], movies[movie]['tmdbId']))
+                movie_name = ('{} ({})'.format(movies[movie]['title'], movies[movie]['year']))
+                missing.append((movie_name, movies[movie]['tmdbId']))
 
         for movie, id in missing:
             influx_payload.append(
