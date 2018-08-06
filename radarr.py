@@ -150,7 +150,7 @@ if __name__ == "__main__":
         help='Get missing movies')
 
     parser.add_argument("--missing_avl",  action='store_true',
-        help='Get missing available movies')
+        help='Get missing yet available movies')
 
     parser.add_argument("--queue",  action='store_true',
         help='Get movies in queue')
