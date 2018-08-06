@@ -69,7 +69,8 @@ def get_missing_avl():
         for movie in movies.keys():
             if not movies[movie]['downloaded']:
                 if movies[movie]['isAvailable'] is True:
-                  missing.append((movies[movie]['title'], movies[movie]['tmdbId']))
+                    movie_name = ('{} ({})'.format(movies[movie]['title'], movies[movie]['year']))
+                    missing.append((movie_name, movies[movie]['tmdbId']))
 
 
         for movie, id in missing:
