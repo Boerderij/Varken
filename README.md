@@ -18,10 +18,8 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 1. Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
 
 ## Scripts
-`sonarr.py` Gathers data from Sonarr and pushes it to influxdb.
-- Notes:
-  - You cannot stack the arguments. ie. `sonarr.py --missing --queue`
-  - Arguments are mandatory
+### `sonarr.py`
+Gathers data from Sonarr and pushes it to influxdb.
 
 ```
 Script to aid in data gathering from Sonarr
@@ -36,11 +34,12 @@ optional arguments:
                         i.e. --future 2 is Today and Tomorrow
   --queue               Get TV shows in queue
 ```
-
-`radarr.py` Gathers data from Radarr and pushes it to influxdb
 - Notes:
-  - You cannot stack the arguments. ie. `radarr.py --missing --queue`
-  - Arguments are mandatory
+  - You cannot stack the arguments. ie. `sonarr.py --missing --queue`
+  - One argument must be supplied
+
+### `radarr.py`
+Gathers data from Radarr and pushes it to influxdb
 
 ```
 Script to aid in data gathering from Radarr
@@ -51,11 +50,13 @@ optional arguments:
   --missing_avl  Get missing available movies
   --queue        Get movies in queue
 ```
-
-`ombi.py` Gathers data from Ombi and pushes it to influxdb
 - Notes:
-  - You cannot stack the arguments. ie. `ombi.py --total --counts`
-  - Arguments are mandatory
+  - You cannot stack the arguments. ie. `radarr.py --missing --queue`
+  - One argument must be supplied
+  - `--missing_avl` Refers to how Radarr has determined if the movie should be available to download. The easy way to determine if the movie will appear on this list is if the movie has a <span style="color:red">RED "Missing"</span> tag associated with that movie. <span style="color:blue">BLUE "Missing"</span> tag refers to a movie that is missing but is not available for download yet. These tags are determined by your "Minimum Availability" settings for that movie.
+
+### `ombi.py`
+Gathers data from Ombi and pushes it to influxdb
 
 ```
 Script to aid in data gathering from Ombi
@@ -65,10 +66,15 @@ optional arguments:
   --total     Get the total count of all requests
   --counts    Get the count of pending, approved, and available requests
 ```
+- Notes:
+  - You cannot stack the arguments. ie. `ombi.py --total --counts`
+  - One argument must be supplied
 
-`tautulli.py` Gathers data from Tautulli and pushes it to influxdb. On initial run it will download the geoip2 DB and use it for locations.
+### `tautulli.py`
+Gathers data from Tautulli and pushes it to influxdb. On initial run it will download the geoip2 DB and use it for locations.
 
-`sickrage.py` Gathers data from Sickrage and pushes it to influxdb
+### `sickrage.py`
+Gathers data from Sickrage and pushes it to influxdb
 
 ## Notes
 To run the python scripts crontab is currently leveraged. Examples:
