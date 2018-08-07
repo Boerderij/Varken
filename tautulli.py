@@ -61,11 +61,12 @@ for session in sessions.keys():
         geodata = GeoLite2db(sessions[session]['ip_address_public'])
     except ValueError:
         if configuration.tautulli_failback_ip:
-            geodata =GeoLite2db(configuration.tautulli_failback_ip)
+            geodata = GeoLite2db(configuration.tautulli_failback_ip)
         else:
             geodata = GeoLite2db(requests.get('http://ip.42.pl/raw').text)
 
     decision = sessions[session]['transcode_decision']
+
     if decision == 'copy':
         decision = 'direct stream'
 
