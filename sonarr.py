@@ -191,9 +191,9 @@ def get_future_shows(future_days):
             series_title = '{}'.format(tv_shows[show]['series']['title'])
             dl_status = int(tv_shows[show]['hasFile'])
             sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'], tv_shows[show]['episodeNumber'])
-            air_days.append((series_title, dl_status, sxe, tv_shows[show]['title'],  tv_shows[show]['id']))
+            air_days.append((series_title, dl_status, sxe, tv_shows[show]['title'], tv_shows[show]['airDate'], tv_shows[show]['id']))
 
-        for series_title, dl_status, sxe, title, id in air_days:
+        for series_title, dl_status, sxe, title, air_date, id in air_days:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -207,6 +207,7 @@ def get_future_shows(future_days):
                         "name": series_title,
                         "epname": title,
                         "sxe": sxe,
+                        "airs": air_date,
                         "downloaded": dl_status
                     }
                 }
