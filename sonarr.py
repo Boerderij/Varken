@@ -163,15 +163,15 @@ def get_upcoming_shows():
     return influx_payload
 
 
-def get_today_shows():
+def get_future_shows(future_days):
     # Set the time here so we have one timestamp to work with
     now = now_iso()
 
     today = str(date.today())
 
-    tomorrow = str(date.today()+timedelta(days=1))
+    future = str(date.today()+timedelta(days=future_days))
 
-    air_today = []
+    air_days = []
 
     downloaded = []
 
@@ -182,7 +182,7 @@ def get_today_shows():
 
         headers = {'X-Api-Key': sonarr_api_key}
 
-        get_tv_shows = requests.get('{}/api/calendar/?start={}&end={}&pageSize=50'.format(sonarr_url, today, tomorrow),
+        get_tv_shows = requests.get('{}/api/calendar/?start={}&end={}&pageSize=200'.format(sonarr_url, today, future),
                                     headers=headers).json()
 
         tv_shows = {d['id']: d for d in get_tv_shows}
@@ -191,14 +191,14 @@ def get_today_shows():
             series_title = '{}'.format(tv_shows[show]['series']['title'])
             dl_status = int(tv_shows[show]['hasFile'])
             sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'], tv_shows[show]['episodeNumber'])
-            air_today.append((series_title, dl_status, sxe, tv_shows[show]['title'],  tv_shows[show]['id']))
+            air_days.append((series_title, dl_status, sxe, tv_shows[show]['title'],  tv_shows[show]['id']))
 
-        for series_title, dl_status, sxe, title, id in air_today:
+        for series_title, dl_status, sxe, title, id in air_days:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
                     "tags": {
-                        "type": "Today",
+                        "type": "Future",
                         "sonarrId": id,
                         "server": server_id
                     },
@@ -211,8 +211,8 @@ def get_today_shows():
                     }
                 }
             )
-        # Empty air_today or else things get foo bared
-        air_today = []
+        # Empty air_days or else things get foo bared
+        air_days = []
 
     return influx_payload
 
@@ -288,8 +288,9 @@ if __name__ == "__main__":
     parser.add_argument("--upcoming", action='store_true',
         help='Get upcoming TV shows')
 
-    parser.add_argument("--today", action='store_true',
-        help='Get TV shows on today')
+    parser.add_argument("--future", type=int,
+        help='Get TV shows on X days into the future. Includes today.'
+            '\ni.e. --future 2 is Today and Tomorrow')
 
     parser.add_argument("--queue", action='store_true',
         help='Get TV shows in queue')
@@ -305,8 +306,8 @@ if __name__ == "__main__":
     elif opts.upcoming:
         influx_sender(get_upcoming_shows())
 
-    elif opts.today:
-        influx_sender(get_today_shows())
+    elif opts.future:
+        influx_sender(get_future_shows(opts.future))
 
     elif opts.queue:
         influx_sender(get_queue_shows())
