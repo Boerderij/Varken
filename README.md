@@ -32,7 +32,8 @@ optional arguments:
   --missing_days MISSING_DAYS
                         Get missing TV shows in past X days
   --upcoming            Get upcoming TV shows
-  --today               Get TV shows on today
+  --future FUTURE       Get TV shows on X days into the future. Includes today.
+                        i.e. --future 2 is Today and Tomorrow
   --queue               Get TV shows in queue
 ```
 
