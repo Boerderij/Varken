@@ -42,7 +42,7 @@ def get_all_missing_shows():
             sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'],tv_shows[show]['episodeNumber'])
             missing.append((series_title, sxe, tv_shows[show]['id'], tv_shows[show]['title']))
 
-        for series_title, sxe, id, title in missing:
+        for series_title, sxe, id, episode_title in missing:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -54,7 +54,7 @@ def get_all_missing_shows():
                     "time": now,
                     "fields": {
                         "name": series_title,
-                        "epname": title,
+                        "epname": episode_title,
                         "sxe": sxe
                     }
                 }
@@ -139,7 +139,7 @@ def get_upcoming_shows():
             sxe = 'S{:0>2}E{:0>2}'.format(upcoming_shows[show]['seasonNumber'],upcoming_shows[show]['episodeNumber'])
             upcoming.append((series_title, sxe, upcoming_shows[show]['id'], upcoming_shows[show]['title'], upcoming_shows[show]['airDate']))
 
-        for series_title, sxe, id, title, air_date  in upcoming:
+        for series_title, sxe, id, episode_title, air_date  in upcoming:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -151,7 +151,7 @@ def get_upcoming_shows():
                      "time": now,
                      "fields": {
                          "name": series_title,
-                         "epname": title,
+                         "epname": episode_title,
                          "sxe": sxe,
                          "airs": air_date
                      }
@@ -177,7 +177,6 @@ def get_future_shows(future_days):
 
     influx_payload = []
 
-
     for sonarr_url, sonarr_api_key, server_id in configuration.sonarr_server_list:
 
         headers = {'X-Api-Key': sonarr_api_key}
@@ -193,7 +192,7 @@ def get_future_shows(future_days):
             sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'], tv_shows[show]['episodeNumber'])
             air_days.append((series_title, dl_status, sxe, tv_shows[show]['title'], tv_shows[show]['airDate'], tv_shows[show]['id']))
 
-        for series_title, dl_status, sxe, title, air_date, id in air_days:
+        for series_title, dl_status, sxe, episode_title, air_date, id in air_days:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -205,7 +204,7 @@ def get_future_shows(future_days):
                     "time": now,
                     "fields": {
                         "name": series_title,
-                        "epname": title,
+                        "epname": episode_title,
                         "sxe": sxe,
                         "airs": air_date,
                         "downloaded": dl_status
@@ -228,7 +227,6 @@ def get_queue_shows():
 
     influx_payload = []
 
-
     for sonarr_url, sonarr_api_key, server_id in configuration.sonarr_server_list:
 
         headers = {'X-Api-Key': sonarr_api_key}
@@ -240,6 +238,7 @@ def get_queue_shows():
 
         for show in tv_shows.keys():
             series_title = '{}'.format(tv_shows[show]['series']['title'])
+            episode_title = '{}'.format(tv_shows[show]['episode']['title'])
             protocol =  (tv_shows[show]['protocol'].upper())
             sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['episode']['seasonNumber'], tv_shows[show]['episode']['episodeNumber'])
             if protocol == 'USENET':
@@ -247,9 +246,9 @@ def get_queue_shows():
             else:
                 protocol_id = 0
 
-            queue.append((series_title, protocol, protocol_id, sxe, tv_shows[show]['id']))
+            queue.append((series_title, episode_title, protocol, protocol_id, sxe, tv_shows[show]['id']))
 
-        for series_title, protocol, protocol_id, sxe, id in queue:
+        for series_title, episode_title, protocol, protocol_id, sxe, id in queue:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -261,8 +260,8 @@ def get_queue_shows():
                     },
                     "time": now,
                     "fields": {
-                        "name": show,
                         "name": series_title,
+                        "epname": episode_title,
                         "sxe": sxe,
                         "protocol": protocol,
                         "protocol_id": protocol_id
