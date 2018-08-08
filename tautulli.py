@@ -34,11 +34,6 @@ def GeoLite2db(ipaddress):
 
     return geodata
 
-    reader = geoip2.database.Reader(dbfile)
-    geodata = reader.city(ipaddress)
-
-    return geodata
-
 
 influx_payload = [
     {
@@ -96,7 +91,7 @@ for session in sessions.keys():
                 "title": sessions[session]['full_title'],
                 "quality": video_resolution,
                 "video_decision": sessions[session]['stream_video_decision'],
-                "transcode_decision": decision.title(),
+                "transcode_decision": decision,
                 "platform": sessions[session]['platform'],
                 "product_version": sessions[session]['product_version'],
                 "quality_profile": sessions[session]['quality_profile'],
