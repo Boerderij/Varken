@@ -60,22 +60,39 @@ for session in sessions.keys():
         else:
             geodata = GeoLite2db(requests.get('http://ip.42.pl/raw').text)
 
+    latitude = geodata.location.latitude
+
+    # Get the latitude of each session. If we cant find it then...
+    if not geodata.location.latitude:
+        latitude = 37.234332396
+    else:
+        latitude = geodata.location.latitude
+
+    # Get the longitude of each session. If we cant find it then...
+    if not geodata.location.longitude:
+        longitude = -115.80666344
+    else:
+        longitude = geodata.location.longitude
+
     decision = sessions[session]['transcode_decision']
 
     if decision == 'copy':
         decision = 'direct stream'
 
-    video_resolution = sessions[session]['video_resolution']
+    quality = sessions[session]['video_resolution']
 
     # If the video resolution is empty. Asssume it's an audio stream
-    if not video_resolution:
-        video_resolution = sessions[session]['container']
+    if not quality:
+        quality = sessions[session]['container']
 
-    elif video_resolution == '4k':
-        video_resolution = sessions[session]['video_resolution']
+    elif quality == 'sd':
+        quality = sessions[session]['video_resolution'].upper()
+
+    elif quality == '4k':
+        quality = sessions[session]['video_resolution']
 
     else:
-        video_resolution = '{}p'.format(sessions[session]['video_resolution'])
+        quality = '{}p'.format(sessions[session]['video_resolution'])
 
     influx_payload.append(
         {
@@ -83,13 +100,16 @@ for session in sessions.keys():
             "tags": {
                 "type": "Session",
                 "region_code": geodata.subdivisions.most_specific.iso_code,
+                "latitude": latitude,
+                "longitude": longitude,
+                "location": '{} - {}'.format(geodata.subdivisions.most_specific.name, geodata.city.name),
                 "session_key": sessions[session]['session_key']
             },
             "time": current_time,
             "fields": {
                 "name": sessions[session]['friendly_name'],
                 "title": sessions[session]['full_title'],
-                "quality": video_resolution,
+                "quality": quality,
                 "video_decision": sessions[session]['stream_video_decision'],
                 "transcode_decision": decision,
                 "platform": sessions[session]['platform'],
