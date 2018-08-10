@@ -1,0 +1,107 @@
+{
+  "circleMaxSize": "5",
+  "circleMinSize": "1",
+  "colors": [
+    "#cca300",
+    "#c15c17",
+    "#890f02"
+  ],
+  "datasource": "plex",
+  "decimals": 0,
+  "esLocationName": "",
+  "esMetric": "$tag_counter",
+  "gridPos": {
+    "h": 8,
+    "w": 8,
+    "x": 16,
+    "y": 0
+  },
+  "hideEmpty": false,
+  "hideZero": false,
+  "id": 4,
+  "initialZoom": "4",
+  "links": [],
+  "locationData": "table",
+  "mapCenter": "(0°, 0°)",
+  "mapCenterLatitude": 0,
+  "mapCenterLongitude": 0,
+  "maxDataPoints": 1,
+  "minSpan": 8,
+  "mouseWheelZoom": false,
+  "showLegend": false,
+  "stickyLabels": false,
+  "tableQueryOptions": {
+    "geohashField": "geohash",
+    "labelField": "location",
+    "latitudeField": "latitude",
+    "longitudeField": "longitude",
+    "metricField": "metric",
+    "queryType": "coordinates"
+  },
+  "targets": [
+    {
+      "alias": "$tag_region_code",
+      "dsType": "influxdb",
+      "groupBy": [
+        {
+          "params": [
+            "location"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "latitude"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "longitude"
+          ],
+          "type": "tag"
+        }
+      ],
+      "measurement": "Tautulli",
+      "orderByTime": "ASC",
+      "policy": "default",
+      "refId": "A",
+      "resultFormat": "table",
+      "select": [
+        [
+          {
+            "params": [
+              "location"
+            ],
+            "type": "field"
+          },
+          {
+            "params": [],
+            "type": "count"
+          },
+          {
+            "params": [
+              "metric"
+            ],
+            "type": "alias"
+          }
+        ]
+      ],
+      "tags": [
+        {
+          "key": "type",
+          "operator": "=",
+          "value": "Session"
+        }
+      ]
+    }
+  ],
+  "thresholds": "5,10",
+  "timeFrom": "1m",
+  "title": "",
+  "type": "grafana-worldmap-panel",
+  "unitPlural": "",
+  "unitSingle": "",
+  "unitSingular": "",
+  "valueName": "current"
+}
