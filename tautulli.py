@@ -79,20 +79,25 @@ for session in sessions.keys():
     if decision == 'copy':
         decision = 'direct stream'
 
-    quality = sessions[session]['video_resolution']
+    video_decision = sessions[session]['stream_video_decision']
+
+    if video_decision == 'copy':
+        video_decision = 'direct stream'
+
+    quality = sessions[session]['stream_video_resolution']
 
     # If the video resolution is empty. Asssume it's an audio stream
     if not quality:
-        quality = sessions[session]['container']
+        quality = sessions[session]['container'].upper()
 
-    elif quality == 'sd':
-        quality = sessions[session]['video_resolution'].upper()
+    elif quality in ('SD', 'sd'):
+        quality = sessions[session]['stream_video_resolution'].upper()
 
-    elif quality == '4k':
-        quality = sessions[session]['video_resolution']
+    elif quality in '4k':
+        quality = sessions[session]['stream_video_resolution'].upper()
 
     else:
-        quality = '{}p'.format(sessions[session]['video_resolution'])
+        quality = '{}p'.format(sessions[session]['stream_video_resolution'])
 
     influx_payload.append(
         {
@@ -110,8 +115,8 @@ for session in sessions.keys():
                 "name": sessions[session]['friendly_name'],
                 "title": sessions[session]['full_title'],
                 "quality": quality,
-                "video_decision": sessions[session]['stream_video_decision'],
-                "transcode_decision": decision,
+                "video_decision": video_decision.title(),
+                "transcode_decision": decision.title(),
                 "platform": sessions[session]['platform'],
                 "product_version": sessions[session]['product_version'],
                 "quality_profile": sessions[session]['quality_profile'],
