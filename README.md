@@ -73,9 +73,6 @@ optional arguments:
 ### `tautulli.py`
 Gathers data from Tautulli and pushes it to influxdb. On initial run it will download the geoip2 DB and use it for locations.
 
-### `sickrage.py`
-Gathers data from Sickrage and pushes it to influxdb
-
 ## Notes
 To run the python scripts crontab is currently leveraged. Examples:
 ```sh
