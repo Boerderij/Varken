@@ -19,13 +19,16 @@ sessions = {d['session_id']: d for d in activity['sessions']}
 
 
 def GeoLite2db(ipaddress):
-    dbfile = 'GeoLite2-City.mmdb'
+    tar_dbfile = '{}/GeoLite2-City.tar.gz'.format(os.path.dirname(os.path.realpath(__file__)))
 
-    if not os.path.isfile('GeoLite2-City.mmdb'):
-        urllib.request.urlretrieve('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz', 'GeoLite2-City.tar.gz')
-        tar = tarfile.open('GeoLite2-City.tar.gz', "r:gz")
+    dbfile = '{}/GeoLite2-City.mmdb'.format(os.path.dirname(os.path.realpath(__file__)))
+
+    if not os.path.isfile(dbfile):
+        urllib.request.urlretrieve('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz', tar_dbfile)
+
+        tar = tarfile.open(tar_dbfile, "r:gz")
         for files in tar.getmembers():
-            if dbfile in files.name:
+            if 'GeoLite2-City.mmdb' in files.name:
                 files.name = os.path.basename(files.name)
                 tar.extract(files, '{}/'.format(os.path.dirname(os.path.realpath(__file__))))
 
