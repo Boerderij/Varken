@@ -47,8 +47,3 @@ asa_url = 'https://firewall.domain.tld'
 asa_username = 'cisco'
 asa_password = 'cisco'
 asa_influxdb_db_name = 'asa'
-
-########################## SICKRAGE CONFIG ############################
-sickrage_url = 'https://sickrage.domain.tld/'
-sickrage_api_key = 'xxxxxxxxxxxxxxx'
-sickrage_influxdb_db_name = 'plex'
