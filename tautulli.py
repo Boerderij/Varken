@@ -72,7 +72,7 @@ INFLUX_PAYLOAD = [
 for session in SESSIONS.keys():
     try:
         geodata = geo_lookup(SESSIONS[session]['ip_address_public'])
-    except ValueError:
+    except (ValueError, geoip2.errors.AddressNotFoundError):
         if configuration.tautulli_failback_ip:
             geodata = geo_lookup(configuration.tautulli_failback_ip)
         else:
