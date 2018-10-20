@@ -17,6 +17,29 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 1. Install `grafana-cli plugins install grafana-worldmap-panel`
 1. Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
 
+
+
+### Docker
+
+Repo is included in [si0972/grafana-scripts](https://github.com/si0972/grafana-scripts-docker)
+
+<details><summary>Example</summary>
+<p>
+
+```
+docker create \
+  --name=grafana-scripts \
+  -v <path to data>:/Scripts \
+  -e plex=true \
+  -e PGID=<gid> -e PUID=<uid>  \
+  si0972/grafana-scripts:latest
+```
+</p>
+</details>
+
+
+
+
 ## Scripts
 ### `sonarr.py`
 Gathers data from Sonarr and pushes it to influxdb.
