@@ -1,0 +1,316 @@
+{
+  "columns": [],
+  "datasource": "plex",
+  "fontSize": "100%",
+  "gridPos": {
+    "h": 13,
+    "w": 16,
+    "x": 0,
+    "y": 16
+  },
+  "hideTimeOverride": true,
+  "id": 9,
+  "interval": "",
+  "links": [
+    {
+      "targetBlank": true,
+      "title": "Tautulli",
+      "type": "absolute",
+      "url": "https://tautulli.domain.tld"
+    }
+  ],
+  "minSpan": 12,
+  "pageSize": 14,
+  "scroll": true,
+  "showHeader": true,
+  "sort": {
+    "col": 9,
+    "desc": true
+  },
+  "styles": [
+    {
+      "alias": "",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "MM/DD/YY h:mm:ss a",
+      "decimals": 2,
+      "link": false,
+      "pattern": "Time",
+      "thresholds": [],
+      "type": "hidden",
+      "unit": "short"
+    },
+    {
+      "alias": "User",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "pattern": "name",
+      "preserveFormat": false,
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "Media",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "pattern": "title",
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "Decision",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "pattern": "video_decision",
+      "preserveFormat": false,
+      "sanitize": false,
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "Quality",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "pattern": "quality",
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "Limits",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "pattern": "quality_profile",
+      "preserveFormat": true,
+      "sanitize": false,
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "Version",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 0,
+      "pattern": "product_version",
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "Device",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "pattern": "platform",
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "mappingType": 1,
+      "pattern": "distinct",
+      "thresholds": [],
+      "type": "hidden",
+      "unit": "short"
+    },
+    {
+      "alias": "Location",
+      "colorMode": null,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 2,
+      "mappingType": 1,
+      "pattern": "location",
+      "thresholds": [],
+      "type": "string",
+      "unit": "short"
+    },
+    {
+      "alias": "Player State",
+      "colorMode": "row",
+      "colors": [
+        "rgba(50, 172, 45, 0.3)",
+        "rgba(14, 221, 229, 0.56)",
+        "rgba(214, 103, 28, 0.8)"
+      ],
+      "dateFormat": "YYYY-MM-DD HH:mm:ss",
+      "decimals": 0,
+      "link": false,
+      "linkTargetBlank": false,
+      "linkTooltip": "",
+      "linkUrl": "",
+      "mappingType": 1,
+      "pattern": "player_state",
+      "thresholds": [
+        "1",
+        "3"
+      ],
+      "type": "string",
+      "unit": "none",
+      "valueMaps": [
+        {
+          "text": "Playing",
+          "value": "0"
+        },
+        {
+          "text": "Paused",
+          "value": "1"
+        },
+        {
+          "text": "Buffering",
+          "value": "3"
+        }
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "dsType": "influxdb",
+      "groupBy": [
+        {
+          "params": [
+            "name"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "title"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "quality"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "video_decision"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "quality_profile"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "platform"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "product_version"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "location"
+          ],
+          "type": "tag"
+        }
+      ],
+      "hide": false,
+      "limit": "",
+      "measurement": "Tautulli",
+      "orderByTime": "ASC",
+      "policy": "default",
+      "query": "SELECT distinct(\"session_key\") FROM \"Tautulli\" WHERE (\"type\" = 'Session') AND $timeFilter GROUP BY \"name\",  \"title\", \"quality\", \"video_decision\", \"quality_profile\", \"platform\", \"product_version\", \"location\", \"player_state\"",
+      "rawQuery": true,
+      "refId": "A",
+      "resultFormat": "table",
+      "select": [
+        [
+          {
+            "params": [
+              "session_key"
+            ],
+            "type": "field"
+          },
+          {
+            "params": [],
+            "type": "distinct"
+          }
+        ]
+      ],
+      "tags": [
+        {
+          "key": "type",
+          "operator": "=",
+          "value": "Session"
+        }
+      ]
+    }
+  ],
+  "timeFrom": "1m",
+  "title": "Users Online",
+  "transform": "table",
+  "type": "table"
+}

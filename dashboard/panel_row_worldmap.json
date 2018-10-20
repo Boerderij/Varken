@@ -1,30 +1,33 @@
 {
-  "circleMaxSize": "5",
-  "circleMinSize": "1",
+  "circleMaxSize": "2",
+  "circleMinSize": "2",
   "colors": [
-    "#cca300",
-    "#c15c17",
+    "#e67817",
+    "#6d3c97",
     "#890f02"
   ],
   "datasource": "plex",
   "decimals": 0,
-  "esLocationName": "",
-  "esMetric": "$tag_counter",
+  "esGeoPoint": "geohash",
+  "esLocationName": "location",
+  "esMetric": "metric",
   "gridPos": {
-    "h": 8,
-    "w": 8,
-    "x": 16,
-    "y": 0
+    "h": 10,
+    "w": 10,
+    "x": 10,
+    "y": 6
   },
   "hideEmpty": false,
+  "hideTimeOverride": true,
   "hideZero": false,
   "id": 4,
   "initialZoom": "4",
+  "interval": "",
   "links": [],
   "locationData": "table",
-  "mapCenter": "(0°, 0°)",
-  "mapCenterLatitude": 0,
-  "mapCenterLongitude": 0,
+  "mapCenter": "custom",
+  "mapCenterLatitude": "37.9",
+  "mapCenterLongitude": "-94.9",
   "maxDataPoints": 1,
   "minSpan": 8,
   "mouseWheelZoom": false,
@@ -32,7 +35,7 @@
   "stickyLabels": false,
   "tableQueryOptions": {
     "geohashField": "geohash",
-    "labelField": "location",
+    "labelField": "full_location",
     "latitudeField": "latitude",
     "longitudeField": "longitude",
     "metricField": "metric",
@@ -45,12 +48,6 @@
       "groupBy": [
         {
           "params": [
-            "location"
-          ],
-          "type": "tag"
-        },
-        {
-          "params": [
             "latitude"
           ],
           "type": "tag"
@@ -58,6 +55,18 @@
         {
           "params": [
             "longitude"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "full_location"
+          ],
+          "type": "tag"
+        },
+        {
+          "params": [
+            "name"
           ],
           "type": "tag"
         }
@@ -71,9 +80,13 @@
         [
           {
             "params": [
-              "location"
+              "session_key"
             ],
             "type": "field"
+          },
+          {
+            "params": [],
+            "type": "distinct"
           },
           {
             "params": [],
@@ -96,12 +109,13 @@
       ]
     }
   ],
-  "thresholds": "5,10",
+  "thresholds": "2,3",
   "timeFrom": "1m",
+  "timeShift": null,
   "title": "",
   "type": "grafana-worldmap-panel",
-  "unitPlural": "",
+  "unitPlural": "Streams",
   "unitSingle": "",
-  "unitSingular": "",
+  "unitSingular": "Stream",
   "valueName": "current"
 }
