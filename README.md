@@ -3,6 +3,8 @@ Repo for api scripts written (both pushing and pulling) to aggregate data into i
 
 Requirements /w install links: [Grafana](http://docs.grafana.org/installation/), [Python3](https://www.python.org/downloads/), [InfluxDB](https://docs.influxdata.com/influxdb/v1.5/introduction/installation/)
 
+<center><img width="800" src="https://i.imgur.com/av8e0HP.png"></center>
+
 ## Quick Setup
 1. Install requirements `pip3 install -r requirements.txt`
 1. Make a copy of `configuration.example.py` to `configuration.py`
