@@ -41,6 +41,7 @@ tautulli_url = 'https://tautulli.domain.tld'
 tautulli_api_key = 'xxxxxxxxxxxxxxx'
 tautulli_failback_ip = ''
 tautulli_influxdb_db_name = 'plex'
+tautulli_verify_ssl = True
 
 ########################## FIREWALL CONFIG ############################
 asa_url = 'https://firewall.domain.tld'

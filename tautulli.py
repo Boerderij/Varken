@@ -12,8 +12,10 @@ CURRENT_TIME = datetime.now(timezone.utc).astimezone().isoformat()
 
 PAYLOAD = {'apikey': configuration.tautulli_api_key, 'cmd': 'get_activity'}
 
-ACTIVITY = requests.get('{}/api/v2'.format(configuration.tautulli_url),
-                        params=PAYLOAD).json()['response']['data']
+ACTIVITY = requests.get('{}/api/v2'.format(configuration.tautulli_url.rstrip('/')),
+                        params=PAYLOAD,
+                        verify=configuration.tautulli_verify_ssl
+                        ).json()['response']['data']
 
 SESSIONS = {d['session_id']: d for d in ACTIVITY['sessions']}
 
