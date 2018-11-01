@@ -27,7 +27,11 @@ def get_missing_movies():
 
     for radarr_url, radarr_api_key, server_id in configuration.radarr_server_list:
         headers = {'X-Api-Key': radarr_api_key}
-        get_movies = requests.get('{}/api/movie'.format(radarr_url),  headers=headers).json()
+
+        get_movies = requests.get('{}/api/movie'.format(radarr_url),
+                                  headers=headers,
+                                  verify=configuration.radarr_verify_ssl).json()
+
         movies = {d['tmdbId']: d for d in get_movies}
 
         for movie in movies.keys():
@@ -64,7 +68,11 @@ def get_missing_avl():
 
     for radarr_url, radarr_api_key, server_id in configuration.radarr_server_list:
         headers = {'X-Api-Key': radarr_api_key}
-        get_movies = requests.get('{}/api/movie'.format(radarr_url),  headers=headers).json()
+
+        get_movies = requests.get('{}/api/movie'.format(radarr_url),
+                                  headers=headers,
+                                  verify=configuration.radarr_verify_ssl).json()
+
         movies = {d['tmdbId']: d for d in get_movies}
 
         for movie in movies.keys():
@@ -103,7 +111,10 @@ def get_queue_movies():
 
     for radarr_url, radarr_api_key, server_id in configuration.radarr_server_list:
         headers = {'X-Api-Key': radarr_api_key}
-        get_movies = requests.get('{}/api/queue'.format(radarr_url),  headers=headers).json()
+        get_movies = requests.get('{}/api/queue'.format(radarr_url),
+                                  headers=headers,
+                                  verify=configuration.radarr_verify_ssl).json()
+
         queue_movies = {d['id']: d for d in get_movies}
 
         for movie in queue_movies.keys():

@@ -32,7 +32,8 @@ def get_all_missing_shows():
         headers = {'X-Api-Key': sonarr_api_key}
 
         get_tv_shows = requests.get('{}/api/wanted/missing/?pageSize=1000'.format(sonarr_url),
-                                    headers=headers).json()['records']
+                                    headers=headers,
+                                    verify=configuration.sonarr_verify_ssl).json()['records']
 
         tv_shows = {d['id']: d for d in get_tv_shows}
 
@@ -81,8 +82,10 @@ def get_missing_shows(days_past):
 
         headers = {'X-Api-Key': sonarr_api_key}
 
-        get_tv_shows = requests.get('{}/api/calendar/?start={}&end={}&pageSize=1000'.format(sonarr_url, last_days, today),
-                                    headers=headers).json()
+        get_tv_shows = requests.get('{}/api/calendar/?start={}&end={}&pageSize=1000'
+                                    .format(sonarr_url, last_days, today),
+                                    headers=headers,
+                                    verify=configuration.sonarr_verify_ssl).json()
 
         tv_shows = {d['id']: d for d in get_tv_shows}
 
@@ -130,7 +133,8 @@ def get_upcoming_shows():
         headers = {'X-Api-Key': sonarr_api_key}
 
         get_upcoming_shows = requests.get('{}/api/calendar/'.format(sonarr_url),
-                                          headers=headers).json()
+                                          headers=headers,
+                                          verify=configuration.sonarr_verify_ssl).json()
 
         upcoming_shows = {d['id']: d for d in get_upcoming_shows}
 
@@ -181,8 +185,10 @@ def get_future_shows(future_days):
 
         headers = {'X-Api-Key': sonarr_api_key}
 
-        get_tv_shows = requests.get('{}/api/calendar/?start={}&end={}&pageSize=200'.format(sonarr_url, today, future),
-                                    headers=headers).json()
+        get_tv_shows = requests.get('{}/api/calendar/?start={}&end={}&pageSize=200'
+                                    .format(sonarr_url, today, future),
+                                    headers=headers,
+                                    verify=configuration.sonarr_verify_ssl).json()
 
         tv_shows = {d['id']: d for d in get_tv_shows}
 
@@ -232,7 +238,8 @@ def get_queue_shows():
         headers = {'X-Api-Key': sonarr_api_key}
 
         get_tv_shows = requests.get('{}/api/queue'.format(sonarr_url),
-                                    headers=headers).json()
+                                    headers=headers,
+                                    verify=configuration.sonarr_verify_ssl).json()
 
         tv_shows = {d['id']: d for d in get_tv_shows}
 
