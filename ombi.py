@@ -9,14 +9,21 @@ import configuration
 
 headers = {'Apikey': configuration.ombi_api_key}
 
+
 def now_iso():
     now_iso = datetime.now(timezone.utc).astimezone().isoformat()
     return now_iso
 
+
 def influx_sender(influx_payload):
-    influx = InfluxDBClient(configuration.influxdb_url, configuration.influxdb_port, configuration.influxdb_username,
-                            configuration.influxdb_password, configuration.ombi_influxdb_db_name)
+    influx = InfluxDBClient(configuration.influxdb_url,
+                            configuration.influxdb_port,
+                            configuration.influxdb_username,
+                            configuration.influxdb_password,
+                            configuration.ombi_influxdb_db_name)
+
     influx.write_points(influx_payload)
+
 
 def get_total_requests():
     get_tv_requests = requests.get('{}/api/v1/Request/tv'.format(
@@ -50,6 +57,7 @@ def get_total_requests():
     ]
     return influx_payload
 
+
 def get_request_counts():
     get_request_counts = requests.get('{}/api/v1/Request/count'.format(
         configuration.ombi_url), headers=headers,
@@ -57,7 +65,7 @@ def get_request_counts():
 
     influx_payload = [
         {
-        "measurement": "Ombi",
+            "measurement": "Ombi",
             "tags": {
                 "type": "Request_Counts"
             },
@@ -71,15 +79,17 @@ def get_request_counts():
     ]
     return influx_payload
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='Ombi stats operations',
-        description='Script to aid in data gathering from Ombi', formatter_class=RawTextHelpFormatter)
+                                     description='Script to aid in data gathering from Ombi',
+                                     formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("--total",  action='store_true',
-        help='Get the total count of all requests')
+    parser.add_argument("--total", action='store_true',
+                        help='Get the total count of all requests')
 
-    parser.add_argument("--counts",  action='store_true',
-        help='Get the count of pending, approved, and available requests')
+    parser.add_argument("--counts", action='store_true',
+                        help='Get the count of pending, approved, and available requests')
 
     opts = parser.parse_args()
 

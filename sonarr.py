@@ -14,8 +14,12 @@ def now_iso():
 
 
 def influx_sender(influx_payload):
-    influx = InfluxDBClient(configuration.influxdb_url, configuration.influxdb_port, configuration.influxdb_username,
-                            configuration.influxdb_password, configuration.sonarr_influxdb_db_name)
+    influx = InfluxDBClient(configuration.influxdb_url,
+                            configuration.influxdb_port,
+                            configuration.influxdb_username,
+                            configuration.influxdb_password,
+                            configuration.sonarr_influxdb_db_name)
+
     influx.write_points(influx_payload)
 
 
@@ -37,11 +41,14 @@ def get_all_missing_shows():
 
         tv_shows = {d['id']: d for d in get_tv_shows}
 
-
         for show in tv_shows.keys():
             series_title = '{}'.format(tv_shows[show]['series']['title'])
-            sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'],tv_shows[show]['episodeNumber'])
-            missing.append((series_title, sxe, tv_shows[show]['id'], tv_shows[show]['title']))
+
+            sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'],
+                                          tv_shows[show]['episodeNumber'])
+
+            missing.append((series_title, sxe, tv_shows[show]['id'],
+                            tv_shows[show]['title']))
 
         for series_title, sxe, id, episode_title in missing:
             influx_payload.append(
@@ -92,8 +99,12 @@ def get_missing_shows(days_past):
         for show in tv_shows.keys():
             if not (tv_shows[show]['hasFile']):
                 series_title = '{}'.format(tv_shows[show]['series']['title'])
-                sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'], tv_shows[show]['episodeNumber'])
+
+                sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'],
+                                              tv_shows[show]['episodeNumber'])
+
                 air_date = (tv_shows[show]['airDate'])
+
                 missing.append((series_title, sxe, air_date, tv_shows[show]['id']))
 
         for series_title, sxe, air_date, id in missing:
@@ -140,27 +151,34 @@ def get_upcoming_shows():
 
         for show in upcoming_shows.keys():
             series_title = '{}'.format(upcoming_shows[show]['series']['title'])
-            sxe = 'S{:0>2}E{:0>2}'.format(upcoming_shows[show]['seasonNumber'],upcoming_shows[show]['episodeNumber'])
-            upcoming.append((series_title, sxe, upcoming_shows[show]['id'], upcoming_shows[show]['title'], upcoming_shows[show]['airDate']))
+
+            sxe = 'S{:0>2}E{:0>2}'.format(upcoming_shows[show]['seasonNumber'],
+                                          upcoming_shows[show]['episodeNumber'])
+
+            upcoming.append((series_title, sxe,
+                             upcoming_shows[show]['id'],
+                             upcoming_shows[show]['title'],
+                             upcoming_shows[show]['airDate']))
 
         for series_title, sxe, id, episode_title, air_date  in upcoming:
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
                     "tags": {
-                         "type": "Soon",
-                         "sonarrId": id,
-                         "server": server_id
-                     },
-                     "time": now,
-                     "fields": {
-                         "name": series_title,
-                         "epname": episode_title,
-                         "sxe": sxe,
-                         "airs": air_date
-                     }
-                 }
-            )
+                        "type": "Soon",
+                        "sonarrId": id,
+                        "server": server_id
+                        },
+                    "time": now,
+                    "fields": {
+                        "name": series_title,
+                        "epname": episode_title,
+                        "sxe": sxe,
+                        "airs": air_date
+                        }
+                    }
+                )
+
         # Empty upcoming or else things get foo bared
         upcoming = []
 
@@ -194,9 +212,16 @@ def get_future_shows(future_days):
 
         for show in tv_shows.keys():
             series_title = '{}'.format(tv_shows[show]['series']['title'])
+
             dl_status = int(tv_shows[show]['hasFile'])
-            sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'], tv_shows[show]['episodeNumber'])
-            air_days.append((series_title, dl_status, sxe, tv_shows[show]['title'], tv_shows[show]['airDate'], tv_shows[show]['id']))
+
+            sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['seasonNumber'],
+                                          tv_shows[show]['episodeNumber'])
+
+            air_days.append((series_title, dl_status, sxe,
+                             tv_shows[show]['title'],
+                             tv_shows[show]['airDate'],
+                             tv_shows[show]['id']))
 
         for series_title, dl_status, sxe, episode_title, air_date, id in air_days:
             influx_payload.append(
@@ -245,15 +270,21 @@ def get_queue_shows():
 
         for show in tv_shows.keys():
             series_title = '{}'.format(tv_shows[show]['series']['title'])
+
             episode_title = '{}'.format(tv_shows[show]['episode']['title'])
+
             protocol =  (tv_shows[show]['protocol'].upper())
-            sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['episode']['seasonNumber'], tv_shows[show]['episode']['episodeNumber'])
+
+            sxe = 'S{:0>2}E{:0>2}'.format(tv_shows[show]['episode']['seasonNumber'],
+                                          tv_shows[show]['episode']['episodeNumber'])
+
             if protocol == 'USENET':
                 protocol_id = 1
             else:
                 protocol_id = 0
 
-            queue.append((series_title, episode_title, protocol, protocol_id, sxe, tv_shows[show]['id']))
+            queue.append((series_title, episode_title, protocol,
+                          protocol_id, sxe, tv_shows[show]['id']))
 
         for series_title, episode_title, protocol, protocol_id, sxe, id in queue:
             influx_payload.append(
@@ -284,23 +315,24 @@ def get_queue_shows():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='Sonarr stats operations',
-        description='Script to aid in data gathering from Sonarr', formatter_class=RawTextHelpFormatter)
+                                     description='Script to aid in data gathering from Sonarr',
+                                     formatter_class=RawTextHelpFormatter)
 
     parser.add_argument("--missing",  action='store_true',
-        help='Get all missing TV shows')
+                        help='Get all missing TV shows')
 
     parser.add_argument("--missing_days", type=int,
-        help='Get missing TV shows in past X days')
+                        help='Get missing TV shows in past X days')
 
     parser.add_argument("--upcoming", action='store_true',
-        help='Get upcoming TV shows')
+                        help='Get upcoming TV shows')
 
     parser.add_argument("--future", type=int,
-        help='Get TV shows on X days into the future. Includes today.'
-            '\ni.e. --future 2 is Today and Tomorrow')
+                        help='Get TV shows on X days into the future. Includes today.'
+                        '\ni.e. --future 2 is Today and Tomorrow')
 
     parser.add_argument("--queue", action='store_true',
-        help='Get TV shows in queue')
+                        help='Get TV shows in queue')
 
     opts = parser.parse_args()
 
