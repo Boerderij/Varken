@@ -19,8 +19,13 @@ def influx_sender(influx_payload):
     influx.write_points(influx_payload)
 
 def get_total_requests():
-    get_tv_requests = requests.get('{}/api/v1/Request/tv'.format(configuration.ombi_url), headers=headers).json()
-    get_movie_requests = requests.get('{}/api/v1/Request/movie'.format(configuration.ombi_url), headers=headers).json()
+    get_tv_requests = requests.get('{}/api/v1/Request/tv'.format(
+        configuration.ombi_url), headers=headers,
+                                   verify=configuration.ombi_verify_ssl).json()
+
+    get_movie_requests = requests.get('{}/api/v1/Request/movie'.format(
+        configuration.ombi_url), headers=headers,
+                                      verify=configuration.ombi_verify_ssl).json()
 
     count_movie_requests = 0
     count_tv_requests = 0
@@ -46,7 +51,9 @@ def get_total_requests():
     return influx_payload
 
 def get_request_counts():
-    get_request_counts = requests.get('{}/api/v1/Request/count'.format(configuration.ombi_url), headers=headers).json()
+    get_request_counts = requests.get('{}/api/v1/Request/count'.format(
+        configuration.ombi_url), headers=headers,
+                                      verify=configuration.ombi_verify_ssl).json()
 
     influx_payload = [
         {

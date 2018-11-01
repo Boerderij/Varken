@@ -22,6 +22,7 @@ sonarr_server_list =   [
     #('https://sonarr3.domain.tld', 'xxxxxxxxxxxxxxx', '3')
     ]
 sonarr_influxdb_db_name = 'plex'
+sonarr_verify_ssl = True
 
 ############################ RADARR CONFIG ############################
 radarr_server_list =   [
@@ -30,11 +31,13 @@ radarr_server_list =   [
     #('https://radarr3.domain.tld', 'xxxxxxxxxxxxxxx', '3')
     ]
 radarr_influxdb_db_name = 'plex'
+radarr_verify_ssl = True
 
 ############################ OMBI CONFIG ##############################
 ombi_url = 'https://ombi.domain.tld'
 ombi_api_key = 'xxxxxxxxxxxxxxx'
 ombi_influxdb_db_name = 'plex'
+ombi_verify_ssl = True
 
 ########################## TAUTULLI CONFIG ############################
 tautulli_url = 'https://tautulli.domain.tld'
