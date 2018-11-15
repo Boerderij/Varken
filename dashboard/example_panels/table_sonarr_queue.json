@@ -3,13 +3,14 @@
   "datasource": "influxdb",
   "fontSize": "100%",
   "gridPos": {
-    "h": 7,
+    "h": 8,
     "w": 4,
     "x": 20,
-    "y": 14
+    "y": 21
   },
   "hideTimeOverride": true,
-  "id": 16,
+  "id": 19,
+  "interval": "30s",
   "links": [
     {
       "targetBlank": true,
@@ -19,7 +20,7 @@
     }
   ],
   "minSpan": 8,
-  "pageSize": 6,
+  "pageSize": 7,
   "scroll": true,
   "showHeader": true,
   "sort": {
@@ -37,7 +38,7 @@
       "alias": "Name",
       "colorMode": "cell",
       "colors": [
-        "#e24d42",
+        "rgba(245, 54, 54, 0.9)",
         "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
@@ -57,46 +58,36 @@
       "alias": "",
       "colorMode": "row",
       "colors": [
-        "#e24d42",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(50, 172, 45, 0.97)"
+        "#0a437c",
+        "rgb(168, 147, 4)",
+        "#629e51"
       ],
       "dateFormat": "YYYY-MM-DD HH:mm:ss",
-      "decimals": 2,
+      "decimals": 0,
       "mappingType": 1,
-      "pattern": "TV Show",
-      "thresholds": [],
+      "pattern": "T",
+      "thresholds": [
+        "-1",
+        "1"
+      ],
       "type": "string",
-      "unit": "short"
-    },
-    {
-      "alias": "",
-      "colorMode": null,
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(50, 172, 45, 0.97)"
-      ],
-      "dateFormat": "YYYY-MM-DD HH:mm:ss",
-      "decimals": 2,
-      "mappingType": 1,
-      "pattern": "sonarrId",
-      "thresholds": [],
-      "type": "hidden",
-      "unit": "short"
+      "unit": "short",
+      "valueMaps": [
+        {
+          "text": "Tor",
+          "value": "0"
+        },
+        {
+          "text": "Use",
+          "value": "1"
+        }
+      ]
     }
   ],
   "targets": [
     {
       "dsType": "influxdb",
-      "groupBy": [
-        {
-          "params": [
-            "sonarrId"
-          ],
-          "type": "tag"
-        }
-      ],
+      "groupBy": [],
       "measurement": "Sonarr",
       "orderByTime": "ASC",
       "policy": "default",
@@ -130,20 +121,34 @@
             ],
             "type": "alias"
           }
+        ],
+        [
+          {
+            "params": [
+              "protocol_id"
+            ],
+            "type": "field"
+          },
+          {
+            "params": [
+              "T"
+            ],
+            "type": "alias"
+          }
         ]
       ],
       "tags": [
         {
           "key": "type",
           "operator": "=",
-          "value": "Missing_Days"
+          "value": "Queue"
         }
       ]
     }
   ],
   "timeFrom": "33s",
   "timeShift": null,
-  "title": "Missing TV Shows (Last 7 Days)",
+  "title": "TV Shows in Queue",
   "transform": "table",
   "type": "table"
 }
