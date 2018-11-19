@@ -2,11 +2,14 @@ import os
 import tarfile
 import urllib.request
 import time
-from datetime import datetime, timezone
 import geoip2.database
-from influxdb import InfluxDBClient
 import requests
 import configuration
+
+from geoip2.errors import AddressNotFoundError
+from influxdb import InfluxDBClient
+from datetime import datetime, timezone
+
 
 CURRENT_TIME = datetime.now(timezone.utc).astimezone().isoformat()
 
@@ -74,7 +77,7 @@ INFLUX_PAYLOAD = [
 for session in SESSIONS.keys():
     try:
         geodata = geo_lookup(SESSIONS[session]['ip_address_public'])
-    except (ValueError, geoip2.errors.AddressNotFoundError):
+    except (ValueError, AddressNotFoundError):
         if configuration.tautulli_failback_ip:
             geodata = geo_lookup(configuration.tautulli_failback_ip)
         else:
