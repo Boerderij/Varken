@@ -61,9 +61,13 @@ class INIParser(object):
                 queue = self.config.getboolean(sonarr_section, 'queue')
                 missing_days = self.config.getint(sonarr_section, 'missing_days')
                 future_days = self.config.getint(sonarr_section, 'future_days')
+                missing_days_run_minutes = self.config.getint(sonarr_section, 'missing_days_run_minutes')
+                future_days_run_minutes = self.config.getint(sonarr_section, 'future_days_run_minutes')
+                queue_run_minutes = self.config.getint(sonarr_section, 'queue_run_minutes')
 
-                self.sonarr_servers.append(SonarrServer(server_id, scheme + url, apikey, verify_ssl,
-                                                        missing_days, future_days, queue))
+                self.sonarr_servers.append(SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
+                                                        missing_days_run_minutes, future_days,
+                                                        future_days_run_minutes, queue, queue_run_minutes))
 
         # Parse Radarr options
         try:

@@ -6,9 +6,8 @@ from Varken.iniparser import INIParser
 from Varken.sonarr import SonarrAPI
 
 
-def threaded(job):
-    print('test')
-    thread = threading.Thread(target=job)
+def threaded(job, days=None):
+    thread = threading.Thread(target=job, args=([days]))
     thread.start()
 
 if __name__ == "__main__":
@@ -19,12 +18,13 @@ if __name__ == "__main__":
 
         for server in CONFIG.sonarr_servers:
             if server.queue:
-                schedule.every(1).minutes.do(threaded, SONARR.get_queue)
+                schedule.every(server.queue_run_minutes).minutes.do(threaded, SONARR.get_queue)
             if server.missing_days > 0:
-                schedule.every(30).minutes.do(threaded, SONARR.get_missing, server.missing_days)
+                schedule.every(server.missing_days_run_minutes).minutes.do(threaded, SONARR.get_missing,
+                                                                           server.missing_days)
             if server.future_days > 0:
-                schedule.every(30).minutes.do(threaded, SONARR.get_future, server.future_days)
-
+                schedule.every(server.future_days_run_minutes).minutes.do(threaded, SONARR.get_future,
+                                                                          server.future_days)
 
     while True:
         schedule.run_pending()
