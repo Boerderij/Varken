@@ -35,6 +35,14 @@ class Queue(NamedTuple):
     protocol: str = None
     id: int = None
 
+class SonarrServer(NamedTuple):
+    id: int = None
+    url: str = None
+    api_key: str = None
+    verify_ssl: bool = False
+    missing_days: int = None
+    future_days: int = None
+    queue: bool = False
 
 class Server(NamedTuple):
     id: int = None
