@@ -3,6 +3,7 @@ import configparser
 
 from Varken.helpers import Server, TautulliServer, SonarrServer, InfluxServer
 
+
 class INIParser(object):
     def __init__(self):
         self.config = configparser.ConfigParser()
@@ -61,21 +62,24 @@ class INIParser(object):
                 queue = self.config.getboolean(sonarr_section, 'queue')
                 missing_days = self.config.getint(sonarr_section, 'missing_days')
                 future_days = self.config.getint(sonarr_section, 'future_days')
-                missing_days_run_minutes = self.config.getint(sonarr_section, 'missing_days_run_minutes')
-                future_days_run_minutes = self.config.getint(sonarr_section, 'future_days_run_minutes')
-                queue_run_minutes = self.config.getint(sonarr_section, 'queue_run_minutes')
+                missing_days_run_seconds = self.config.getint(sonarr_section, 'missing_days_run_seconds')
+                future_days_run_seconds = self.config.getint(sonarr_section, 'future_days_run_seconds')
+                queue_run_seconds = self.config.getint(sonarr_section, 'queue_run_seconds')
 
                 self.sonarr_servers.append(SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
-                                                        missing_days_run_minutes, future_days,
-                                                        future_days_run_minutes, queue, queue_run_minutes))
+                                                        missing_days_run_seconds, future_days,
+                                                        future_days_run_seconds, queue, queue_run_seconds))
 
         # Parse Radarr options
         try:
             if not self.config.getboolean('global', 'radarr_server_ids'):
                 sys.exit('radarr_server_ids must be either false, or a comma-separated list of server ids')
+            elif self.config.getint('global', 'radarr_server_ids'):
+                self.radarr_enabled = True
         except ValueError:
             self.radarr_enabled = True
             sids = self.config.get('global', 'radarr_server_ids').strip(' ').split(',')
+
             for server_id in sids:
                 radarr_section = 'radarr-' + server_id
                 url = self.config.get(radarr_section, 'url')
