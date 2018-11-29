@@ -40,9 +40,12 @@ class SonarrServer(NamedTuple):
     url: str = None
     api_key: str = None
     verify_ssl: bool = False
-    missing_days: int = None
-    future_days: int = None
+    missing_days: int = 0
+    missing_days_run_minutes: int = 30
+    future_days: int = 0
+    future_days_run_minutes: int = 30
     queue: bool = False
+    queue_run_minutes: int = 1
 
 class Server(NamedTuple):
     id: int = None

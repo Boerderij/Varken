@@ -31,7 +31,8 @@ class SonarrAPI(object):
             missing = []
             headers = {'X-Api-Key': server.api_key}
 
-            get = self.session.get(server.url + endpoint, params=params, headers=headers).json()
+            get = self.session.get(server.url + endpoint, params=params, headers=headers,
+                                   verify=server.verify_ssl).json()
             # Iteratively create a list of TVShow Objects from response json
             tv_shows = [TVShow(**show) for show in get]
 
@@ -74,7 +75,8 @@ class SonarrAPI(object):
             headers = {'X-Api-Key': server.api_key}
             params = {'start': self.today, 'end': future}
 
-            get = self.session.get(server.url + endpoint, params=params, headers=headers).json()
+            get = self.session.get(server.url + endpoint, params=params, headers=headers,
+                                   verify=server.verify_ssl).json()
             tv_shows = [TVShow(**show) for show in get]
 
             for show in tv_shows:
@@ -104,7 +106,7 @@ class SonarrAPI(object):
         self.influx_push(influx_payload)
 
     @logging
-    def get_queue(self):
+    def get_queue(self, notimplemented):
         influx_payload = []
         endpoint = '/api/queue'
 
@@ -112,7 +114,7 @@ class SonarrAPI(object):
             queue = []
             headers = {'X-Api-Key': server.api_key}
 
-            get = self.session.get(server.url + endpoint, headers=headers).json()
+            get = self.session.get(server.url + endpoint, headers=headers, verify=server.verify_ssl).json()
             download_queue = [Queue(**show) for show in get]
 
             for show in download_queue:
