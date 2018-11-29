@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 import argparse
 from argparse import RawTextHelpFormatter
-import configuration
+from Varken import configuration
 
 
 def now_iso():
