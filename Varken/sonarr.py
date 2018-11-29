@@ -6,8 +6,8 @@ import argparse
 from influxdb import InfluxDBClient
 from datetime import datetime, timezone, date, timedelta
 
-import configuration as config
-from helpers import Server, TVShow, Queue
+from Varken import configuration as config
+from Varken.helpers import Server, TVShow, Queue
 
 
 class SonarrAPI(object):

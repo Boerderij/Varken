@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import geoip2.database
 from influxdb import InfluxDBClient
 import requests
-import configuration
+from Varken import configuration
 
 CURRENT_TIME = datetime.now(timezone.utc).astimezone().isoformat()
 
