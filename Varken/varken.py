@@ -10,6 +10,7 @@ def threaded(job, days=None):
     thread = threading.Thread(target=job, args=([days]))
     thread.start()
 
+
 if __name__ == "__main__":
     CONFIG = INIParser()
 
@@ -18,12 +19,12 @@ if __name__ == "__main__":
 
         for server in CONFIG.sonarr_servers:
             if server.queue:
-                schedule.every(server.queue_run_minutes).minutes.do(threaded, SONARR.get_queue)
+                schedule.every(server.queue_run_seconds).seconds.do(threaded, SONARR.get_queue)
             if server.missing_days > 0:
-                schedule.every(server.missing_days_run_minutes).minutes.do(threaded, SONARR.get_missing,
+                schedule.every(server.missing_days_run_seconds).seconds.do(threaded, SONARR.get_missing,
                                                                            server.missing_days)
             if server.future_days > 0:
-                schedule.every(server.future_days_run_minutes).minutes.do(threaded, SONARR.get_future,
+                schedule.every(server.future_days_run_seconds).seconds.do(threaded, SONARR.get_future,
                                                                           server.future_days)
 
     while True:
