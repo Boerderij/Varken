@@ -1,23 +1,13 @@
 import schedule
 import threading
-import functools
 from time import sleep
 
 from Varken.iniparser import INIParser
 from Varken.sonarr import SonarrAPI
 
-def logging(function):
-    @functools.wraps(function)
-    def wrapper(*args, **kwargs):
-        print('LOG: Running job "%s"' % function.__name__)
-        result = function(*args, **kwargs)
-        print('LOG: Job "%s" completed' % function.__name__)
-        return result
 
-    return wrapper
-
-@logging
 def threaded(job):
+    print('test')
     thread = threading.Thread(target=job)
     thread.start()
 
@@ -26,9 +16,15 @@ if __name__ == "__main__":
 
     if CONFIG.sonarr_enabled:
         SONARR = SonarrAPI(CONFIG.sonarr_servers, CONFIG.influx_server)
+
         for server in CONFIG.sonarr_servers:
             if server.queue:
-                schedule.every().minute.do(threaded, SONARR.get_queue)
+                schedule.every(1).minutes.do(threaded, SONARR.get_queue)
+            if server.missing_days > 0:
+                schedule.every(30).minutes.do(threaded, SONARR.get_missing, server.missing_days)
+            if server.future_days > 0:
+                schedule.every(30).minutes.do(threaded, SONARR.get_future, server.future_days)
+
 
     while True:
         schedule.run_pending()

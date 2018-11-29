@@ -44,8 +44,12 @@ class INIParser(object):
         try:
             if not self.config.getboolean('global', 'sonarr_server_ids'):
                 sys.exit('sonarr_server_ids must be either false, or a comma-separated list of server ids')
+            elif self.config.getint('global', 'sonarr_server_ids'):
+                self.sonarr_enabled = True
         except ValueError:
             self.sonarr_enabled = True
+
+        if self.sonarr_enabled:
             sids = self.config.get('global', 'sonarr_server_ids').strip(' ').split(',')
 
             for server_id in sids:
