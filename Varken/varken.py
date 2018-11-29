@@ -25,7 +25,7 @@ if __name__ == "__main__":
     CONFIG = INIParser()
 
     if CONFIG.sonarr_enabled:
-        SONARR = SonarrAPI(CONFIG.sonarr_servers)
+        SONARR = SonarrAPI(CONFIG.sonarr_servers, CONFIG.influx_server)
         for server in CONFIG.sonarr_servers:
             if server.queue:
                 schedule.every().minute.do(threaded, SONARR.get_queue)

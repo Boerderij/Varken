@@ -6,19 +6,18 @@ import argparse
 from influxdb import InfluxDBClient
 from datetime import datetime, timezone, date, timedelta
 
-from Varken import configuration as config
 from Varken.helpers import TVShow, Queue
 
 
 class SonarrAPI(object):
-    def __init__(self, servers):
+    def __init__(self, sonarr_servers, influx_server):
         # Set Time of initialization
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.today = str(date.today())
-        self.influx = InfluxDBClient(config.influxdb_url, config.influxdb_port, config.influxdb_username,
-                                     config.influxdb_password, config.sonarr_influxdb_db_name)
+        self.influx = InfluxDBClient(influx_server.url, influx_server.port, influx_server.username,
+                                     influx_server.password, 'plex')
         self.influx_payload = []
-        self.servers = servers
+        self.servers = sonarr_servers
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = requests.Session()
         self.session.params = {'pageSize': 1000}
