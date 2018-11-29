@@ -1,6 +1,6 @@
 import sys
 import configparser
-
+from os.path import abspath, dirname, join
 from Varken.helpers import Server, TautulliServer, SonarrServer, InfluxServer
 
 
@@ -28,7 +28,8 @@ class INIParser(object):
         self.parse_opts()
 
     def read_file(self):
-        with open('varken.ini') as config_ini:
+        file_path = abspath(join(dirname(__file__), '..', 'varken.ini'))
+        with open(file_path) as config_ini:
             self.config.read_file(config_ini)
 
     def parse_opts(self):
