@@ -1,0 +1,12 @@
+[Unit]
+Description=Varken - A data collection and graphing tool
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/Varken/Varken
+ExecStart=/usr/bin/python3 /opt/Varken/Varken/varken.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
