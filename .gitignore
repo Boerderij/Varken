@@ -6,6 +6,7 @@
 ehthumbs.db
 Thumbs.db
 Varken/configuration.py
+Varken/config.ini
 __pycache__
 GeoLite2-City.mmdb
 GeoLite2-City.tar.gz
