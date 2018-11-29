@@ -2,32 +2,37 @@
 # Do not edit this script. Edit configuration.py
 import sys
 import requests
-from datetime import datetime, timezone, date, timedelta
-from influxdb import InfluxDBClient
 import argparse
-from argparse import RawTextHelpFormatter
+from influxdb import InfluxDBClient
+from datetime import datetime, timezone, date, timedelta
+
 import configuration as config
 from helpers import Server, TVShow, Queue
 
 
 class SonarrAPI(object):
+    # Sets None as default for all TVShow NamedTuples, because sonarr's response json is inconsistent
     TVShow.__new__.__defaults__ = (None,) * len(TVShow._fields)
 
     def __init__(self):
+        # Set Time of initialization
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.today = str(date.today())
         self.influx = InfluxDBClient(config.influxdb_url, config.influxdb_port, config.influxdb_username,
                                      config.influxdb_password, config.sonarr_influxdb_db_name)
         self.influx_payload = []
         self.servers = self.get_servers()
+        # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = requests.Session()
         self.session.params = {'pageSize': 1000}
 
     @staticmethod
     def get_servers():
+        # Ensure sonarr servers have been defined
         if not config.sonarr_server_list:
             sys.exit("No Sonarr servers defined in config")
 
+        # Build Server Objects from config
         servers = []
         for url, api_key, server_id in config.sonarr_server_list:
             servers.append(Server(url=url, api_key=api_key, id=server_id))
@@ -44,8 +49,10 @@ class SonarrAPI(object):
             headers = {'X-Api-Key': server.api_key}
 
             get = self.session.get(server.url + endpoint, params=params, headers=headers).json()
+            # Iteratively create a list of TVShow Objects from response json
             tv_shows = [TVShow(**show) for show in get]
 
+            # Add show to missing list if file does not exist
             for show in tv_shows:
                 if not show.hasFile:
                     sxe = 'S{:0>2}E{:0>2}'.format(show.seasonNumber, show.episodeNumber)
@@ -188,18 +195,19 @@ class SonarrAPI(object):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='Sonarr stats operations',
                                      description='Script to aid in data gathering from Sonarr',
-                                     formatter_class=RawTextHelpFormatter)
+                                     formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument("--missing", metavar='$days', type=int, help='Get missing TV shows in past X days'
-                                                                     '\ni.e. --missing 7 is in the last week')
-    parser.add_argument("--missing_days", metavar='$days', type=int, help='legacy command. Deprecated in favor of'
-                                                                          ' --missing'
-                                                                          '\nfunctions identically to --missing'
-                                                                          '\nNote: Will be removed in a future release')
+    parser.add_argument("--missing", metavar='$days', type=int,
+                        help='Get missing TV shows in past X days'
+                        '\ni.e. --missing 7 is in the last week')
+    parser.add_argument("--missing_days", metavar='$days', type=int,
+                        help='legacy command. Deprecated in favor of --missing'
+                        '\nfunctions identically to --missing'
+                        '\nNote: Will be removed in a future release')
     parser.add_argument("--upcoming", action='store_true', help='Get upcoming TV shows')
-    parser.add_argument("--future", metavar='$days', type=int, help='Get TV shows on X days into the future. '
-                                                                    'Includes today.'
-                                                                    '\ni.e. --future 2 is Today and Tomorrow')
+    parser.add_argument("--future", metavar='$days', type=int,
+                        help='Get TV shows on X days into the future. Includes today.'
+                        '\ni.e. --future 2 is Today and Tomorrow')
     parser.add_argument("--queue", action='store_true', help='Get TV shows in queue')
 
     opts = parser.parse_args()
