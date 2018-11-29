@@ -17,6 +17,8 @@ class INIParser(object):
         self.ombi_server = None
         self.tautulli_enabled = False
         self.tautulli_server = None
+        self.asa_enabled = False
+        self.asa = None
         self.read_file()
         self.parse_opts()
 
@@ -80,7 +82,7 @@ class INIParser(object):
 
         # Parse Ombi Options
         if self.config.getboolean('global', 'ombi'):
-            self.tautulli_enabled = True
+            self.ombi_enabled = True
             url = self.config.get('ombi', 'url')
             apikey = self.config.get('ombi', 'apikey')
             scheme = 'https://' if self.config.getboolean('ombi', 'ssl') else 'http://'
@@ -90,7 +92,7 @@ class INIParser(object):
 
         # Parse ASA opts
         if self.config.getboolean('global', 'asa'):
-            self.tautulli_enabled = True
+            self.asa_enabled = True
             url = self.config.get('asa', 'url')
             username = self.config.get('asa', 'username')
             password = self.config.get('asa', 'password')
@@ -98,4 +100,4 @@ class INIParser(object):
             verify_ssl = self.config.getboolean('asa', 'verify_ssl')
             db_name = self.config.get('asa', 'influx_db')
 
-            self.ombi_server = (scheme + url, username, password, verify_ssl, db_name)
+            self.asa = (scheme + url, username, password, verify_ssl, db_name)
