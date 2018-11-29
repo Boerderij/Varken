@@ -1,25 +1,29 @@
 import sys
 import configparser
 
-from Varken.helpers import Server, TautulliServer, InfluxServer
-
+from Varken.helpers import Server, TautulliServer, SonarrServer, InfluxServer
 
 class INIParser(object):
     def __init__(self):
         self.config = configparser.ConfigParser()
 
         self.influx_server = InfluxServer()
+
         self.sonarr_enabled = False
         self.sonarr_servers = []
+
         self.radarr_enabled = False
         self.radarr_servers = []
+
         self.ombi_enabled = False
         self.ombi_server = None
+
         self.tautulli_enabled = False
         self.tautulli_server = None
+
         self.asa_enabled = False
         self.asa = None
-        self.read_file()
+
         self.parse_opts()
 
     def read_file(self):
@@ -27,6 +31,7 @@ class INIParser(object):
             self.config.read_file(config_ini)
 
     def parse_opts(self):
+        self.read_file()
         # Parse InfluxDB options
         url = self.config.get('influxdb', 'url')
         port = self.config.getint('influxdb', 'port')
@@ -49,8 +54,12 @@ class INIParser(object):
                 apikey = self.config.get(sonarr_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(sonarr_section, 'ssl') else 'http://'
                 verify_ssl = self.config.getboolean(sonarr_section, 'verify_ssl')
+                queue = self.config.getboolean(sonarr_section, 'queue')
+                missing_days = self.config.getint(sonarr_section, 'missing_days')
+                future_days = self.config.getint(sonarr_section, 'future_days')
 
-                self.sonarr_servers.append(Server(server_id, scheme + url, apikey, verify_ssl))
+                self.sonarr_servers.append(SonarrServer(server_id, scheme + url, apikey, verify_ssl,
+                                                        missing_days, future_days, queue))
 
         # Parse Radarr options
         try:
@@ -60,7 +69,7 @@ class INIParser(object):
             self.radarr_enabled = True
             sids = self.config.get('global', 'radarr_server_ids').strip(' ').split(',')
             for server_id in sids:
-                radarr_section = 'sonarr-' + server_id
+                radarr_section = 'radarr-' + server_id
                 url = self.config.get(radarr_section, 'url')
                 apikey = self.config.get(radarr_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(radarr_section, 'ssl') else 'http://'
