@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 import argparse
 from argparse import RawTextHelpFormatter
-from Varken import configuration
+from Legacy import configuration
 
 headers = {'Apikey': configuration.ombi_api_key}
 

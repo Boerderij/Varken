@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
-from Varken import configuration
+from Legacy import configuration
 
 current_time = datetime.now(timezone.utc).astimezone().isoformat()
 

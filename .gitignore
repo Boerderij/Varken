@@ -5,12 +5,11 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-Varken/configuration.py
-Varken/config.ini
 __pycache__
 GeoLite2-City.mmdb
 GeoLite2-City.tar.gz
+data/varken.ini
+data/GeoLite2-City.mmdb
+data/GeoLite2-City.tar.gz
 .idea/
-.idea/*
-varken.ini
-data/
+Legacy/configuration.py
