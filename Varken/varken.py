@@ -4,6 +4,7 @@ from time import sleep
 
 from Varken.iniparser import INIParser
 from Varken.sonarr import SonarrAPI
+from Varken.tautulli import TautulliAPI
 
 
 def threaded(job, days=None):
@@ -26,6 +27,15 @@ if __name__ == "__main__":
             if server.future_days > 0:
                 schedule.every(server.future_days_run_seconds).seconds.do(threaded, SONARR.get_future,
                                                                           server.future_days)
+
+    if CONFIG.tautulli_enabled:
+        TAUTULLI = TautulliAPI(CONFIG.tautulli_servers, CONFIG.influx_server)
+
+        for server in CONFIG.tautulli_servers:
+            if server.get_activity:
+                schedule.every(server.get_activity_run_seconds).seconds.do(threaded, TAUTULLI.get_activity)
+            if server.get_sessions:
+                schedule.every(server.get_sessions_run_seconds).seconds.do(threaded, TAUTULLI.get_sessions)
 
     while True:
         schedule.run_pending()
