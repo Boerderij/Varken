@@ -278,7 +278,7 @@ def geoip_download():
     for files in tar.getmembers():
         if 'GeoLite2-City.mmdb' in files.name:
             files.name = os.path.basename(files.name)
-            tar.extract(files, abspath(join('..', 'data')))
+            tar.extract(files, abspath(join('.', 'data')))
     os.remove(tar_dbfile)
 
 def geo_lookup(ipaddress):

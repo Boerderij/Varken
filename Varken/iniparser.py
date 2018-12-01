@@ -28,7 +28,7 @@ class INIParser(object):
         self.parse_opts()
 
     def read_file(self):
-        file_path = abspath(join('..', 'data',  'varken.ini'))
+        file_path = abspath(join('.', 'data',  'varken.ini'))
         with open(file_path) as config_ini:
             self.config.read_file(config_ini)
 
