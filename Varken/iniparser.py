@@ -20,7 +20,7 @@ class INIParser(object):
         self.ombi_server = None
 
         self.tautulli_enabled = False
-        self.tautulli_server = None
+        self.tautulli_servers = []
 
         self.asa_enabled = False
         self.asa = None
@@ -67,9 +67,10 @@ class INIParser(object):
                 future_days_run_seconds = self.config.getint(sonarr_section, 'future_days_run_seconds')
                 queue_run_seconds = self.config.getint(sonarr_section, 'queue_run_seconds')
 
-                self.sonarr_servers.append(SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
-                                                        missing_days_run_seconds, future_days,
-                                                        future_days_run_seconds, queue, queue_run_seconds))
+                server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
+                                      missing_days_run_seconds, future_days, future_days_run_seconds,
+                                      queue, queue_run_seconds)
+                self.sonarr_servers.append(server)
 
         # Parse Radarr options
         try:
@@ -79,6 +80,8 @@ class INIParser(object):
                 self.radarr_enabled = True
         except ValueError:
             self.radarr_enabled = True
+
+        if self.sonarr_enabled:
             sids = self.config.get('global', 'radarr_server_ids').strip(' ').split(',')
 
             for server_id in sids:
@@ -91,16 +94,32 @@ class INIParser(object):
                 self.radarr_servers.append(Server(server_id, scheme + url, apikey, verify_ssl))
 
         # Parse Tautulli options
-        if self.config.getboolean('global', 'tautulli'):
+        try:
+            if not self.config.getboolean('global', 'tautulli_server_ids'):
+                sys.exit('tautulli_server_ids must be either false, or a comma-separated list of server ids')
+            elif self.config.getint('global', 'tautulli_server_ids'):
+                self.tautulli_enabled = True
+        except ValueError:
             self.tautulli_enabled = True
-            url = self.config.get('tautulli', 'url')
-            fallback_ip = self.config.get('tautulli', 'fallback_ip')
-            apikey = self.config.get('tautulli', 'apikey')
-            scheme = 'https://' if self.config.getboolean('tautulli', 'ssl') else 'http://'
-            verify_ssl = self.config.getboolean('tautulli', 'verify_ssl')
-            db_name = self.config.get('tautulli', 'influx_db')
 
-            self.tautulli_server = TautulliServer(scheme + url, fallback_ip, apikey, verify_ssl, db_name)
+        if self.tautulli_enabled:
+            sids = self.config.get('global', 'tautulli_server_ids').strip(' ').split(',')
+
+            for server_id in sids:
+                tautulli_section = 'tautulli-' + server_id
+                url = self.config.get(tautulli_section, 'url')
+                fallback_ip = self.config.get(tautulli_section, 'fallback_ip')
+                apikey = self.config.get(tautulli_section, 'apikey')
+                scheme = 'https://' if self.config.getboolean(tautulli_section, 'ssl') else 'http://'
+                verify_ssl = self.config.getboolean(tautulli_section, 'verify_ssl')
+                get_activity = self.config.getboolean(tautulli_section, 'get_activity')
+                get_activity_run_seconds = self.config.getint(tautulli_section, 'get_activity_run_seconds')
+                get_sessions = self.config.getboolean(tautulli_section, 'get_sessions')
+                get_sessions_run_seconds = self.config.getint(tautulli_section, 'get_sessions_run_seconds')
+
+                server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl, get_activity,
+                                        get_activity_run_seconds, get_sessions, get_sessions_run_seconds)
+                self.tautulli_servers.append(server)
 
         # Parse Ombi Options
         if self.config.getboolean('global', 'ombi'):

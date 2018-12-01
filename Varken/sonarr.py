@@ -9,13 +9,13 @@ from Varken.helpers import TVShow, Queue
 
 
 class SonarrAPI(object):
-    def __init__(self, sonarr_servers, influx_server):
+    def __init__(self, servers, influx_server):
         # Set Time of initialization
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.today = str(date.today())
         self.influx = InfluxDBClient(influx_server.url, influx_server.port, influx_server.username,
                                      influx_server.password, 'plex')
-        self.servers = sonarr_servers
+        self.servers = servers
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = requests.Session()
         self.session.params = {'pageSize': 1000}
