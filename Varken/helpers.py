@@ -283,7 +283,7 @@ def geoip_download():
 
 def geo_lookup(ipaddress):
 
-    dbfile = abspath(join('..', 'data', 'GeoLite2-City.mmdb'))
+    dbfile = abspath(join('.', 'data', 'GeoLite2-City.mmdb'))
     now = time.time()
 
     try:
