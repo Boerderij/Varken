@@ -5,12 +5,13 @@ import requests
 from Varken.helpers import TautulliStream, geo_lookup
 from Varken.logger import logging
 
+
 class TautulliAPI(object):
     def __init__(self, servers, influx_server):
         # Set Time of initialization
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.influx = InfluxDBClient(influx_server.url, influx_server.port, influx_server.username,
-                                     influx_server.password, 'plex')
+                                     influx_server.password, 'plex2')
         self.servers = servers
         self.session = requests.Session()
         self.endpoint = '/api/v2'
@@ -21,6 +22,7 @@ class TautulliAPI(object):
 
     @logging
     def get_activity(self, notimplemented):
+        self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
         influx_payload = []
 
@@ -53,6 +55,7 @@ class TautulliAPI(object):
 
     @logging
     def get_sessions(self, notimplemented):
+        self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
         influx_payload = []
 
@@ -60,7 +63,6 @@ class TautulliAPI(object):
             params['apikey'] = server.apikey
             g = self.session.get(server.url + self.endpoint, params=params, verify=server.verify_ssl)
             get = g.json()['response']['data']['sessions']
-            print(get)
             sessions = [TautulliStream(**session) for session in get]
 
             for session in sessions:
