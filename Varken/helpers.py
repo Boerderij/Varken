@@ -271,7 +271,7 @@ class TautulliStream(NamedTuple):
     stream_subtitle_container: str
 
 def geoip_download():
-    tar_dbfile = abspath(join('..', 'data', 'GeoLite2-City.tar.gz'))
+    tar_dbfile = abspath(join('.', 'data', 'GeoLite2-City.tar.gz'))
     url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
     urlretrieve(url, tar_dbfile)
     tar = tarfile.open(tar_dbfile, "r:gz")
