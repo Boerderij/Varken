@@ -1,6 +1,5 @@
 from requests import Session
 from datetime import datetime, timezone
-from influxdb import InfluxDBClient
 
 from Varken.helpers import OmbiRequestCounts
 from Varken.logger import logging
