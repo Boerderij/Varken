@@ -116,7 +116,7 @@ class TautulliServer(NamedTuple):
     id: int = None
     url: str = None
     fallback_ip: str = None
-    apikey: str = None
+    api_key: str = None
     verify_ssl: bool = None
     get_activity: bool = False
     get_activity_run_seconds: int = 30
@@ -319,7 +319,6 @@ class TautulliStream(NamedTuple):
     transcode_progress: int = None
     subtitle_language: str = None
     stream_subtitle_container: str = None
-    _cache_time: int = None
 
 
 def geoip_download():
