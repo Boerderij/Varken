@@ -7,17 +7,13 @@ from Varken.logger import logging
 
 
 class TautulliAPI(object):
-    def __init__(self, server, influx_server):
+    def __init__(self, server, dbmanager):
         # Set Time of initialization
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
-        self.influx = InfluxDBClient(influx_server.url, influx_server.port, influx_server.username,
-                                     influx_server.password, 'plex2')
+        self.dbmanager = dbmanager
         self.server = server
         self.session = Session()
         self.endpoint = '/api/v2'
-
-    def influx_push(self, payload):
-        self.influx.write_points(payload)
 
     @logging
     def get_activity(self):
@@ -48,7 +44,7 @@ class TautulliAPI(object):
             }
         )
 
-        self.influx_push(influx_payload)
+        self.dbmanager.write_points(influx_payload)
 
     @logging
     def get_sessions(self):
@@ -144,4 +140,4 @@ class TautulliAPI(object):
                 }
             )
 
-        self.influx_push(influx_payload)
+        self.dbmanager.write_points(influx_payload)

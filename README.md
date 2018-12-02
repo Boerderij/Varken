@@ -1,5 +1,8 @@
-# Grafana Scripts
-Repo for api scripts written (both pushing and pulling) to aggregate data into influxdb for grafana
+# Varken
+Dutch for PIG. PIG is an Acronym for PlexDB/Influx/Grafana
+
+Varken is a standalone commmandline utility that will aggregate date
+from the plex ecosystem into influxdb to be displayed in grafana
 
 Requirements /w install links: [Grafana](http://docs.grafana.org/installation/), [Python3](https://www.python.org/downloads/), [InfluxDB](https://docs.influxdata.com/influxdb/v1.5/introduction/installation/)
 
@@ -7,8 +10,8 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 
 ## Quick Setup
 1. Install requirements `pip3 install -r requirements.txt`
-1. Make a copy of `configuration.example.py` to `configuration.py`
-2. Make the appropriate changes to `configuration.py`
+1. Make a copy of `varken.example.ini` to `varken.ini` in the `data` folder
+2. Make the appropriate changes to `varken.ini`
 1. Create your plex database in influx
     ```sh
     user@server: ~$ influx
