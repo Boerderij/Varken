@@ -104,6 +104,10 @@ class TautulliAPI(object):
             elif player_state == 'buffering':
                 player_state = 3
 
+            product_version = session.product_version
+            if session.platform == 'Roku':
+                product_version = session.product_version.split('-')[0]
+
             influx_payload.append(
                 {
                     "measurement": "Tautulli",
@@ -113,7 +117,7 @@ class TautulliAPI(object):
                         "name": session.friendly_name,
                         "title": session.full_title,
                         "platform": session.platform,
-                        "product_version": session.product_version,
+                        "product_version": product_version,
                         "quality": quality,
                         "video_decision": video_decision.title(),
                         "transcode_decision": decision.title(),
