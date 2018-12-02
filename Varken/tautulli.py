@@ -108,7 +108,8 @@ class TautulliAPI(object):
                     "tags": {
                         "type": "Session",
                         "session_id": session.session_id,
-                        "name": session.friendly_name,
+                        "friendly_name": session.friendly_name,
+                        "username": session.username,
                         "title": session.full_title,
                         "platform": session.platform,
                         "product_version": product_version,
