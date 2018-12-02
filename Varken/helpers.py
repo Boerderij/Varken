@@ -93,7 +93,7 @@ class SonarrServer(NamedTuple):
     future_days: int = 0
     future_days_run_seconds: int = 30
     queue: bool = False
-    queue_run_seconds: int = 1
+    queue_run_seconds: int = 30
 
 class RadarrServer(NamedTuple):
     id: int = None
@@ -101,15 +101,20 @@ class RadarrServer(NamedTuple):
     api_key: str = None
     verify_ssl: bool = False
     queue: bool = False
-    queue_run_seconds: int = 1
+    queue_run_seconds: int = 30
     get_missing: bool = False
     get_missing_run_seconds: int = 30
 
-class Server(NamedTuple):
+
+class OmbiServer(NamedTuple):
     id: int = None
     url: str = None
     api_key: str = None
     verify_ssl: bool = False
+    request_type_counts: bool = False
+    request_type_run_seconds: int = 30
+    request_total_counts: bool = False
+    request_total_run_seconds: int = 30
 
 
 class TautulliServer(NamedTuple):
@@ -129,6 +134,12 @@ class InfluxServer(NamedTuple):
     port: int = 8086
     username: str = 'root'
     password: str = 'root'
+
+
+class OmbiRequestCounts(NamedTuple):
+    pending: int = 0
+    approved: int = 0
+    available: int = 0
 
 
 class TautulliStream(NamedTuple):

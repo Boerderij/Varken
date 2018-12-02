@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 from influxdb import InfluxDBClient
-import requests
+from requests import Session
 from Varken.helpers import TautulliStream, geo_lookup
 from Varken.logger import logging
 
@@ -13,11 +13,10 @@ class TautulliAPI(object):
         self.influx = InfluxDBClient(influx_server.url, influx_server.port, influx_server.username,
                                      influx_server.password, 'plex2')
         self.server = server
-        self.session = requests.Session()
+        self.session = Session()
         self.endpoint = '/api/v2'
 
     def influx_push(self, payload):
-        # TODO: error handling for failed connection
         self.influx.write_points(payload)
 
     @logging
@@ -68,7 +67,7 @@ class TautulliAPI(object):
                 if self.server.fallback_ip:
                     geodata = geo_lookup(self.server.fallback_ip)
                 else:
-                    my_ip = requests.get('http://ip.42.pl/raw').text
+                    my_ip = self.session.get('http://ip.42.pl/raw').text
                     geodata = geo_lookup(my_ip)
 
             if not all([geodata.location.latitude, geodata.location.longitude]):

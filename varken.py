@@ -6,7 +6,7 @@ from Varken.iniparser import INIParser
 from Varken.sonarr import SonarrAPI
 from Varken.tautulli import TautulliAPI
 from Varken.radarr import RadarrAPI
-
+from Varken.ombi import OmbiAPI
 
 def threaded(job):
     thread = threading.Thread(target=job)
@@ -41,6 +41,14 @@ if __name__ == "__main__":
                 schedule.every(server.get_missing_run_seconds).seconds.do(threaded, RADARR.get_missing)
             if server.queue:
                 schedule.every(server.queue_run_seconds).seconds.do(threaded, RADARR.get_queue)
+
+    if CONFIG.ombi_enabled:
+        for server in CONFIG.ombi_servers:
+            OMBI = OmbiAPI(server, CONFIG.influx_server)
+            if server.request_type_counts:
+                schedule.every(server.request_type_run_seconds).seconds.do(threaded, OMBI.get_request_counts)
+            if server.request_total_counts:
+                schedule.every(server.request_total_run_seconds).seconds.do(threaded, OMBI.get_total_requests)
 
     while True:
         schedule.run_pending()

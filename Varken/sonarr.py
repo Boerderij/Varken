@@ -1,4 +1,4 @@
-import requests
+from requests import Session
 from influxdb import InfluxDBClient
 from datetime import datetime, timezone, date, timedelta
 
@@ -15,7 +15,7 @@ class SonarrAPI(object):
                                      influx_server.password, 'plex')
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
-        self.session = requests.Session()
+        self.session = Session()
         self.session.params = {'pageSize': 1000}
 
     @logging
@@ -59,7 +59,6 @@ class SonarrAPI(object):
             )
 
         self.influx_push(influx_payload)
-
 
     @logging
     def get_future(self):
@@ -146,5 +145,4 @@ class SonarrAPI(object):
         self.influx_push(influx_payload)
 
     def influx_push(self, payload):
-        # TODO: error handling for failed connection
         self.influx.write_points(payload)
