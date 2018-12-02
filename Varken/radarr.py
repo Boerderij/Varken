@@ -1,4 +1,4 @@
-import requests
+from requests import Session
 from datetime import datetime, timezone
 from influxdb import InfluxDBClient
 
@@ -13,10 +13,9 @@ class RadarrAPI(object):
                                      influx_server.password, 'plex2')
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
-        self.session = requests.Session()
+        self.session = Session()
 
     def influx_push(self, payload):
-        # TODO: error handling for failed connection
         self.influx.write_points(payload)
 
     @logging
