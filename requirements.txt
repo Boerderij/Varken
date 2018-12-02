@@ -6,6 +6,3 @@ requests>=2.20.1
 geoip2>=2.9.0
 influxdb>=5.2.0
 schedule>=0.5.0
-configparser>=3.5.0
-datetime>=4.3
-typing>=3.6.6

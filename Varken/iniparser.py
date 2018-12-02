@@ -1,14 +1,12 @@
-from sys import path, exit
-from os.path import abspath, dirname, join
-path.insert(0, abspath(join(dirname(__file__), '..', 'lib')))
-
-from configparser import ConfigParser
+import sys
+import configparser
+from os.path import abspath, join
 from Varken.helpers import OmbiServer, TautulliServer, SonarrServer, InfluxServer, RadarrServer
 
 
 class INIParser(object):
     def __init__(self):
-        self.config = ConfigParser()
+        self.config = configparser.ConfigParser()
 
         self.influx_server = InfluxServer()
 
@@ -47,7 +45,7 @@ class INIParser(object):
         # Parse Sonarr options
         try:
             if not self.config.getboolean('global', 'sonarr_server_ids'):
-                exit('server_ids must be either false, or a comma-separated list of server ids')
+                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
             elif self.config.getint('global', 'sonarr_server_ids'):
                 self.sonarr_enabled = True
         except ValueError:
@@ -77,7 +75,7 @@ class INIParser(object):
         # Parse Radarr options
         try:
             if not self.config.getboolean('global', 'radarr_server_ids'):
-                exit('server_ids must be either false, or a comma-separated list of server ids')
+                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
             elif self.config.getint('global', 'radarr_server_ids'):
                 self.radarr_enabled = True
         except ValueError:
@@ -104,7 +102,7 @@ class INIParser(object):
         # Parse Tautulli options
         try:
             if not self.config.getboolean('global', 'tautulli_server_ids'):
-                exit('server_ids must be either false, or a comma-separated list of server ids')
+                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
             elif self.config.getint('global', 'tautulli_server_ids'):
                 self.tautulli_enabled = True
         except ValueError:
@@ -132,7 +130,7 @@ class INIParser(object):
         # Parse Ombi Options
         try:
             if not self.config.getboolean('global', 'ombi_server_ids'):
-                exit('server_ids must be either false, or a comma-separated list of server ids')
+                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
             elif self.config.getint('global', 'ombi_server_ids'):
                 self.ombi_enabled = True
         except ValueError:
