@@ -25,7 +25,48 @@ class TVShow(NamedTuple):
     id: int = None
 
 
+class Movie(NamedTuple):
+    title: str = None
+    alternativeTitles: list = None
+    secondaryYearSourceId: int = None
+    sortTitle: str = None
+    sizeOnDisk: int = None
+    status: str = None
+    overview: str = None
+    inCinemas: str = None
+    images: list = None
+    downloaded: bool = None
+    year: int = None
+    secondaryYear: str = None
+    hasFile: bool = None
+    youTubeTrailerId: str = None
+    studio: str = None
+    path: str = None
+    profileId: int = None
+    pathState: str = None
+    monitored: bool = None
+    minimumAvailability: str = None
+    isAvailable: bool = None
+    folderName: str = None
+    runtime: int = None
+    lastInfoSync: str = None
+    cleanTitle: str = None
+    imdbId: str = None
+    tmdbId: int = None
+    titleSlug: str = None
+    genres: list = None
+    tags: list = None
+    added: str = None
+    ratings: dict = None
+    movieFile: dict = None
+    qualityProfileId: int = None
+    physicalRelease: str = None
+    physicalReleaseNote: str = None
+    website: str = None
+    id: int = None
+
 class Queue(NamedTuple):
+    movie: dict = None
     series: dict = None
     episode: dict = None
     quality: dict = None
@@ -54,6 +95,15 @@ class SonarrServer(NamedTuple):
     queue: bool = False
     queue_run_seconds: int = 1
 
+class RadarrServer(NamedTuple):
+    id: int = None
+    url: str = None
+    api_key: str = None
+    verify_ssl: bool = False
+    queue: bool = False
+    queue_run_seconds: int = 1
+    get_missing: bool = False
+    get_missing_run_seconds: int = 30
 
 class Server(NamedTuple):
     id: int = None
@@ -82,193 +132,195 @@ class InfluxServer(NamedTuple):
 
 
 class TautulliStream(NamedTuple):
-    rating: str
-    transcode_width: str
-    labels: list
-    stream_bitrate: str
-    bandwidth: str
-    optimized_version: int
-    video_language: str
-    parent_rating_key: str
-    rating_key: str
-    platform_version: str
-    transcode_hw_decoding: int
-    thumb: str
-    title: str
-    video_codec_level: str
-    tagline: str
-    last_viewed_at: str
-    audio_sample_rate: str
-    user_rating: str
-    platform: str
-    collections: list
-    location: str
-    transcode_container: str
-    audio_channel_layout: str
-    local: str
-    stream_subtitle_format: str
-    stream_video_ref_frames: str
-    transcode_hw_encode_title: str
-    stream_container_decision: str
-    audience_rating: str
-    full_title: str
-    ip_address: str
-    subtitles: int
-    stream_subtitle_language: str
-    channel_stream: int
-    video_bitrate: str
-    is_allow_sync: int
-    stream_video_bitrate: str
-    summary: str
-    stream_audio_decision: str
-    aspect_ratio: str
-    audio_bitrate_mode: str
-    transcode_hw_decode_title: str
-    stream_audio_channel_layout: str
-    deleted_user: int
-    library_name: str
-    art: str
-    stream_video_resolution: str
-    video_profile: str
-    sort_title: str
-    stream_video_codec_level: str
-    stream_video_height: str
-    year: str
-    stream_duration: str
-    stream_audio_channels: str
-    video_language_code: str
-    transcode_key: str
-    transcode_throttled: int
-    container: str
-    stream_audio_bitrate: str
-    user: str
-    selected: int
-    product_version: str
-    subtitle_location: str
-    transcode_hw_requested: int
-    video_height: str
-    state: str
-    is_restricted: int
-    email: str
-    stream_container: str
-    transcode_speed: str
-    video_bit_depth: str
-    stream_audio_sample_rate: str
-    grandparent_title: str
-    studio: str
-    transcode_decision: str
-    video_width: str
-    bitrate: str
-    machine_id: str
-    originally_available_at: str
-    video_frame_rate: str
-    synced_version_profile: str
-    friendly_name: str
-    audio_profile: str
-    optimized_version_title: str
-    platform_name: str
-    stream_video_language: str
-    keep_history: int
-    stream_audio_codec: str
-    stream_video_codec: str
-    grandparent_thumb: str
-    synced_version: int
-    transcode_hw_decode: str
-    user_thumb: str
-    stream_video_width: str
-    height: str
-    stream_subtitle_decision: str
-    audio_codec: str
-    parent_title: str
-    guid: str
-    audio_language_code: str
-    transcode_video_codec: str
-    transcode_audio_codec: str
-    stream_video_decision: str
-    user_id: int
-    transcode_height: str
-    transcode_hw_full_pipeline: int
-    throttled: str
-    quality_profile: str
-    width: str
-    live: int
-    stream_subtitle_forced: int
-    media_type: str
-    video_resolution: str
-    stream_subtitle_location: str
-    do_notify: int
-    video_ref_frames: str
-    stream_subtitle_language_code: str
-    audio_channels: str
-    stream_audio_language_code: str
-    optimized_version_profile: str
-    relay: int
-    duration: str
-    rating_image: str
-    is_home_user: int
-    is_admin: int
-    ip_address_public: str
-    allow_guest: int
-    transcode_audio_channels: str
-    stream_audio_channel_layout_: str
-    media_index: str
-    stream_video_framerate: str
-    transcode_hw_encode: str
-    grandparent_rating_key: str
-    original_title: str
-    added_at: str
-    banner: str
-    bif_thumb: str
-    parent_media_index: str
-    live_uuid: str
-    audio_language: str
-    stream_audio_bitrate_mode: str
-    username: str
-    subtitle_decision: str
-    children_count: str
-    updated_at: str
-    player: str
-    subtitle_format: str
-    file: str
-    file_size: str
-    session_key: str
-    id: str
-    subtitle_container: str
-    genres: list
-    stream_video_language_code: str
-    indexes: int
-    video_decision: str
-    stream_audio_language: str
-    writers: list
-    actors: list
-    progress_percent: str
-    audio_decision: str
-    subtitle_forced: int
-    profile: str
-    product: str
-    view_offset: str
-    type: str
-    audience_rating_image: str
-    audio_bitrate: str
-    section_id: str
-    stream_subtitle_codec: str
-    subtitle_codec: str
-    video_codec: str
-    device: str
-    stream_video_bit_depth: str
-    video_framerate: str
-    transcode_hw_encoding: int
-    transcode_protocol: str
-    shared_libraries: list
-    stream_aspect_ratio: str
-    content_rating: str
-    session_id: str
-    directors: list
-    parent_thumb: str
-    subtitle_language_code: str
-    transcode_progress: int
-    subtitle_language: str
-    stream_subtitle_container: str
+    rating: str = None
+    transcode_width: str = None
+    labels: list = None
+    stream_bitrate: str = None
+    bandwidth: str = None
+    optimized_version: int = None
+    video_language: str = None
+    parent_rating_key: str = None
+    rating_key: str = None
+    platform_version: str = None
+    transcode_hw_decoding: int = None
+    thumb: str = None
+    title: str = None
+    video_codec_level: str = None
+    tagline: str = None
+    last_viewed_at: str = None
+    audio_sample_rate: str = None
+    user_rating: str = None
+    platform: str = None
+    collections: list = None
+    location: str = None
+    transcode_container: str = None
+    audio_channel_layout: str = None
+    local: str = None
+    stream_subtitle_format: str = None
+    stream_video_ref_frames: str = None
+    transcode_hw_encode_title: str = None
+    stream_container_decision: str = None
+    audience_rating: str = None
+    full_title: str = None
+    ip_address: str = None
+    subtitles: int = None
+    stream_subtitle_language: str = None
+    channel_stream: int = None
+    video_bitrate: str = None
+    is_allow_sync: int = None
+    stream_video_bitrate: str = None
+    summary: str = None
+    stream_audio_decision: str = None
+    aspect_ratio: str = None
+    audio_bitrate_mode: str = None
+    transcode_hw_decode_title: str = None
+    stream_audio_channel_layout: str = None
+    deleted_user: int = None
+    library_name: str = None
+    art: str = None
+    stream_video_resolution: str = None
+    video_profile: str = None
+    sort_title: str = None
+    stream_video_codec_level: str = None
+    stream_video_height: str = None
+    year: str = None
+    stream_duration: str = None
+    stream_audio_channels: str = None
+    video_language_code: str = None
+    transcode_key: str = None
+    transcode_throttled: int = None
+    container: str = None
+    stream_audio_bitrate: str = None
+    user: str = None
+    selected: int = None
+    product_version: str = None
+    subtitle_location: str = None
+    transcode_hw_requested: int = None
+    video_height: str = None
+    state: str = None
+    is_restricted: int = None
+    email: str = None
+    stream_container: str = None
+    transcode_speed: str = None
+    video_bit_depth: str = None
+    stream_audio_sample_rate: str = None
+    grandparent_title: str = None
+    studio: str = None
+    transcode_decision: str = None
+    video_width: str = None
+    bitrate: str = None
+    machine_id: str = None
+    originally_available_at: str = None
+    video_frame_rate: str = None
+    synced_version_profile: str = None
+    friendly_name: str = None
+    audio_profile: str = None
+    optimized_version_title: str = None
+    platform_name: str = None
+    stream_video_language: str = None
+    keep_history: int = None
+    stream_audio_codec: str = None
+    stream_video_codec: str = None
+    grandparent_thumb: str = None
+    synced_version: int = None
+    transcode_hw_decode: str = None
+    user_thumb: str = None
+    stream_video_width: str = None
+    height: str = None
+    stream_subtitle_decision: str = None
+    audio_codec: str = None
+    parent_title: str = None
+    guid: str = None
+    audio_language_code: str = None
+    transcode_video_codec: str = None
+    transcode_audio_codec: str = None
+    stream_video_decision: str = None
+    user_id: int = None
+    transcode_height: str = None
+    transcode_hw_full_pipeline: int = None
+    throttled: str = None
+    quality_profile: str = None
+    width: str = None
+    live: int = None
+    stream_subtitle_forced: int = None
+    media_type: str = None
+    video_resolution: str = None
+    stream_subtitle_location: str = None
+    do_notify: int = None
+    video_ref_frames: str = None
+    stream_subtitle_language_code: str = None
+    audio_channels: str = None
+    stream_audio_language_code: str = None
+    optimized_version_profile: str = None
+    relay: int = None
+    duration: str = None
+    rating_image: str = None
+    is_home_user: int = None
+    is_admin: int = None
+    ip_address_public: str = None
+    allow_guest: int = None
+    transcode_audio_channels: str = None
+    stream_audio_channel_layout_: str = None
+    media_index: str = None
+    stream_video_framerate: str = None
+    transcode_hw_encode: str = None
+    grandparent_rating_key: str = None
+    original_title: str = None
+    added_at: str = None
+    banner: str = None
+    bif_thumb: str = None
+    parent_media_index: str = None
+    live_uuid: str = None
+    audio_language: str = None
+    stream_audio_bitrate_mode: str = None
+    username: str = None
+    subtitle_decision: str = None
+    children_count: str = None
+    updated_at: str = None
+    player: str = None
+    subtitle_format: str = None
+    file: str = None
+    file_size: str = None
+    session_key: str = None
+    id: str = None
+    subtitle_container: str = None
+    genres: list = None
+    stream_video_language_code: str = None
+    indexes: int = None
+    video_decision: str = None
+    stream_audio_language: str = None
+    writers: list = None
+    actors: list = None
+    progress_percent: str = None
+    audio_decision: str = None
+    subtitle_forced: int = None
+    profile: str = None
+    product: str = None
+    view_offset: str = None
+    type: str = None
+    audience_rating_image: str = None
+    audio_bitrate: str = None
+    section_id: str = None
+    stream_subtitle_codec: str = None
+    subtitle_codec: str = None
+    video_codec: str = None
+    device: str = None
+    stream_video_bit_depth: str = None
+    video_framerate: str = None
+    transcode_hw_encoding: int = None
+    transcode_protocol: str = None
+    shared_libraries: list = None
+    stream_aspect_ratio: str = None
+    content_rating: str = None
+    session_id: str = None
+    directors: list = None
+    parent_thumb: str = None
+    subtitle_language_code: str = None
+    transcode_progress: int = None
+    subtitle_language: str = None
+    stream_subtitle_container: str = None
+    _cache_time: int = None
+
 
 def geoip_download():
     tar_dbfile = abspath(join('.', 'data', 'GeoLite2-City.tar.gz'))

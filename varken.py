@@ -5,6 +5,7 @@ from time import sleep
 from Varken.iniparser import INIParser
 from Varken.sonarr import SonarrAPI
 from Varken.tautulli import TautulliAPI
+from Varken.radarr import RadarrAPI
 
 
 def threaded(job, days=None):
@@ -36,6 +37,17 @@ if __name__ == "__main__":
                 schedule.every(server.get_activity_run_seconds).seconds.do(threaded, TAUTULLI.get_activity)
             if server.get_sessions:
                 schedule.every(server.get_sessions_run_seconds).seconds.do(threaded, TAUTULLI.get_sessions)
+
+    if CONFIG.radarr_enabled:
+        RADARR = RadarrAPI(CONFIG.radarr_servers, CONFIG.influx_server)
+
+        for server in CONFIG.radarr_servers:
+            if any([server.get_missing, server.get_missing_available]):
+                schedule.every(server.get_missing_run_seconds).seconds.do(threaded, RADARR.get_missing)
+            if server.queue:
+                schedule.every(server.queue_run_seconds).seconds.do(threaded, RADARR.get_queue)
+
+
 
     while True:
         schedule.run_pending()
