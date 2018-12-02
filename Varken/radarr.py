@@ -7,16 +7,12 @@ from Varken.helpers import Movie, Queue
 
 
 class RadarrAPI(object):
-    def __init__(self, server, influx_server):
+    def __init__(self, server, dbmanager):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
-        self.influx = InfluxDBClient(influx_server.url, influx_server.port, influx_server.username,
-                                     influx_server.password, 'plex2')
+        self.dbmanager = dbmanager
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
-
-    def influx_push(self, payload):
-        self.influx.write_points(payload)
 
     @logging
     def get_missing(self):
@@ -55,7 +51,7 @@ class RadarrAPI(object):
                 }
             )
 
-        self.influx_push(influx_payload)
+        self.dbmanager.write_points(influx_payload)
 
     @logging
     def get_queue(self):
@@ -100,4 +96,4 @@ class RadarrAPI(object):
                 }
             )
 
-        self.influx_push(influx_payload)
+        self.dbmanager.write_points(influx_payload)
