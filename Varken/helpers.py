@@ -1,12 +1,9 @@
-from sys import path
-from os.path import abspath, basename, join, dirname
-path.insert(0, abspath(join(dirname(__file__), '..', 'lib')))
-
+import os
 import time
 import tarfile
 import geoip2.database
-from os import stat, remove
 from typing import NamedTuple
+from os.path import abspath, join
 from urllib.request import urlretrieve
 
 
@@ -342,10 +339,9 @@ def geoip_download():
     tar = tarfile.open(tar_dbfile, "r:gz")
     for files in tar.getmembers():
         if 'GeoLite2-City.mmdb' in files.name:
-            files.name = basename(files.name)
+            files.name = os.path.basename(files.name)
             tar.extract(files, abspath(join('.', 'data')))
-    remove(tar_dbfile)
-
+    os.remove(tar_dbfile)
 
 def geo_lookup(ipaddress):
 
@@ -353,10 +349,10 @@ def geo_lookup(ipaddress):
     now = time.time()
 
     try:
-        dbinfo = stat(dbfile)
+        dbinfo = os.stat(dbfile)
         db_age = now - dbinfo.st_ctime
         if db_age > (35 * 86400):
-            remove(dbfile)
+            os.remove(dbfile)
             geoip_download()
     except FileNotFoundError:
         geoip_download()
