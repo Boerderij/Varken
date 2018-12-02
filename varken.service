@@ -4,6 +4,7 @@ After=network-online.target
 
 [Service]
 Type=simple
+User=root
 WorkingDirectory=/opt/Varken
 ExecStart=/usr/bin/python3 /opt/Varken/varken.py
 Restart=always
