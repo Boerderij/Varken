@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# Do not edit this script. Edit configuration.py
 import requests
 from influxdb import InfluxDBClient
 from datetime import datetime, timezone, date, timedelta

@@ -1,7 +1,7 @@
 import sys
 import configparser
 from os.path import abspath, join
-from Varken.helpers import Server, TautulliServer, SonarrServer, InfluxServer
+from Varken.helpers import Server, TautulliServer, SonarrServer, InfluxServer, RadarrServer
 
 
 class INIParser(object):
@@ -81,7 +81,7 @@ class INIParser(object):
         except ValueError:
             self.radarr_enabled = True
 
-        if self.sonarr_enabled:
+        if self.radarr_enabled:
             sids = self.config.get('global', 'radarr_server_ids').strip(' ').split(',')
 
             for server_id in sids:
@@ -90,8 +90,14 @@ class INIParser(object):
                 apikey = self.config.get(radarr_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(radarr_section, 'ssl') else 'http://'
                 verify_ssl = self.config.getboolean(radarr_section, 'verify_ssl')
+                queue = self.config.getboolean(radarr_section, 'queue')
+                queue_run_seconds = self.config.getint(radarr_section, 'queue_run_seconds')
+                get_missing = self.config.getboolean(radarr_section, 'get_missing')
+                get_missing_run_seconds = self.config.getint(radarr_section, 'get_missing_run_seconds')
 
-                self.radarr_servers.append(Server(server_id, scheme + url, apikey, verify_ssl))
+                server = RadarrServer(server_id, scheme + url, apikey, verify_ssl, queue, queue_run_seconds,
+                                      get_missing, get_missing_run_seconds)
+                self.radarr_servers.append(server)
 
         # Parse Tautulli options
         try:
