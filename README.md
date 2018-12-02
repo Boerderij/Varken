@@ -8,19 +8,18 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 
 <center><img width="800" src="https://i.imgur.com/av8e0HP.png"></center>
 
-## Quick Setup
-1. Install requirements `pip3 install -r requirements.txt`
-1. Make a copy of `varken.example.ini` to `varken.ini` in the `data` folder
-2. Make the appropriate changes to `varken.ini`
-1. Create your plex database in influx
-    ```sh
-    user@server: ~$ influx
-    > CREATE DATABASE plex
-    > quit
-    ```
-1. After completing the [getting started](http://docs.grafana.org/guides/getting_started/) portion of grafana, create your datasource for influxdb. At a minimum, you will need the plex database.
-1. Install `grafana-cli plugins install grafana-worldmap-panel`
-1. Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
+## Quick Setup (Varken Alpha)
+1. Clone the repository `git clone https://github.com/DirtyCajunRice/grafana-scripts.git /opt/Varken`
+1. Switch to the testing branch `cd /opt/Varken && git checkout refactor-project`
+1. Install requirements `/usr/bin/python -m pip install -r requirements.txt`
+2. Make a copy of `varken.example.ini` to `varken.ini` in the `data` folder
+   `cp data/varken.example.ini data/varken.ini`
+3. Make the appropriate changes to `varken.ini`
+   `nano data/varken.ini`
+4. Copy the systemd file `cp varken.service /etc/systemd/system/`
+5. After completing the [getting started](http://docs.grafana.org/guides/getting_started/) portion of grafana, create your datasource for influxdb. At a minimum, you will need the plex database.
+6. Install `grafana-cli plugins install grafana-worldmap-panel`
+7. Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
 
 
 
@@ -101,18 +100,3 @@ optional arguments:
 ### `tautulli.py`
 Gathers data from Tautulli and pushes it to influxdb. On initial run it will download the geoip2 DB and use it for locations.
 
-## Notes
-To run the python scripts crontab is currently leveraged. Examples:
-```sh
-### Modify paths as appropriate. python3 is located in different places for different users. (`which python3` will give you the path)
-### to edit your crontab entry, do not modify /var/spool/cron/crontabs/<user> directly, use `crontab -e`
-### Crontabs require an empty line at the end or they WILL not run. Make sure to have 2 lines to be safe
-### It is bad practice to run any cronjob more than once a minute. For timing help: https://crontab.guru/
-* * * * * /usr/bin/python3 /path-to-grafana-scripts/ombi.py --total
-* * * * * /usr/bin/python3 /path-to-grafana-scripts/tautulli.py
-* * * * * /usr/bin/python3 /path-to-grafana-scripts/radarr.py --queue
-* * * * * /usr/bin/python3 /path-to-grafana-scripts/sonarr.py --queue
-*/30 * * * * /usr/bin/python3 /path-to-grafana-scripts/radarr.py --missing
-*/30 * * * * /usr/bin/python3 /path-to-grafana-scripts/sonarr.py --missing
-*/30 * * * * /usr/bin/python3 /path-to-grafana-scripts/sickrage.py
-```

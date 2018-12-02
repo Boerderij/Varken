@@ -4,7 +4,7 @@ class DBManager(object):
     def __init__(self, server):
         self.server = server
         self.influx = InfluxDBClient(self.server.url, self.server.port, self.server.username, self.server.password,
-                                     'plex2')
+                                     'varken')
         databases = [db['name'] for db in self.influx.get_list_database()]
 
         if 'varken' not in databases:
