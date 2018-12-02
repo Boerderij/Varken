@@ -4,9 +4,9 @@ After=network-online.target
 
 [Service]
 Type=simple
-User=root
+User=username
 WorkingDirectory=/opt/Varken
-ExecStart=/usr/bin/python3 /opt/Varken/varken.py
+ExecStart=/opt/Varken/varken-venv/bin/python /opt/Varken/varken.py
 Restart=always
 
 [Install]
