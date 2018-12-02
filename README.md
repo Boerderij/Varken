@@ -1,7 +1,7 @@
 # Varken
-Dutch for PIG. PIG is an Acronym for PlexDB/Influx/Grafana
+Dutch for PIG. PIG is an Acronym for Plex/InfluxDB/Grafana
 
-Varken is a standalone commmandline utility that will aggregate date
+Varken is a standalone commmand-line utility that will aggregate date
 from the plex ecosystem into influxdb to be displayed in grafana
 
 Requirements /w install links: [Grafana](http://docs.grafana.org/installation/), [Python3](https://www.python.org/downloads/), [InfluxDB](https://docs.influxdata.com/influxdb/v1.5/introduction/installation/)
@@ -17,86 +17,8 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 3. Make the appropriate changes to `varken.ini`
    `nano data/varken.ini`
 4. Copy the systemd file `cp varken.service /etc/systemd/system/`
+5. start the service and enable it `systemctl start varken && systemctl enable varken`
 5. After completing the [getting started](http://docs.grafana.org/guides/getting_started/) portion of grafana, create your datasource for influxdb. At a minimum, you will need the plex database.
 6. Install `grafana-cli plugins install grafana-worldmap-panel`
-7. Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
-
-
-
-### Docker
-
-Repo is included in [si0972/grafana-scripts](https://github.com/si0972/grafana-scripts-docker)
-
-<details><summary>Example</summary>
-<p>
-
-```
-docker create \
-  --name=grafana-scripts \
-  -v <path to data>:/Scripts \
-  -e plex=true \
-  -e PGID=<gid> -e PUID=<uid>  \
-  si0972/grafana-scripts:latest
-```
-</p>
-</details>
-
-
-
-
-## Scripts
-### `sonarr.py`
-Gathers data from Sonarr and pushes it to influxdb.
-
-```
-Script to aid in data gathering from Sonarr
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --missing             Get all missing TV shows
-  --missing_days MISSING_DAYS
-                        Get missing TV shows in past X days
-  --upcoming            Get upcoming TV shows
-  --future FUTURE       Get TV shows on X days into the future. Includes today.
-                        i.e. --future 2 is Today and Tomorrow
-  --queue               Get TV shows in queue
-```
-- Notes:
-  - You cannot stack the arguments. ie. `sonarr.py --missing --queue`
-  - One argument must be supplied
-
-### `radarr.py`
-Gathers data from Radarr and pushes it to influxdb
-
-```
-Script to aid in data gathering from Radarr
-
-optional arguments:
-  -h, --help     show this help message and exit
-  --missing      Get missing movies
-  --missing_avl  Get missing available movies
-  --queue        Get movies in queue
-```
-- Notes:
-  - You cannot stack the arguments. ie. `radarr.py --missing --queue`
-  - One argument must be supplied
-  - `--missing_avl` Refers to how Radarr has determined if the movie should be available to download. The easy way to determine if the movie will appear on this list is if the movie has a <span style="color:red">RED "Missing"</span> tag associated with that movie. <span style="color:blue">BLUE "Missing"</span> tag refers to a movie that is missing but is not available for download yet. These tags are determined by your "Minimum Availability" settings for that movie.
-
-### `ombi.py`
-Gathers data from Ombi and pushes it to influxdb
-
-```
-Script to aid in data gathering from Ombi
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --total     Get the total count of all requests
-  --counts    Get the count of pending, approved, and available requests
-```
-- Notes:
-  - You cannot stack the arguments. ie. `ombi.py --total --counts`
-  - One argument must be supplied
-
-### `tautulli.py`
-Gathers data from Tautulli and pushes it to influxdb. On initial run it will download the geoip2 DB and use it for locations.
+7. TODO:: Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
 
