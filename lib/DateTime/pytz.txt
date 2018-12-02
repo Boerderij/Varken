@@ -1,0 +1,192 @@
+Pytz Support
+============
+
+Allows the pytz package to be used for time zone information. The
+advantage of using pytz is that it has a more complete and up to date
+time zone and daylight savings time database.
+
+Usage
+-----
+You don't have to do anything special to make it work.
+
+    >>> from DateTime import DateTime, Timezones
+    >>> d = DateTime('March 11, 2007 US/Eastern')
+
+Daylight Savings
+----------------
+In 2007 daylight savings time in the US was changed. The Energy Policy
+Act of 2005 mandates that DST will start on the second Sunday in March
+and end on the first Sunday in November.
+
+In 2007, the start and stop dates are March 11 and November 4,
+respectively. These dates are different from previous DST start and
+stop dates. In 2006, the dates were the first Sunday in April (April
+2, 2006) and the last Sunday in October (October 29, 2006).
+
+Let's make sure that DateTime can deal with this, since the primary
+motivation to use pytz for time zone information is the fact that it
+is kept up to date with daylight savings changes.
+
+    >>> DateTime('March 11, 2007 US/Eastern').tzoffset()
+    -18000
+    >>> DateTime('March 12, 2007 US/Eastern').tzoffset()
+    -14400
+    >>> DateTime('November 4, 2007 US/Eastern').tzoffset()
+    -14400
+    >>> DateTime('November 5, 2007 US/Eastern').tzoffset()
+    -18000
+
+Let's compare this to 2006.
+
+    >>> DateTime('April 2, 2006 US/Eastern').tzoffset()
+    -18000
+    >>> DateTime('April 3, 2006 US/Eastern').tzoffset()
+    -14400
+    >>> DateTime('October 29, 2006 US/Eastern').tzoffset()
+    -14400
+    >>> DateTime('October 30, 2006 US/Eastern').tzoffset()
+    -18000
+
+Time Zones
+---------
+DateTime can use pytz's large database of time zones. Here are some
+examples:
+
+    >>> d = DateTime('Pacific/Kwajalein')
+    >>> d = DateTime('America/Shiprock')
+    >>> d = DateTime('Africa/Ouagadougou')
+
+Of course pytz doesn't know about everything.
+
+    >>> from DateTime.interfaces import SyntaxError
+    >>> try:
+    ...     d = DateTime('July 21, 1969 Moon/Eastern')
+    ...     print('fail')
+    ... except SyntaxError:
+    ...     print('ok')
+    ok
+
+You can still use zone names that DateTime defines that aren't part of
+the pytz database.
+
+    >>> d = DateTime('eet')
+    >>> d = DateTime('iceland')
+
+These time zones use DateTimes database. So it's preferable to use the
+official time zone name.
+
+One trickiness is that DateTime supports some zone name
+abbreviations. Some of these map to pytz names, so these abbreviations
+will give you time zone date from pytz. Notable among abbreviations
+that work this way are 'est', 'cst', 'mst', and 'pst'.
+
+Let's verify that 'est' picks up the 2007 daylight savings time changes.
+
+    >>> DateTime('March 11, 2007 est').tzoffset()
+    -18000
+    >>> DateTime('March 12, 2007 est').tzoffset()
+    -14400
+    >>> DateTime('November 4, 2007 est').tzoffset()
+    -14400
+    >>> DateTime('November 5, 2007 est').tzoffset()
+    -18000
+
+You can get a list of time zones supported by calling the Timezones() function.
+
+    >>> Timezones() #doctest: +ELLIPSIS
+    ['Africa/Abidjan', 'Africa/Accra', 'Africa/Addis_Ababa', ...]
+
+Note that you can mess with this list without hurting things.
+
+    >>> t = Timezones()
+    >>> t.remove('US/Eastern')
+    >>> d = DateTime('US/Eastern')
+
+
+Internal Components
+-------------------
+
+The following are tests of internal components.
+
+Cache
+~~~~~
+
+The DateTime class uses a new time zone cache.
+
+    >>> from DateTime.DateTime import _TZINFO
+    >>> _TZINFO #doctest: +ELLIPSIS
+    <DateTime.pytz_support.PytzCache ...>
+
+The cache maps time zone names to time zone instances.
+
+    >>> cache = _TZINFO
+    >>> tz = cache['GMT+730']
+    >>> tz = cache['US/Mountain']
+
+The cache also must provide a few attributes for use by the DateTime
+class.
+
+The _zlst attribute is a list of supported time zone names.
+
+    >>> cache._zlst #doctest: +ELLIPSIS
+    ['Africa/Abidjan'... 'Africa/Accra'... 'IDLE'... 'NZST'... 'NZT'...]
+
+The _zidx attribute is a list of lower-case and possibly abbreviated
+time zone names that can be mapped to offical zone names.
+
+    >>> 'australia/yancowinna' in cache._zidx
+    True
+    >>> 'europe/isle_of_man' in cache._zidx
+    True
+    >>> 'gmt+0500' in cache._zidx
+    True
+
+Note that there are more items in _zidx than in _zlst since there are
+multiple names for some time zones.
+
+    >>> len(cache._zidx) > len(cache._zlst)
+    True
+
+Each entry in _zlst should also be present in _zidx in lower case form.
+
+    >>> for name in cache._zlst:
+    ...     if not name.lower() in cache._zidx:
+    ...         print("Error %s not in _zidx" % name.lower())
+
+The _zmap attribute maps the names in _zidx to official names in _zlst.
+
+    >>> cache._zmap['africa/abidjan']
+    'Africa/Abidjan'
+    >>> cache._zmap['gmt+1']
+    'GMT+1'
+    >>> cache._zmap['gmt+0100']
+    'GMT+1'
+    >>> cache._zmap['utc']
+    'UTC'
+
+Let's make sure that _zmap and _zidx agree.
+
+    >>> idx = set(cache._zidx)
+    >>> keys = set(cache._zmap.keys())
+    >>> idx == keys
+    True
+
+Timezone objects
+~~~~~~~~~~~~~~~~
+The timezone instances have only one public method info(). It returns
+a tuple of (offset, is_dst, name). The method takes a timestamp, which
+is used to determine dst information.
+
+    >>> t1 = DateTime('November 4, 00:00 2007 US/Mountain').timeTime()
+    >>> t2 = DateTime('November 4, 02:00 2007 US/Mountain').timeTime()
+    >>> tz.info(t1)
+    (-21600, 1, 'MDT')
+    >>> tz.info(t2)
+    (-25200, 0, 'MST')
+
+If you don't pass any arguments to info it provides daylight savings
+time information as of today.
+
+    >>> tz.info() in ((-21600, 1, 'MDT'), (-25200, 0, 'MST'))
+    True
+
