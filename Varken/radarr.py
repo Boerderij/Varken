@@ -12,16 +12,16 @@ class RadarrAPI(object):
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
+        self.session.headers = {'X-Api-Key': self.server.api_key}
 
     @logging
     def get_missing(self):
         endpoint = '/api/movie'
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
-
         missing = []
-        headers = {'X-Api-Key': self.server.api_key}
-        get = self.session.get(self.server.url + endpoint, headers=headers, verify=self.server.verify_ssl).json()
+
+        get = self.session.get(self.server.url + endpoint, verify=self.server.verify_ssl).json()
         movies = [Movie(**movie) for movie in get]
 
         for movie in movies:
@@ -59,10 +59,8 @@ class RadarrAPI(object):
         endpoint = '/api/queue'
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
-
         queue = []
-        headers = {'X-Api-Key': self.server.api_key}
-        get = self.session.get(self.server.url + endpoint, headers=headers, verify=self.server.verify_ssl).json()
+        get = self.session.get(self.server.url + endpoint, verify=self.server.verify_ssl).json()
         for movie in get:
             movie['movie'] = Movie(**movie['movie'])
         download_queue = [Queue(**movie) for movie in get]

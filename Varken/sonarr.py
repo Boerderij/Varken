@@ -14,6 +14,7 @@ class SonarrAPI(object):
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
+        self.session.headers = {'X-Api-Key': self.server.api_key}
         self.session.params = {'pageSize': 1000}
 
     @logging
@@ -24,10 +25,8 @@ class SonarrAPI(object):
         params = {'start': last_days, 'end': self.today}
         influx_payload = []
         missing = []
-        headers = {'X-Api-Key': self.server.api_key}
 
-        get = self.session.get(self.server.url + endpoint, params=params, headers=headers,
-                               verify=self.server.verify_ssl).json()
+        get = self.session.get(self.server.url + endpoint, params=params, verify=self.server.verify_ssl).json()
         # Iteratively create a list of TVShow Objects from response json
         tv_shows = [TVShow(**show) for show in get]
 
@@ -68,11 +67,9 @@ class SonarrAPI(object):
         future = str(date.today() + timedelta(days=self.server.future_days))
         influx_payload = []
         air_days = []
-        headers = {'X-Api-Key': self.server.api_key}
         params = {'start': self.today, 'end': future}
 
-        get = self.session.get(self.server.url + endpoint, params=params, headers=headers,
-                               verify=self.server.verify_ssl).json()
+        get = self.session.get(self.server.url + endpoint, params=params, verify=self.server.verify_ssl).json()
         tv_shows = [TVShow(**show) for show in get]
 
         for show in tv_shows:
@@ -113,9 +110,8 @@ class SonarrAPI(object):
         endpoint = '/api/queue'
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         queue = []
-        headers = {'X-Api-Key': self.server.api_key}
 
-        get = self.session.get(self.server.url + endpoint, headers=headers, verify=self.server.verify_ssl).json()
+        get = self.session.get(self.server.url + endpoint, verify=self.server.verify_ssl).json()
         download_queue = [Queue(**show) for show in get]
 
         for show in download_queue:

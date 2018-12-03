@@ -1,5 +1,6 @@
 from influxdb import InfluxDBClient
 
+
 class DBManager(object):
     def __init__(self, server):
         self.server = server

@@ -13,6 +13,7 @@ class TautulliAPI(object):
         self.dbmanager = dbmanager
         self.server = server
         self.session = Session()
+        self.session.params['apikey'] = self.server.api_key
         self.endpoint = '/api/v2'
 
     @logging
@@ -20,7 +21,6 @@ class TautulliAPI(object):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
         influx_payload = []
-        params['apikey'] = self.server.api_key
         g = self.session.get(self.server.url + self.endpoint, params=params, verify=self.server.verify_ssl)
         get = g.json()['response']['data']
 
@@ -51,7 +51,6 @@ class TautulliAPI(object):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
         influx_payload = []
-        params['apikey'] = self.server.api_key
         g = self.session.get(self.server.url + self.endpoint, params=params, verify=self.server.verify_ssl)
         get = g.json()['response']['data']['sessions']
         sessions = [TautulliStream(**session) for session in get]
