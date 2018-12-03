@@ -2,7 +2,7 @@ from requests import Session
 from datetime import datetime, timezone
 
 from Varken.logger import logging
-from Varken.helpers import Movie, Queue
+from Varken.helpers import Movie, Queue, hashit
 
 
 class RadarrAPI(object):
@@ -34,6 +34,7 @@ class RadarrAPI(object):
                 missing.append((movie_name, ma, movie.tmdbId))
 
         for title, ma, mid in missing:
+            hash_id = hashit('{}{}{}'.format(self.server.id, title, mid))
             influx_payload.append(
                 {
                     "measurement": "Radarr",
@@ -41,11 +42,12 @@ class RadarrAPI(object):
                         "Missing": True,
                         "Missing_Available": ma,
                         "tmdbId": mid,
-                        "server": self.server.id
+                        "server": self.server.id,
+                        "name": title
                     },
                     "time": self.now,
                     "fields": {
-                        "name": title
+                        "hash": hash_id
                     }
                 }
             )
@@ -77,20 +79,22 @@ class RadarrAPI(object):
                           protocol_id, queue_item.id))
 
         for movie, quality, protocol, protocol_id, qid in queue:
+            hash_id = hashit('{}{}{}'.format(self.server.id, movie, quality))
             influx_payload.append(
                 {
                     "measurement": "Radarr",
                     "tags": {
                         "type": "Queue",
                         "tmdbId": qid,
-                        "server": self.server.id
-                    },
-                    "time": self.now,
-                    "fields": {
+                        "server": self.server.id,
                         "name": movie,
                         "quality": quality,
                         "protocol": protocol,
                         "protocol_id": protocol_id
+                    },
+                    "time": self.now,
+                    "fields": {
+                        "hash": hash_id
                     }
                 }
             )
