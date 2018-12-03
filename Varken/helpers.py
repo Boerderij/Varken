@@ -1,6 +1,7 @@
 import os
 import time
 import tarfile
+import hashlib
 import geoip2.database
 from typing import NamedTuple
 from os.path import abspath, join
@@ -65,6 +66,7 @@ class Movie(NamedTuple):
     website: str = None
     id: int = None
 
+
 class Queue(NamedTuple):
     movie: dict = None
     series: dict = None
@@ -94,6 +96,7 @@ class SonarrServer(NamedTuple):
     future_days_run_seconds: int = 30
     queue: bool = False
     queue_run_seconds: int = 30
+
 
 class RadarrServer(NamedTuple):
     id: int = None
@@ -343,6 +346,7 @@ def geoip_download():
             tar.extract(files, abspath(join('.', 'data')))
     os.remove(tar_dbfile)
 
+
 def geo_lookup(ipaddress):
 
     dbfile = abspath(join('.', 'data', 'GeoLite2-City.mmdb'))
@@ -360,3 +364,10 @@ def geo_lookup(ipaddress):
     reader = geoip2.database.Reader(dbfile)
 
     return reader.city(ipaddress)
+
+
+def hashit(string):
+    encoded = string.encode()
+    hashed = hashlib.md5(encoded).hexdigest()
+
+    return hashed
