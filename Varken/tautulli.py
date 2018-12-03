@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 from requests import Session
+
 from Varken.helpers import TautulliStream, geo_lookup
 from Varken.logger import logging
 

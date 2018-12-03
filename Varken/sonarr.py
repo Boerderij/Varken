@@ -77,7 +77,11 @@ class SonarrAPI(object):
 
         for show in tv_shows:
             sxe = 'S{:0>2}E{:0>2}'.format(show.seasonNumber, show.episodeNumber)
-            air_days.append((show.series['title'], show.hasFile, sxe, show.title, show.airDate, show.id))
+            if show.hasFile:
+                downloaded = 1
+            else:
+                downloaded = 0
+            air_days.append((show.series['title'], downloaded, sxe, show.title, show.airDate, show.id))
 
         for series_title, dl_status, sxe, episode_title, air_date, sonarr_id in air_days:
             hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
