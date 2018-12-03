@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from Varken.helpers import OmbiRequestCounts
 from Varken.logger import logging
 
+
 class OmbiAPI(object):
     def __init__(self, server, dbmanager):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
