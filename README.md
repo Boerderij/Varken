@@ -36,7 +36,6 @@ Repo is included in [si0972/grafana-scripts-docker](https://github.com/si0972/gr
 docker create \
   --name=grafana-scripts \
   -v <path to data>:/Scripts \
-  -e plex=true \
   -e PGID=<gid> -e PUID=<uid>  \
   si0972/grafana-scripts:varken
 ```
