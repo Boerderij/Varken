@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 from requests import Session
 
-from Varken.helpers import TautulliStream, geo_lookup
+from Varken.helpers import TautulliStream, geo_lookup, hashit
 from Varken.logger import logging
 
 
@@ -103,6 +103,8 @@ class TautulliAPI(object):
             if session.platform == 'Roku':
                 product_version = session.product_version.split('-')[0]
 
+            hash_id = hashit('{}{}{}{}'.format(session.session_id, session.session_key, session.username,
+                                               session.full_title))
             influx_payload.append(
                 {
                     "measurement": "Tautulli",
@@ -135,8 +137,7 @@ class TautulliAPI(object):
                     },
                     "time": self.now,
                     "fields": {
-                        "session_id": session.session_id,
-                        "session_key": session.session_key
+                        "hash": hash_id
                     }
                 }
             )
