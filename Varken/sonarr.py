@@ -2,7 +2,7 @@ from requests import Session
 from datetime import datetime, timezone, date, timedelta
 
 from Varken.logger import logging
-from Varken.helpers import TVShow, Queue
+from Varken.helpers import TVShow, Queue, hashit
 
 
 class SonarrAPI(object):
@@ -38,20 +38,23 @@ class SonarrAPI(object):
                 missing.append((show.series['title'], sxe, show.airDate, show.title, show.id))
 
         for series_title, sxe, air_date, episode_title, sonarr_id in missing:
+            hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
                     "tags": {
                         "type": "Missing",
                         "sonarrId": sonarr_id,
-                        "server": self.server.id
-                    },
-                    "time": self.now,
-                    "fields": {
+                        "server": self.server.id,
                         "name": series_title,
                         "epname": episode_title,
                         "sxe": sxe,
                         "airs": air_date
+                    },
+                    "time": self.now,
+                    "fields": {
+                        "hash": hash_id
+
                     }
                 }
             )
@@ -77,21 +80,23 @@ class SonarrAPI(object):
             air_days.append((show.series['title'], show.hasFile, sxe, show.title, show.airDate, show.id))
 
         for series_title, dl_status, sxe, episode_title, air_date, sonarr_id in air_days:
+            hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
                     "tags": {
                         "type": "Future",
                         "sonarrId": sonarr_id,
-                        "server": self.server.id
-                    },
-                    "time": self.now,
-                    "fields": {
+                        "server": self.server.id,
                         "name": series_title,
                         "epname": episode_title,
                         "sxe": sxe,
                         "airs": air_date,
                         "downloaded": dl_status
+                    },
+                    "time": self.now,
+                    "fields": {
+                        "hash": hash_id
                     }
                 }
             )
@@ -120,22 +125,23 @@ class SonarrAPI(object):
                           protocol_id, sxe, show.id))
 
         for series_title, episode_title, protocol, protocol_id, sxe, sonarr_id in queue:
+            hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
                     "tags": {
                         "type": "Queue",
                         "sonarrId": sonarr_id,
-                        "server": self.server.id
-
-                    },
-                    "time": self.now,
-                    "fields": {
+                        "server": self.server.id,
                         "name": series_title,
                         "epname": episode_title,
                         "sxe": sxe,
                         "protocol": protocol,
                         "protocol_id": protocol_id
+                    },
+                    "time": self.now,
+                    "fields": {
+                        "hash": hash_id
                     }
                 }
             )
