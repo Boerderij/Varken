@@ -52,6 +52,9 @@ if __name__ == "__main__":
             if server.request_total_counts:
                 schedule.every(server.request_total_run_seconds).seconds.do(threaded, OMBI.get_total_requests)
 
+    # Run all on startup
+    schedule.run_all()
+
     while True:
         schedule.run_pending()
         sleep(1)
