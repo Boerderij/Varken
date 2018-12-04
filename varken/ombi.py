@@ -1,9 +1,9 @@
 from requests import Session, Request
 from datetime import datetime, timezone
 
-from Varken.logger import logging
-from Varken.helpers import connection_handler
-from Varken.structures import OmbiRequestCounts
+from varken.logger import logging
+from varken.helpers import connection_handler
+from varken.structures import OmbiRequestCounts
 
 
 class OmbiAPI(object):
