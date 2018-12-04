@@ -37,12 +37,17 @@
 [Unit]
 Description=Varken - A data collection and graphing tool
 After=network-online.target
+StartLimitInterval=200
+StartLimitBurst=3
 
 [Service]
 Type=simple
-User=username
+User=varken
+Group=varken
 WorkingDirectory=/opt/Varken
 ExecStart=/opt/Varken/varken-venv/bin/python /opt/Varken/varken.py
+Restart=always
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
