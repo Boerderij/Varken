@@ -45,7 +45,7 @@ Type=simple
 User=varken
 Group=varken
 WorkingDirectory=/opt/Varken
-ExecStart=/opt/Varken/varken-venv/bin/python /opt/Varken/varken.py
+ExecStart=/opt/Varken/varken-venv/bin/python /opt/Varken/Varken.py
 Restart=always
 RestartSec=30
 
