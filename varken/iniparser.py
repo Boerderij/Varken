@@ -31,7 +31,7 @@ class INIParser(object):
 
     def enable_check(self, server_ids):
         global_server_ids = self.config.get('global', server_ids)
-        if global_server_ids.lower() in ['false', 'no']:
+        if global_server_ids.lower() in ['false', 'no', '0']:
             return False
         else:
             return global_server_ids
