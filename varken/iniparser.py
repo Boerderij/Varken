@@ -29,6 +29,13 @@ class INIParser(object):
 
         self.parse_opts()
 
+    def enable_check(self, server_ids):
+        global_server_ids = self.config.get('global', server_ids)
+        if global_server_ids.lower() in ['false', 'no']:
+            return False
+        else:
+            return global_server_ids
+
     def read_file(self):
         file_path = join(self.data_folder, 'varken.ini')
         if exists(file_path):
@@ -48,13 +55,7 @@ class INIParser(object):
         self.influx_server = InfluxServer(url, port, username, password)
 
         # Parse Sonarr options
-        try:
-            if not self.config.getboolean('global', 'sonarr_server_ids'):
-                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
-            elif self.config.getint('global', 'sonarr_server_ids'):
-                self.sonarr_enabled = True
-        except ValueError:
-            self.sonarr_enabled = True
+        self.sonarr_enabled = self.enable_check('sonarr_server_ids')
 
         if self.sonarr_enabled:
             sids = self.config.get('global', 'sonarr_server_ids').strip(' ').split(',')
@@ -80,13 +81,7 @@ class INIParser(object):
                 self.sonarr_servers.append(server)
 
         # Parse Radarr options
-        try:
-            if not self.config.getboolean('global', 'radarr_server_ids'):
-                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
-            elif self.config.getint('global', 'radarr_server_ids'):
-                self.radarr_enabled = True
-        except ValueError:
-            self.radarr_enabled = True
+        self.radarr_enabled = self.enable_check('radarr_server_ids')
 
         if self.radarr_enabled:
             sids = self.config.get('global', 'radarr_server_ids').strip(' ').split(',')
@@ -109,13 +104,7 @@ class INIParser(object):
                 self.radarr_servers.append(server)
 
         # Parse Tautulli options
-        try:
-            if not self.config.getboolean('global', 'tautulli_server_ids'):
-                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
-            elif self.config.getint('global', 'tautulli_server_ids'):
-                self.tautulli_enabled = True
-        except ValueError:
-            self.tautulli_enabled = True
+        self.tautulli_enabled = self.enable_check('tautulli_server_ids')
 
         if self.tautulli_enabled:
             sids = self.config.get('global', 'tautulli_server_ids').strip(' ').split(',')
@@ -138,14 +127,8 @@ class INIParser(object):
                                         get_activity_run_seconds, get_sessions, get_sessions_run_seconds)
                 self.tautulli_servers.append(server)
 
-        # Parse Ombi Options
-        try:
-            if not self.config.getboolean('global', 'ombi_server_ids'):
-                sys.exit('server_ids must be either false, or a comma-separated list of server ids')
-            elif self.config.getint('global', 'ombi_server_ids'):
-                self.ombi_enabled = True
-        except ValueError:
-            self.ombi_enabled = True
+        # Parse Ombi options
+        self.ombi_enabled = self.enable_check('ombi_server_ids')
 
         if self.ombi_enabled:
             sids = self.config.get('global', 'ombi_server_ids').strip(' ').split(',')
