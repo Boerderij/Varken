@@ -2,7 +2,8 @@ from requests import Session, Request
 from datetime import datetime, timezone
 
 from Varken.logger import logging
-from Varken.helpers import Movie, Queue, hashit, connection_handler
+from Varken.helpers import hashit, connection_handler
+from Varken.structures import Movie, Queue
 
 
 class RadarrAPI(object):
