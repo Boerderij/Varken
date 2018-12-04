@@ -2,7 +2,8 @@ from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
 from Varken.logger import logging
-from Varken.helpers import TVShow, Queue, hashit, connection_handler
+from Varken.helpers import hashit, connection_handler
+from Varken.structures import Queue, TVShow
 
 
 class SonarrAPI(object):

@@ -3,7 +3,8 @@ from geoip2.errors import AddressNotFoundError
 from requests import Session, Request
 
 from Varken.logger import logging
-from Varken.helpers import TautulliStream, geo_lookup, hashit, connection_handler
+from Varken.helpers import geo_lookup, hashit, connection_handler
+from Varken.structures import TautulliStream
 
 
 class TautulliAPI(object):

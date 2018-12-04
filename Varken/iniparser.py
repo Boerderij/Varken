@@ -2,7 +2,7 @@ import sys
 import configparser
 from sys import exit
 from os.path import join, exists
-from Varken.helpers import OmbiServer, TautulliServer, SonarrServer, InfluxServer, RadarrServer
+from Varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer
 
 
 class INIParser(object):
