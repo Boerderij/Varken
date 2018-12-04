@@ -1,12 +1,14 @@
 import sys
 import configparser
-from os.path import abspath, dirname, join
+from sys import exit
+from os.path import join, exists
 from Varken.helpers import OmbiServer, TautulliServer, SonarrServer, InfluxServer, RadarrServer
 
 
 class INIParser(object):
-    def __init__(self):
+    def __init__(self, data_folder):
         self.config = configparser.ConfigParser()
+        self.data_folder = data_folder
 
         self.influx_server = InfluxServer()
 
@@ -28,9 +30,12 @@ class INIParser(object):
         self.parse_opts()
 
     def read_file(self):
-        file_path = abspath(join(dirname(__file__), '..', 'data', 'varken.ini'))
-        with open(file_path) as config_ini:
-            self.config.read_file(config_ini)
+        file_path = join(self.data_folder, 'varken.ini')
+        if exists(file_path):
+            with open(file_path) as config_ini:
+                self.config.read_file(config_ini)
+        else:
+            exit("You do not have a varken.ini file in {}".format(self.data_folder))
 
     def parse_opts(self):
         self.read_file()
