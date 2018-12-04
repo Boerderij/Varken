@@ -6,12 +6,12 @@ from os import access, R_OK
 from os.path import isdir, abspath, dirname, join
 from argparse import ArgumentParser, RawTextHelpFormatter
 
-from Varken.iniparser import INIParser
-from Varken.sonarr import SonarrAPI
-from Varken.tautulli import TautulliAPI
-from Varken.radarr import RadarrAPI
-from Varken.ombi import OmbiAPI
-from Varken.dbmanager import DBManager
+from varken.iniparser import INIParser
+from varken.sonarr import SonarrAPI
+from varken.tautulli import TautulliAPI
+from varken.radarr import RadarrAPI
+from varken.ombi import OmbiAPI
+from varken.dbmanager import DBManager
 
 def threaded(job):
     thread = threading.Thread(target=job)
@@ -19,7 +19,7 @@ def threaded(job):
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(prog='Varken',
+    parser = ArgumentParser(prog='varken',
                             description='Command-line utility to aggregate data from the plex ecosystem into InfluxDB',
                             formatter_class=RawTextHelpFormatter)
 
