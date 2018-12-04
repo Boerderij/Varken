@@ -1,8 +1,8 @@
-from requests import Session
+from requests import Session, Request
 from datetime import datetime, timezone
 
 from Varken.logger import logging
-from Varken.helpers import Movie, Queue, hashit
+from Varken.helpers import Movie, Queue, hashit, connection_handler
 
 
 class RadarrAPI(object):
@@ -21,7 +21,12 @@ class RadarrAPI(object):
         influx_payload = []
         missing = []
 
-        get = self.session.get(self.server.url + endpoint, verify=self.server.verify_ssl).json()
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
         movies = [Movie(**movie) for movie in get]
 
         for movie in movies:
@@ -60,7 +65,13 @@ class RadarrAPI(object):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
         queue = []
-        get = self.session.get(self.server.url + endpoint, verify=self.server.verify_ssl).json()
+
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
         for movie in get:
             movie['movie'] = Movie(**movie['movie'])
         download_queue = [Queue(**movie) for movie in get]

@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
-from requests import Session
+from requests import Session, Request
 
-from Varken.helpers import TautulliStream, geo_lookup, hashit
 from Varken.logger import logging
+from Varken.helpers import TautulliStream, geo_lookup, hashit, connection_handler
 
 
 class TautulliAPI(object):
@@ -21,8 +21,14 @@ class TautulliAPI(object):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
         influx_payload = []
-        g = self.session.get(self.server.url + self.endpoint, params=params, verify=self.server.verify_ssl)
-        get = g.json()['response']['data']
+
+        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
+        g = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not g:
+            return
+        else:
+            get = g['response']['data']
 
         influx_payload.append(
             {
@@ -51,8 +57,15 @@ class TautulliAPI(object):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
         influx_payload = []
-        g = self.session.get(self.server.url + self.endpoint, params=params, verify=self.server.verify_ssl)
-        get = g.json()['response']['data']['sessions']
+
+        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
+        g = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not g:
+            return
+        else:
+            get = g['response']['data']['sessions']
+
         sessions = [TautulliStream(**session) for session in get]
 
         for session in sessions:

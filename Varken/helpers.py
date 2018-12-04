@@ -4,7 +4,9 @@ import tarfile
 import hashlib
 import geoip2.database
 from typing import NamedTuple
+from json.decoder import JSONDecodeError
 from os.path import abspath, join
+from requests.exceptions import InvalidSchema, SSLError
 from urllib.request import urlretrieve
 
 
@@ -371,3 +373,31 @@ def hashit(string):
     hashed = hashlib.md5(encoded).hexdigest()
 
     return hashed
+
+
+def connection_handler(session, request, verify):
+    s = session
+    r = request
+    v = verify
+    return_json = False
+
+    try:
+        get = s.send(r, verify=v)
+        if get.status_code == 401:
+            print("Your api key is incorrect for {}".format(r.url))
+        elif get.status_code == 404:
+            print("This url doesnt even resolve: {}".format(r.url))
+        elif get.status_code == 200:
+            try:
+                return_json = get.json()
+            except JSONDecodeError:
+                print("No JSON response... BORKED! Let us know in discord")
+
+    except InvalidSchema:
+        print("You added http(s):// in the config file. Don't do that.")
+
+    except SSLError as e:
+        print("Either your host is unreachable or you have an ssl issue.")
+        print("The issue was: {}".format(e))
+
+    return return_json

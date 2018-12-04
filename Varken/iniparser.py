@@ -60,6 +60,8 @@ class INIParser(object):
                 apikey = self.config.get(sonarr_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(sonarr_section, 'ssl') else 'http://'
                 verify_ssl = self.config.getboolean(sonarr_section, 'verify_ssl')
+                if scheme != 'https://':
+                    verify_ssl = False
                 queue = self.config.getboolean(sonarr_section, 'queue')
                 missing_days = self.config.getint(sonarr_section, 'missing_days')
                 future_days = self.config.getint(sonarr_section, 'future_days')
@@ -90,6 +92,8 @@ class INIParser(object):
                 apikey = self.config.get(radarr_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(radarr_section, 'ssl') else 'http://'
                 verify_ssl = self.config.getboolean(radarr_section, 'verify_ssl')
+                if scheme != 'https://':
+                    verify_ssl = False
                 queue = self.config.getboolean(radarr_section, 'queue')
                 queue_run_seconds = self.config.getint(radarr_section, 'queue_run_seconds')
                 get_missing = self.config.getboolean(radarr_section, 'get_missing')
@@ -118,6 +122,8 @@ class INIParser(object):
                 apikey = self.config.get(tautulli_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(tautulli_section, 'ssl') else 'http://'
                 verify_ssl = self.config.getboolean(tautulli_section, 'verify_ssl')
+                if scheme != 'https://':
+                    verify_ssl = False
                 get_activity = self.config.getboolean(tautulli_section, 'get_activity')
                 get_activity_run_seconds = self.config.getint(tautulli_section, 'get_activity_run_seconds')
                 get_sessions = self.config.getboolean(tautulli_section, 'get_sessions')
@@ -144,6 +150,8 @@ class INIParser(object):
                 apikey = self.config.get(ombi_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(ombi_section, 'ssl') else 'http://'
                 verify_ssl = self.config.getboolean(ombi_section, 'verify_ssl')
+                if scheme != 'https://':
+                    verify_ssl = False
                 request_type_counts = self.config.getboolean(ombi_section, 'get_request_type_counts')
                 request_type_run_seconds = self.config.getint(ombi_section, 'request_type_run_seconds')
                 request_total_counts = self.config.getboolean(ombi_section, 'get_request_total_counts')
@@ -161,6 +169,8 @@ class INIParser(object):
             password = self.config.get('asa', 'password')
             scheme = 'https://' if self.config.getboolean('asa', 'ssl') else 'http://'
             verify_ssl = self.config.getboolean('asa', 'verify_ssl')
+            if scheme != 'https://':
+                verify_ssl = False
             db_name = self.config.get('asa', 'influx_db')
 
             self.asa = (scheme + url, username, password, verify_ssl, db_name)
