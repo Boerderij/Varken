@@ -11,3 +11,4 @@ GeoLite2-City.tar.gz
 data/varken.ini
 .idea/
 Legacy/configuration.py
+varken-venv/
