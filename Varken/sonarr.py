@@ -1,8 +1,8 @@
-from requests import Session
+from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
 from Varken.logger import logging
-from Varken.helpers import TVShow, Queue, hashit
+from Varken.helpers import TVShow, Queue, hashit, connection_handler
 
 
 class SonarrAPI(object):
@@ -26,7 +26,12 @@ class SonarrAPI(object):
         influx_payload = []
         missing = []
 
-        get = self.session.get(self.server.url + endpoint, params=params, verify=self.server.verify_ssl).json()
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
         # Iteratively create a list of TVShow Objects from response json
         tv_shows = [TVShow(**show) for show in get]
 
@@ -69,7 +74,12 @@ class SonarrAPI(object):
         air_days = []
         params = {'start': self.today, 'end': future}
 
-        get = self.session.get(self.server.url + endpoint, params=params, verify=self.server.verify_ssl).json()
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
         tv_shows = [TVShow(**show) for show in get]
 
         for show in tv_shows:
@@ -111,7 +121,12 @@ class SonarrAPI(object):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         queue = []
 
-        get = self.session.get(self.server.url + endpoint, verify=self.server.verify_ssl).json()
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
         download_queue = [Queue(**show) for show in get]
 
         for show in download_queue:

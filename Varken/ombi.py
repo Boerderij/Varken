@@ -1,8 +1,8 @@
-from requests import Session
+from requests import Session, Request
 from datetime import datetime, timezone
 
-from Varken.helpers import OmbiRequestCounts
 from Varken.logger import logging
+from Varken.helpers import OmbiRequestCounts, connection_handler
 
 
 class OmbiAPI(object):
@@ -19,8 +19,14 @@ class OmbiAPI(object):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         tv_endpoint = '/api/v1/Request/tv'
         movie_endpoint = "/api/v1/Request/movie"
-        get_tv = self.session.get(self.server.url + tv_endpoint, verify=self.server.verify_ssl).json()
-        get_movie = self.session.get(self.server.url + movie_endpoint, verify=self.server.verify_ssl).json()
+
+        tv_req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint))
+        movie_req = self.session.prepare_request(Request('GET', self.server.url + movie_endpoint))
+        get_tv = connection_handler(self.session, tv_req, self.server.verify_ssl)
+        get_movie = connection_handler(self.session, movie_req, self.server.verify_ssl)
+
+        if not all([get_tv, get_movie]):
+            return
 
         movie_requests = len(get_movie)
         tv_requests = len(get_tv)
@@ -46,7 +52,13 @@ class OmbiAPI(object):
     def get_request_counts(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/Request/count'
-        get = self.session.get(self.server.url + endpoint, verify=self.server.verify_ssl).json()
+
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
         requests = OmbiRequestCounts(**get)
         influx_payload = [
             {
