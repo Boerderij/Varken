@@ -1,8 +1,11 @@
 import sys
 import configparser
+import logging
 from sys import exit
 from os.path import join, exists
 from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer
+
+logger = logging.getLogger()
 
 
 class INIParser(object):
@@ -29,11 +32,13 @@ class INIParser(object):
 
         self.parse_opts()
 
-    def enable_check(self, server_ids):
-        global_server_ids = self.config.get('global', server_ids)
+    def enable_check(self, type=None):
+        global_server_ids = self.config.get('global', type)
         if global_server_ids.lower() in ['false', 'no', '0']:
+            logger.info('{} disabled.'.format(type.upper()))
             return False
         else:
+            logger.info('{} : ({})'.format(type.upper(), global_server_ids))
             return global_server_ids
 
     def read_file(self):
