@@ -35,7 +35,7 @@
 #       graphical.target  equates to runlevel 5 (multi-user X11 graphical mode)
 
 [Unit]
-Description=Varken - A data collection and graphing tool
+Description=Varken - Command-line utility to aggregate data from the Plex ecosystem into InfluxDB.
 After=network-online.target
 StartLimitInterval=200
 StartLimitBurst=3
