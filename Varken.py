@@ -96,6 +96,9 @@ if __name__ == "__main__":
                 schedule.every(server.request_total_run_seconds).seconds.do(threaded, OMBI.get_total_requests)
 
     # Run all on startup
+    SERVICES_ENABLED = [CONFIG.ombi_enabled, CONFIG.radarr_enabled, CONFIG.tautulli_enabled, CONFIG.sonarr_enabled]
+    if not [enabled for enabled in SERVICES_ENABLED if enabled]:
+        exit("All services disabled. Exiting")
     schedule.run_all()
 
     while True:
