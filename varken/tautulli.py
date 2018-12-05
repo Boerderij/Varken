@@ -1,4 +1,5 @@
 import logging
+
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 from requests import Session, Request
