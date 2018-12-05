@@ -14,12 +14,13 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 ## Quick Setup (Varken Alpha)
 1. Clone the repository `sudo git clone https://github.com/Boerderij/Varken.git /opt/Varken`
 1. Follow the systemd install instructions located in `varken.systemd`
-1. Create venv in project `/usr/bin/python3 -m venv varken-venv`
+1. Create venv in project `cd /opt/Varken && /usr/bin/python3 -m venv varken-venv`
 1. Install requirements `/opt/Varken/varken-venv/bin/python -m pip install -r requirements.txt`
 1. Make a copy of `varken.example.ini` to `varken.ini` in the `data` folder
    `cp /opt/Varken/data/varken.example.ini /opt/Varken/data/varken.ini`
 1. Make the appropriate changes to `varken.ini`
    ie.`nano /opt/Varken/data/varken.ini`
+1. Make sure all the files have the appropriate permissions `sudo chown varken:varken -R /opt/Varken`
 1. After completing the [getting started](http://docs.grafana.org/guides/getting_started/) portion of grafana, create your datasource for influxdb.
 1. Install `grafana-cli plugins install grafana-worldmap-panel`
 1. TODO:: Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.

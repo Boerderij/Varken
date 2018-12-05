@@ -36,7 +36,7 @@ class INIParser(object):
         t = server_type
         global_server_ids = self.config.get('global', t)
         if global_server_ids.lower() in ['false', 'no', '0']:
-            logger.info('{} disabled.'.format(t.upper()))
+            logger.info('%s disabled.', t.upper())
             return False
         else:
             sids = self.clean_check(global_server_ids, t)
@@ -54,10 +54,10 @@ class INIParser(object):
                 logger.error("{} is not a valid server id number".format(sid))
 
         if valid_sids:
-            logger.info('{} : {}'.format(t.upper(), valid_sids))
+            logger.info('%s : %s', t.upper(), valid_sids)
             return valid_sids
         else:
-            logger.error("No valid {}".format(t.upper()))
+            logger.error('No valid %s', t.upper())
             return False
 
     def read_file(self):
@@ -66,7 +66,7 @@ class INIParser(object):
             with open(file_path) as config_ini:
                 self.config.read_file(config_ini)
         else:
-            exit("You do not have a varken.ini file in {}".format(self.data_folder))
+            exit('Config file missing (varken.ini) in {}'.format(self.data_folder))
 
     def parse_opts(self):
         self.read_file()
