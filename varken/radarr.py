@@ -1,7 +1,6 @@
 from requests import Session, Request
 from datetime import datetime, timezone
 
-from varken.logger import logging
 from varken.helpers import hashit, connection_handler
 from varken.structures import Movie, Queue
 
@@ -15,7 +14,6 @@ class RadarrAPI(object):
         self.session = Session()
         self.session.headers = {'X-Api-Key': self.server.api_key}
 
-    @logging
     def get_missing(self):
         endpoint = '/api/movie'
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -60,7 +58,6 @@ class RadarrAPI(object):
 
         self.dbmanager.write_points(influx_payload)
 
-    @logging
     def get_queue(self):
         endpoint = '/api/queue'
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
