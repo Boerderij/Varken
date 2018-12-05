@@ -2,7 +2,7 @@ import logging
 
 from influxdb import InfluxDBClient
 
-logger = logging.getLogger('Varken')
+logger = logging.getLogger('varken')
 
 class DBManager(object):
     def __init__(self, server):
@@ -16,5 +16,6 @@ class DBManager(object):
             self.influx.create_retention_policy('varken 30d/1h', '30d', '1', 'varken', False, '1h')
 
     def write_points(self, data):
-        logger.debug('Writing Data to InfluxDB {}'.format(data))
-        self.influx.write_points(data)
+        d = data
+        logger.debug('Writing Data to InfluxDB {}'.format(d))
+        self.influx.write_points(d)

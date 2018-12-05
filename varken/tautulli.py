@@ -19,6 +19,9 @@ class TautulliAPI(object):
         self.session.params['apikey'] = self.server.api_key
         self.endpoint = '/api/v2'
 
+    def __repr__(self):
+        return "<tautulli-{}>".format(self.server.id)
+
     def get_activity(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}

@@ -32,14 +32,33 @@ class INIParser(object):
 
         self.parse_opts()
 
-    def enable_check(self, type=None):
-        global_server_ids = self.config.get('global', type)
+    def enable_check(self, server_type=None):
+        t = server_type
+        global_server_ids = self.config.get('global', t)
         if global_server_ids.lower() in ['false', 'no', '0']:
-            logger.info('{} disabled.'.format(type.upper()))
+            logger.info('{} disabled.'.format(t.upper()))
             return False
         else:
-            logger.info('{} : ({})'.format(type.upper(), global_server_ids))
-            return global_server_ids
+            sids = self.clean_check(global_server_ids, t)
+            return sids
+
+    def clean_check(self, server_id_list, server_type=None):
+        t = server_type
+        sid_list = server_id_list
+        cleaned_list = sid_list.replace(' ', '').split(',')
+        valid_sids = []
+        for sid in cleaned_list:
+            try:
+                valid_sids.append(int(sid))
+            except ValueError:
+                logger.error("{} is not a valid server id number".format(sid))
+
+        if valid_sids:
+            logger.info('{} : {}'.format(t.upper(), valid_sids))
+            return valid_sids
+        else:
+            logger.error("No valid {}".format(t.upper()))
+            return False
 
     def read_file(self):
         file_path = join(self.data_folder, 'varken.ini')

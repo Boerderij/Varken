@@ -14,6 +14,9 @@ class RadarrAPI(object):
         self.session = Session()
         self.session.headers = {'X-Api-Key': self.server.api_key}
 
+    def __repr__(self):
+        return "<radarr-{}>".format(self.server.id)
+
     def get_missing(self):
         endpoint = '/api/movie'
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -29,8 +32,8 @@ class RadarrAPI(object):
         movies = [Movie(**movie) for movie in get]
 
         for movie in movies:
-            if self.server.get_missing:
-                if not movie.downloaded and movie.isAvailable:
+            if not movie.downloaded:
+                if movie.isAvailable:
                     ma = True
                 else:
                     ma = False
