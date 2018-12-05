@@ -3,17 +3,20 @@ import time
 import tarfile
 import hashlib
 import geoip2.database
+import logging
+
 from json.decoder import JSONDecodeError
 from os.path import abspath, join
 from requests.exceptions import InvalidSchema, SSLError
 from urllib.request import urlretrieve
 
+logger = logging.getLogger('Varken')
 
 def geoip_download():
     tar_dbfile = abspath(join('.', 'data', 'GeoLite2-City.tar.gz'))
     url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
     urlretrieve(url, tar_dbfile)
-    tar = tarfile.open(tar_dbfile, "r:gz")
+    tar = tarfile.open(tar_dbfile, 'r:gz')
     for files in tar.getmembers():
         if 'GeoLite2-City.mmdb' in files.name:
             files.name = os.path.basename(files.name)
@@ -56,20 +59,20 @@ def connection_handler(session, request, verify):
     try:
         get = s.send(r, verify=v)
         if get.status_code == 401:
-            print("Your api key is incorrect for {}".format(r.url))
+            logger.info('Your api key is incorrect for {}'.format(r.url))
         elif get.status_code == 404:
-            print("This url doesnt even resolve: {}".format(r.url))
+            logger.info('This url doesnt even resolve: {}'.format(r.url))
         elif get.status_code == 200:
             try:
                 return_json = get.json()
             except JSONDecodeError:
-                print("No JSON response... BORKED! Let us know in discord")
+                logger.info('No JSON response... BORKED! Let us know in discord')
 
     except InvalidSchema:
-        print("You added http(s):// in the config file. Don't do that.")
+        logger.info('You added http(s):// in the config file. Don't do that.')
 
     except SSLError as e:
-        print("Either your host is unreachable or you have an ssl issue.")
-        print("The issue was: {}".format(e))
+        logger.info('Either your host is unreachable or you have an ssl issue.')
+        logger.info('The issue was: {}'.format(e))
 
     return return_json

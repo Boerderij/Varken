@@ -1,7 +1,6 @@
 from requests import Session, Request
 from datetime import datetime, timezone
 
-from varken.logger import logging
 from varken.helpers import connection_handler
 from varken.structures import OmbiRequestCounts
 
@@ -15,7 +14,6 @@ class OmbiAPI(object):
         self.session = Session()
         self.session.headers = {'Apikey': self.server.api_key}
 
-    @logging
     def get_total_requests(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         tv_endpoint = '/api/v1/Request/tv'
@@ -49,7 +47,6 @@ class OmbiAPI(object):
 
         self.dbmanager.write_points(influx_payload)
 
-    @logging
     def get_request_counts(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/Request/count'

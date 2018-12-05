@@ -1,10 +1,8 @@
 from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
-from varken.logger import logging
 from varken.helpers import hashit, connection_handler
 from varken.structures import Queue, TVShow
-
 
 class SonarrAPI(object):
     def __init__(self, server, dbmanager):
@@ -18,7 +16,6 @@ class SonarrAPI(object):
         self.session.headers = {'X-Api-Key': self.server.api_key}
         self.session.params = {'pageSize': 1000}
 
-    @logging
     def get_missing(self):
         endpoint = '/api/calendar'
         last_days = str(date.today() + timedelta(days=-self.server.missing_days))
@@ -66,7 +63,6 @@ class SonarrAPI(object):
 
         self.dbmanager.write_points(influx_payload)
 
-    @logging
     def get_future(self):
         endpoint = '/api/calendar/'
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -115,7 +111,6 @@ class SonarrAPI(object):
 
         self.dbmanager.write_points(influx_payload)
 
-    @logging
     def get_queue(self):
         influx_payload = []
         endpoint = '/api/queue'

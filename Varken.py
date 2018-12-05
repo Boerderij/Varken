@@ -12,6 +12,7 @@ from varken.tautulli import TautulliAPI
 from varken.radarr import RadarrAPI
 from varken.ombi import OmbiAPI
 from varken.dbmanager import DBManager
+from varken.varkenlogger import VarkenLogger
 
 def threaded(job):
     thread = threading.Thread(target=job)
@@ -19,6 +20,9 @@ def threaded(job):
 
 
 if __name__ == "__main__":
+    vl = VarkenLogger()
+    vl.logger.info('Starting Varken...')
+
     parser = ArgumentParser(prog='varken',
                             description='Command-line utility to aggregate data from the plex ecosystem into InfluxDB',
                             formatter_class=RawTextHelpFormatter)
@@ -84,4 +88,3 @@ if __name__ == "__main__":
     while True:
         schedule.run_pending()
         sleep(1)
-
