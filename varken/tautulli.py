@@ -16,7 +16,7 @@ class TautulliAPI(object):
         self.dbmanager = dbmanager
         self.server = server
         self.session = Session()
-        self.session.params['apikey'] = self.server.api_key
+        self.session.params = {'apikey': self.server.api_key, 'cmd': 'get_activity'}
         self.endpoint = '/api/v2'
 
     def __repr__(self):
@@ -24,53 +24,16 @@ class TautulliAPI(object):
 
     def get_activity(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
-        params = {'cmd': 'get_activity'}
         influx_payload = []
 
-        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
+        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint))
         g = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not g:
             return
-        else:
-            get = g['response']['data']
 
-        influx_payload.append(
-            {
-                "measurement": "Tautulli",
-                "tags": {
-                    "type": "current_stream_stats",
-                    "server": self.server.id
-                },
-                "time": self.now,
-                "fields": {
-                    "stream_count": int(get['stream_count']),
-                    "total_bandwidth": int(get['total_bandwidth']),
-                    "wan_bandwidth": int(get['wan_bandwidth']),
-                    "lan_bandwidth": int(get['lan_bandwidth']),
-                    "transcode_streams": int(get['stream_count_transcode']),
-                    "direct_play_streams": int(get['stream_count_direct_play']),
-                    "direct_streams": int(get['stream_count_direct_stream'])
-                }
-            }
-        )
-
-        self.dbmanager.write_points(influx_payload)
-
-    def get_sessions(self):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
-        params = {'cmd': 'get_activity'}
-        influx_payload = []
-
-        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
-        g = connection_handler(self.session, req, self.server.verify_ssl)
-
-        if not g:
-            return
-        else:
-            get = g['response']['data']['sessions']
-
-        sessions = [TautulliStream(**session) for session in get]
+        get = g['response']['data']
+        sessions = [TautulliStream(**session) for session in get['sessions']]
 
         for session in sessions:
             try:
@@ -157,5 +120,25 @@ class TautulliAPI(object):
                     }
                 }
             )
+
+        influx_payload.append(
+            {
+                "measurement": "Tautulli",
+                "tags": {
+                    "type": "current_stream_stats",
+                    "server": self.server.id
+                },
+                "time": self.now,
+                "fields": {
+                    "stream_count": int(get['stream_count']),
+                    "total_bandwidth": int(get['total_bandwidth']),
+                    "wan_bandwidth": int(get['wan_bandwidth']),
+                    "lan_bandwidth": int(get['lan_bandwidth']),
+                    "transcode_streams": int(get['stream_count_transcode']),
+                    "direct_play_streams": int(get['stream_count_direct_play']),
+                    "direct_streams": int(get['stream_count_direct_stream'])
+                }
+            }
+        )
 
         self.dbmanager.write_points(influx_payload)

@@ -62,8 +62,6 @@ class TautulliServer(NamedTuple):
     verify_ssl: bool = None
     get_activity: bool = False
     get_activity_run_seconds: int = 30
-    get_sessions: bool = False
-    get_sessions_run_seconds: int = 30
 
 
 class InfluxServer(NamedTuple):

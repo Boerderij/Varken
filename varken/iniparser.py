@@ -144,11 +144,9 @@ class INIParser(object):
                     verify_ssl = False
                 get_activity = self.config.getboolean(tautulli_section, 'get_activity')
                 get_activity_run_seconds = self.config.getint(tautulli_section, 'get_activity_run_seconds')
-                get_sessions = self.config.getboolean(tautulli_section, 'get_sessions')
-                get_sessions_run_seconds = self.config.getint(tautulli_section, 'get_sessions_run_seconds')
 
                 server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl, get_activity,
-                                        get_activity_run_seconds, get_sessions, get_sessions_run_seconds)
+                                        get_activity_run_seconds)
                 self.tautulli_servers.append(server)
 
         # Parse Ombi options

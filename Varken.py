@@ -76,8 +76,6 @@ if __name__ == "__main__":
             TAUTULLI = TautulliAPI(server, DBMANAGER)
             if server.get_activity:
                 schedule.every(server.get_activity_run_seconds).seconds.do(threaded, TAUTULLI.get_activity)
-            if server.get_sessions:
-                schedule.every(server.get_sessions_run_seconds).seconds.do(threaded, TAUTULLI.get_sessions)
 
     if CONFIG.radarr_enabled:
         for server in CONFIG.radarr_servers:
