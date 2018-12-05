@@ -69,7 +69,7 @@ def connection_handler(session, request, verify):
                 logger.info('No JSON response... BORKED! Let us know in discord')
 
     except InvalidSchema:
-        logger.info('You added http(s):// in the config file. Don't do that.')
+        logger.info('You added http(s):// in the config file. Don\'t do that.')
 
     except SSLError as e:
         logger.info('Either your host is unreachable or you have an ssl issue.')
