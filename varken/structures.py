@@ -265,6 +265,7 @@ class TautulliStream(NamedTuple):
     transcode_progress: int = None
     subtitle_language: str = None
     stream_subtitle_container: str = None
+    sub_type: str = None
 
 
 class TVShow(NamedTuple):
