@@ -4,13 +4,14 @@ import tarfile
 import hashlib
 import geoip2.database
 import logging
-
+from functools import update_wrapper
 from json.decoder import JSONDecodeError
 from os.path import abspath, join
 from requests.exceptions import InvalidSchema, SSLError
 from urllib.request import urlretrieve
 
-logger = logging.getLogger('Varken')
+logger = logging.getLogger('varken')
+
 
 def geoip_download():
     tar_dbfile = abspath(join('.', 'data', 'GeoLite2-City.tar.gz'))

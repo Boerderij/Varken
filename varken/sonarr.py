@@ -16,6 +16,9 @@ class SonarrAPI(object):
         self.session.headers = {'X-Api-Key': self.server.api_key}
         self.session.params = {'pageSize': 1000}
 
+    def __repr__(self):
+        return "<sonarr-{}>".format(self.server.id)
+
     def get_missing(self):
         endpoint = '/api/calendar'
         last_days = str(date.today() + timedelta(days=-self.server.missing_days))

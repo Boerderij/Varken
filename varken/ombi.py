@@ -14,6 +14,9 @@ class OmbiAPI(object):
         self.session = Session()
         self.session.headers = {'Apikey': self.server.api_key}
 
+    def __repr__(self):
+        return "<ombi-{}>".format(self.server.id)
+
     def get_total_requests(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         tv_endpoint = '/api/v1/Request/tv'
