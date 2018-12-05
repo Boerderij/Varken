@@ -34,7 +34,11 @@ class TautulliAPI(object):
             return
 
         get = g['response']['data']
-        sessions = [TautulliStream(**session) for session in get['sessions']]
+        try:
+            sessions = [TautulliStream(**session) for session in get['sessions']]
+        except TypeError as e:
+            logger.error('TypeError has occured : %s', e)
+            return
 
         for session in sessions:
             try:
