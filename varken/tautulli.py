@@ -1,10 +1,12 @@
+import logging
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 from requests import Session, Request
 
-from varken.logger import logging
 from varken.helpers import geo_lookup, hashit, connection_handler
 from varken.structures import TautulliStream
+
+logger = logging.getLogger()
 
 
 class TautulliAPI(object):
@@ -17,7 +19,6 @@ class TautulliAPI(object):
         self.session.params['apikey'] = self.server.api_key
         self.endpoint = '/api/v2'
 
-    @logging
     def get_activity(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
@@ -53,7 +54,6 @@ class TautulliAPI(object):
 
         self.dbmanager.write_points(influx_payload)
 
-    @logging
     def get_sessions(self):
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         params = {'cmd': 'get_activity'}
