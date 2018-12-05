@@ -6,7 +6,7 @@
 #
 #   1. Copy this file into your systemd service unit directory (often '/lib/systemd/system')
 #      and name it 'varken.service' with the following command:
-#       cp /opt/Varken/Varken/varken.systemd /lib/systemd/system/varken.service
+#       cp /opt/Varken/varken.systemd /lib/systemd/system/varken.service
 #
 #   2. Edit the new varken.service file with configuration settings as required.
 #      More details in the "CONFIGURATION NOTES" section shown below.
