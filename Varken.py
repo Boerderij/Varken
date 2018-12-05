@@ -1,5 +1,8 @@
 import schedule
 import threading
+import sys
+import platform
+
 from sys import exit
 from time import sleep
 from os import access, R_OK
@@ -14,14 +17,23 @@ from varken.ombi import OmbiAPI
 from varken.dbmanager import DBManager
 from varken.varkenlogger import VarkenLogger
 
+PLATFORM_LINUX_DISTRO = ' '.join(x for x in platform.linux_distribution() if x)
+
 def threaded(job):
     thread = threading.Thread(target=job)
     thread.start()
 
 
 if __name__ == "__main__":
+    # Initiate the logger
     vl = VarkenLogger()
     vl.logger.info('Starting Varken...')
+    vl.logger.info(u"{} {} ({}{})".format(
+            platform.system(), platform.release(), platform.version(),
+            ' - {}'.format(PLATFORM_LINUX_DISTRO) if PLATFORM_LINUX_DISTRO else ''
+        ))
+    vl.logger.info(u"Python {}".format(sys.version))
+
 
     parser = ArgumentParser(prog='varken',
                             description='Command-line utility to aggregate data from the plex ecosystem into InfluxDB',
