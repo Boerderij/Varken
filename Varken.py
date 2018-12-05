@@ -2,6 +2,7 @@ import schedule
 import threading
 import sys
 import platform
+import distro
 
 from sys import exit
 from time import sleep
@@ -17,7 +18,7 @@ from varken.ombi import OmbiAPI
 from varken.dbmanager import DBManager
 from varken.varkenlogger import VarkenLogger
 
-PLATFORM_LINUX_DISTRO = ' '.join(x for x in platform.linux_distribution() if x)
+PLATFORM_LINUX_DISTRO = ' '.join(x for x in distro.linux_distribution() if x)
 
 def threaded(job):
     thread = threading.Thread(target=job)
