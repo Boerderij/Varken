@@ -1,15 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/Boerderij/Varken/tree/HEAD)
-
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.2...HEAD)
-
-**Closed issues:**
-
-- Create Changelog for nightly release [\#39](https://github.com/Boerderij/Varken/issues/39)
-
-## [v0.2](https://github.com/Boerderij/Varken/tree/v0.2) (2018-12-06)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v0.2)
+## [v0.2-nightly](https://github.com/Boerderij/Varken/tree/v0.2-nightly) (2018-12-06)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v0.2-nightly)
 
 **Implemented enhancements:**
 
