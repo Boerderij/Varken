@@ -4,6 +4,13 @@
 
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v0.2...HEAD)
 
+**Closed issues:**
+
+- Create Changelog for nightly release [\#39](https://github.com/Boerderij/Varken/issues/39)
+
+## [v0.2](https://github.com/Boerderij/Varken/tree/v0.2) (2018-12-06)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v0.2)
+
 **Implemented enhancements:**
 
 - Tautulli - multiple server support? [\#25](https://github.com/Boerderij/Varken/issues/25)
@@ -18,17 +25,11 @@
 - Migrate crontab to python schedule package [\#31](https://github.com/Boerderij/Varken/issues/31)
 - Consolidate missing and missing\_days in sonarr.py [\#30](https://github.com/Boerderij/Varken/issues/30)
 - Ombi something new \[Request\] [\#26](https://github.com/Boerderij/Varken/issues/26)
+- Support for Linux without ASA [\#21](https://github.com/Boerderij/Varken/issues/21)
 
 **Merged pull requests:**
 
 - varken to nightly [\#40](https://github.com/Boerderij/Varken/pull/40) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
-
-## [v0.2](https://github.com/Boerderij/Varken/tree/v0.2) (2018-10-30)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v0.2)
-
-**Closed issues:**
-
-- Support for Linux without ASA [\#21](https://github.com/Boerderij/Varken/issues/21)
 
 ## [v0.1](https://github.com/Boerderij/Varken/tree/v0.1) (2018-10-20)
 **Implemented enhancements:**
