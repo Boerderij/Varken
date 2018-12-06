@@ -1,0 +1,53 @@
+# Varken - Command-line utility to aggregate data from the Plex ecosystem into InfluxDB.
+#
+# Service Unit file for systemd system manager
+#
+# INSTALLATION NOTES
+#
+#   1. Copy this file into your systemd service unit directory (often '/lib/systemd/system')
+#      and name it 'varken.service' with the following command:
+#       cp /opt/Varken/varken.systemd /lib/systemd/system/varken.service
+#
+#   2. Edit the new varken.service file with configuration settings as required.
+#      More details in the "CONFIGURATION NOTES" section shown below.
+#
+#   3. Enable boot-time autostart with the following commands:
+#       systemctl daemon-reload
+#       systemctl enable varken.service
+#
+#   4. Start now with the following command:
+#       systemctl start varken.service
+#
+# CONFIGURATION NOTES
+#
+#    - The example settings in this file assume that you will run varken as user: varken
+#    - The example settings in this file assume that varken is installed to: /opt/Varken
+#
+#    - To create this user and give it ownership of the Varken directory:
+#       Ubuntu/Debian: sudo addgroup varken && sudo adduser --system --no-create-home varken --ingroup varken
+#       CentOS/Fedora: sudo adduser --system --no-create-home varken
+#       sudo chown varken:varken -R /opt/Varken
+#
+#    - Adjust User= and Group= to the user/group you want Varken to run as.
+#
+#    - WantedBy= specifies which target (i.e. runlevel) to start Varken for.
+#       multi-user.target equates to runlevel 3 (multi-user text mode)
+#       graphical.target  equates to runlevel 5 (multi-user X11 graphical mode)
+
+[Unit]
+Description=Varken - Command-line utility to aggregate data from the Plex ecosystem into InfluxDB.
+After=network-online.target
+StartLimitInterval=200
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=varken
+Group=varken
+WorkingDirectory=/opt/Varken
+ExecStart=/opt/Varken/varken-venv/bin/python /opt/Varken/Varken.py
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
