@@ -36,7 +36,7 @@ class TautulliAPI(object):
         try:
             sessions = [TautulliStream(**session) for session in get['sessions']]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s', e)
+            self.logger.error('TypeError has occurred : %s while creating TautulliStream structure', e)
             return
 
         for session in sessions:

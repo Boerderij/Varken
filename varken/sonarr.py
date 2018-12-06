@@ -40,7 +40,7 @@ class SonarrAPI(object):
         try:
             tv_shows = [TVShow(**show) for show in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s', e)
+            self.logger.error('TypeError has occurred : %s while creating TVShow structure', e)
             return
 
         # Add show to missing list if file does not exist
@@ -90,7 +90,7 @@ class SonarrAPI(object):
         try:
             tv_shows = [TVShow(**show) for show in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s', e)
+            self.logger.error('TypeError has occurred : %s while creating TVShow structure', e)
             return
 
         for show in tv_shows:
@@ -140,7 +140,7 @@ class SonarrAPI(object):
         try:
             download_queue = [Queue(**show) for show in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s', e)
+            self.logger.error('TypeError has occurred : %s while creating Queue structure', e)
             return
 
         for show in download_queue:
