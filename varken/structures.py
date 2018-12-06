@@ -284,6 +284,7 @@ class TVShow(NamedTuple):
     absoluteEpisodeNumber: int = None
     sceneAbsoluteEpisodeNumber: int = None
     sceneEpisodeNumber: int = None
+    sceneSeasonNumber: int = None
     series: dict = None
     id: int = None
 
