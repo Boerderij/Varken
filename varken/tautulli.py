@@ -1,8 +1,7 @@
 import logging
-
+from requests import Session, Request
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
-from requests import Session, Request
 
 from varken.helpers import geo_lookup, hashit, connection_handler
 from varken.structures import TautulliStream
@@ -33,6 +32,7 @@ class TautulliAPI(object):
             return
 
         get = g['response']['data']
+
         try:
             sessions = [TautulliStream(**session) for session in get['sessions']]
         except TypeError as e:

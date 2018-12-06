@@ -1,3 +1,4 @@
+import logging
 from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
@@ -16,6 +17,7 @@ class SonarrAPI(object):
         self.session = Session()
         self.session.headers = {'X-Api-Key': self.server.api_key}
         self.session.params = {'pageSize': 1000}
+        self.logger = logging.getLogger()
 
     def __repr__(self):
         return "<sonarr-{}>".format(self.server.id)
@@ -38,7 +40,7 @@ class SonarrAPI(object):
         try:
             tv_shows = [TVShow(**show) for show in get]
         except TypeError as e:
-            logger.error('TypeError has occurred : %s', e)
+            self.logger.error('TypeError has occurred : %s', e)
             return
 
         # Add show to missing list if file does not exist
@@ -85,7 +87,11 @@ class SonarrAPI(object):
         if not get:
             return
 
-        tv_shows = [TVShow(**show) for show in get]
+        try:
+            tv_shows = [TVShow(**show) for show in get]
+        except TypeError as e:
+            self.logger.error('TypeError has occurred : %s', e)
+            return
 
         for show in tv_shows:
             sxe = 'S{:0>2}E{:0>2}'.format(show.seasonNumber, show.episodeNumber)
@@ -131,7 +137,11 @@ class SonarrAPI(object):
         if not get:
             return
 
-        download_queue = [Queue(**show) for show in get]
+        try:
+            download_queue = [Queue(**show) for show in get]
+        except TypeError as e:
+            self.logger.error('TypeError has occurred : %s', e)
+            return
 
         for show in download_queue:
             sxe = 'S{:0>2}E{:0>2}'.format(show.episode['seasonNumber'], show.episode['episodeNumber'])
