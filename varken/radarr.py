@@ -34,7 +34,7 @@ class RadarrAPI(object):
         try:
             movies = [Movie(**movie) for movie in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s', e)
+            self.logger.error('TypeError has occurred : %s while creating Movie structure', e)
             return
 
         for movie in movies:
@@ -83,17 +83,18 @@ class RadarrAPI(object):
             try:
                 movie['movie'] = Movie(**movie['movie'])
             except TypeError as e:
-                self.logger.error('TypeError has occurred : %s', e)
+                self.logger.error('TypeError has occurred : %s while creating Movie structure', e)
                 return
 
         try:
             download_queue = [Queue(**movie) for movie in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s', e)
+            self.logger.error('TypeError has occurred : %s while creating Queue structure', e)
             return
 
         for queue_item in download_queue:
-            name = '{} ({})'.format(queue_item.movie.title, queue_item.movie.year)
+            movie = queue_item.movie
+            name = '{} ({})'.format(movie.title, movie.year)
 
             if queue_item.protocol.upper() == 'USENET':
                 protocol_id = 1
@@ -103,8 +104,8 @@ class RadarrAPI(object):
             queue.append((name, queue_item.quality['quality']['name'], queue_item.protocol.upper(),
                           protocol_id, queue_item.id))
 
-        for movie, quality, protocol, protocol_id, qid in queue:
-            hash_id = hashit('{}{}{}'.format(self.server.id, movie, quality))
+        for name, quality, protocol, protocol_id, qid in queue:
+            hash_id = hashit('{}{}{}'.format(self.server.id, name, quality))
             influx_payload.append(
                 {
                     "measurement": "Radarr",
@@ -112,7 +113,7 @@ class RadarrAPI(object):
                         "type": "Queue",
                         "tmdbId": qid,
                         "server": self.server.id,
-                        "name": movie,
+                        "name": name,
                         "quality": quality,
                         "protocol": protocol,
                         "protocol_id": protocol_id
