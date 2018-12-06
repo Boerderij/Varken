@@ -283,6 +283,7 @@ class TVShow(NamedTuple):
     unverifiedSceneNumbering: bool = None
     absoluteEpisodeNumber: int = None
     sceneAbsoluteEpisodeNumber: int = None
+    sceneEpisodeNumber: int = None
     series: dict = None
     id: int = None
 
