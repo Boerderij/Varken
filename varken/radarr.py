@@ -1,3 +1,4 @@
+import logging
 from requests import Session, Request
 from datetime import datetime, timezone
 
@@ -13,6 +14,7 @@ class RadarrAPI(object):
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.session.headers = {'X-Api-Key': self.server.api_key}
+        self.logger = logging.getLogger()
 
     def __repr__(self):
         return "<radarr-{}>".format(self.server.id)
@@ -29,7 +31,11 @@ class RadarrAPI(object):
         if not get:
             return
 
-        movies = [Movie(**movie) for movie in get]
+        try:
+            movies = [Movie(**movie) for movie in get]
+        except TypeError as e:
+            self.logger.error('TypeError has occurred : %s', e)
+            return
 
         for movie in movies:
             if not movie.downloaded:
@@ -74,8 +80,17 @@ class RadarrAPI(object):
             return
 
         for movie in get:
-            movie['movie'] = Movie(**movie['movie'])
-        download_queue = [Queue(**movie) for movie in get]
+            try:
+                movie['movie'] = Movie(**movie['movie'])
+            except TypeError as e:
+                self.logger.error('TypeError has occurred : %s', e)
+                return
+
+        try:
+            download_queue = [Queue(**movie) for movie in get]
+        except TypeError as e:
+            self.logger.error('TypeError has occurred : %s', e)
+            return
 
         for queue_item in download_queue:
             name = '{} ({})'.format(queue_item.movie.title, queue_item.movie.year)

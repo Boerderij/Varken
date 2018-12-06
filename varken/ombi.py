@@ -1,3 +1,4 @@
+import logging
 from requests import Session, Request
 from datetime import datetime, timezone
 
@@ -13,6 +14,7 @@ class OmbiAPI(object):
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.session.headers = {'Apikey': self.server.api_key}
+        self.logger = logging.getLogger()
 
     def __repr__(self):
         return "<ombi-{}>".format(self.server.id)
