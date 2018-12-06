@@ -1,4 +1,4 @@
-{
+{
   "circleMaxSize": 30,
   "circleMinSize": "1",
   "colors": [
@@ -6,13 +6,13 @@
     "#c15c17",
     "#890f02"
   ],
-  "datasource": "plex",
+  "datasource": "influxdb",
   "decimals": 0,
   "esLocationName": "",
   "esMetric": "$tag_counter",
   "hideEmpty": false,
   "hideZero": false,
-  "id": 4,
+  "id": 41,
   "initialZoom": "4",
   "links": [],
   "locationData": "states",
@@ -29,10 +29,10 @@
       "dsType": "influxdb",
       "groupBy": [
         {
+          "type": "tag",
           "params": [
             "region_code"
-          ],
-          "type": "tag"
+          ]
         }
       ],
       "measurement": "Tautulli",
@@ -43,20 +43,24 @@
       "select": [
         [
           {
+            "type": "field",
             "params": [
-              "location"
-            ],
-            "type": "field"
+              "session_key"
+            ]
           },
           {
-            "params": [],
-            "type": "count"
+            "type": "distinct",
+            "params": []
           },
           {
+            "type": "count",
+            "params": []
+          },
+          {
+            "type": "alias",
             "params": [
               "metric"
-            ],
-            "type": "alias"
+            ]
           }
         ]
       ],
@@ -79,7 +83,7 @@
   "valueName": "current",
   "gridPos": {
     "x": 16,
-    "y": 0,
+    "y": 7,
     "w": 8,
     "h": 8
   },
