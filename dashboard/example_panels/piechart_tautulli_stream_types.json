@@ -1,0 +1,109 @@
+{
+  "aliasColors": {},
+  "breakPoint": "50%",
+  "cacheTimeout": null,
+  "combine": {
+    "label": "Others",
+    "threshold": "0"
+  },
+  "datasource": "influxdb",
+  "decimals": 0,
+  "fontSize": "110%",
+  "format": "none",
+  "gridPos": {
+    "h": 10,
+    "w": 5,
+    "x": 5,
+    "y": 6
+  },
+  "id": 25,
+  "interval": null,
+  "legend": {
+    "percentage": true,
+    "percentageDecimals": 0,
+    "show": true,
+    "sort": "total",
+    "sortDesc": true,
+    "values": true
+  },
+  "legendType": "On graph",
+  "links": [],
+  "maxDataPoints": 3,
+  "nullPointMode": "connected",
+  "pieType": "donut",
+  "strokeWidth": "7",
+  "targets": [
+    {
+      "alias": "$tag_video_decision",
+      "application": {
+        "filter": ""
+      },
+      "functions": [],
+      "group": {
+        "filter": ""
+      },
+      "groupBy": [
+        {
+          "params": [
+            "video_decision"
+          ],
+          "type": "tag"
+        }
+      ],
+      "host": {
+        "filter": ""
+      },
+      "item": {
+        "filter": ""
+      },
+      "measurement": "Tautulli",
+      "mode": 0,
+      "options": {
+        "showDisabledItems": false,
+        "skipEmptyValues": false
+      },
+      "orderByTime": "ASC",
+      "policy": "default",
+      "refId": "A",
+      "resultFormat": "time_series",
+      "select": [
+        [
+          {
+            "params": [
+              "session_key"
+            ],
+            "type": "field"
+          },
+          {
+            "params": [],
+            "type": "distinct"
+          },
+          {
+            "params": [],
+            "type": "count"
+          }
+        ]
+      ],
+      "table": {
+        "skipEmptyValues": false
+      },
+      "tags": [
+        {
+          "key": "type",
+          "operator": "=",
+          "value": "Session"
+        }
+      ],
+      "triggers": {
+        "acknowledged": 2,
+        "count": true,
+        "minSeverity": 3
+      }
+    }
+  ],
+  "timeFrom": "1w",
+  "title": "Stream Types",
+  "transparent": false,
+  "type": "grafana-piechart-panel",
+  "valueName": "total"
+}
