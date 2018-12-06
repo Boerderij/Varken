@@ -7,8 +7,6 @@ from requests import Session, Request
 from varken.helpers import geo_lookup, hashit, connection_handler
 from varken.structures import TautulliStream
 
-logger = logging.getLogger()
-
 
 class TautulliAPI(object):
     def __init__(self, server, dbmanager):
@@ -19,6 +17,7 @@ class TautulliAPI(object):
         self.session = Session()
         self.session.params = {'apikey': self.server.api_key, 'cmd': 'get_activity'}
         self.endpoint = '/api/v2'
+        self.logger = logging.getLogger()
 
     def __repr__(self):
         return "<tautulli-{}>".format(self.server.id)
@@ -37,7 +36,7 @@ class TautulliAPI(object):
         try:
             sessions = [TautulliStream(**session) for session in get['sessions']]
         except TypeError as e:
-            logger.error('TypeError has occured : %s', e)
+            self.logger.error('TypeError has occurred : %s', e)
             return
 
         for session in sessions:

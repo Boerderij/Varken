@@ -4,6 +4,7 @@ from datetime import datetime, timezone, date, timedelta
 from varken.helpers import hashit, connection_handler
 from varken.structures import Queue, TVShow
 
+
 class SonarrAPI(object):
     def __init__(self, server, dbmanager):
         # Set Time of initialization
@@ -34,7 +35,11 @@ class SonarrAPI(object):
             return
 
         # Iteratively create a list of TVShow Objects from response json
-        tv_shows = [TVShow(**show) for show in get]
+        try:
+            tv_shows = [TVShow(**show) for show in get]
+        except TypeError as e:
+            logger.error('TypeError has occurred : %s', e)
+            return
 
         # Add show to missing list if file does not exist
         for show in tv_shows:
