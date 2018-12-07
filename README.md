@@ -1,17 +1,23 @@
 # Varken
+[![Discord](https://img.shields.io/badge/Discord-Varken-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/AGTG44H)
+[![BuyMeACoffee](https://img.shields.io/badge/BuyMeACoffee-Donate-ff813f.svg?logo=CoffeeScript&style=flat-square)](https://www.buymeacoffee.com/varken)
+[![Docker Pulls](https://img.shields.io/docker/pulls/boerderij/varken.svg?style=flat-square)](https://hub.docker.com/r/boerderij/varken/)
+
 Dutch for PIG. PIG is an Acronym for Plex/InfluxDB/Grafana
 
 varken is a standalone command-line utility to aggregate data
 from the Plex ecosystem into InfluxDB. Examples use Grafana for a
 frontend
 
-Requirements /w install links: [Grafana](http://docs.grafana.org/installation/), [Python3](https://www.python.org/downloads/), [InfluxDB](https://docs.influxdata.com/influxdb/v1.5/introduction/installation/)
+Requirements:
+* Python3.6+
+* Python3-pip
 
 <p align="center">
 <img width="800" src="https://i.imgur.com/av8e0HP.png">
 </p>
 
-## Quick Setup (Varken Alpha)
+## Quick Setup
 1. Clone the repository `sudo git clone https://github.com/Boerderij/Varken.git /opt/Varken`
 1. Follow the systemd install instructions located in `varken.systemd`
 1. Create venv in project `cd /opt/Varken && /usr/bin/python3 -m venv varken-venv`
@@ -23,21 +29,20 @@ Requirements /w install links: [Grafana](http://docs.grafana.org/installation/),
 1. Make sure all the files have the appropriate permissions `sudo chown varken:varken -R /opt/Varken`
 1. After completing the [getting started](http://docs.grafana.org/guides/getting_started/) portion of grafana, create your datasource for influxdb.
 1. Install `grafana-cli plugins install grafana-worldmap-panel`
-1. TODO:: Click the + on your menu and click import. Using the .json provided in this repo, paste it in and customize as you like.
 
 ### Docker
 
-Repo is included in [si0972/grafana-scripts-docker](https://github.com/si0972/grafana-scripts-docker/tree/varken)
+Repo is included in [Boerderij/docker-Varken](https://github.com/Boerderij/docker-Varken)
 
 <details><summary>Example</summary>
 <p>
 
 ```
-docker create \
-  --name=grafana-scripts \
-  -v <path to data>:/Scripts \
+docker run -d \
+  --name=varken \
+  -v <path to data>:/config \
   -e PGID=<gid> -e PUID=<uid>  \
-  si0972/grafana-scripts:varken
+  boerderij/varken:nightly
 ```
 </p>
 </details>
