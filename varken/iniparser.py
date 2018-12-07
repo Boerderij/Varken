@@ -1,4 +1,3 @@
-import sys
 import configparser
 import logging
 from sys import exit
@@ -42,7 +41,8 @@ class INIParser(object):
             sids = self.clean_check(global_server_ids, t)
             return sids
 
-    def clean_check(self, server_id_list, server_type=None):
+    @staticmethod
+    def clean_check(server_id_list, server_type=None):
         t = server_type
         sid_list = server_id_list
         cleaned_list = sid_list.replace(' ', '').split(',')
