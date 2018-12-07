@@ -1,6 +1,11 @@
+import sys
+
+# Check for python3.6 or newer to resolve erroneous typing.NamedTuple issues
+if sys.version_info < (3, 6):
+    exit('Varken requires python3.6 or newer')
+
 import schedule
 import threading
-import sys
 import platform
 import distro
 
@@ -19,6 +24,7 @@ from varken.dbmanager import DBManager
 from varken.varkenlogger import VarkenLogger
 
 PLATFORM_LINUX_DISTRO = ' '.join(x for x in distro.linux_distribution() if x)
+
 
 def threaded(job):
     thread = threading.Thread(target=job)
@@ -56,7 +62,6 @@ if __name__ == "__main__":
             ' - {}'.format(PLATFORM_LINUX_DISTRO) if PLATFORM_LINUX_DISTRO else ''
         ))
     vl.logger.info(u"Python {}".format(sys.version))
-
 
     CONFIG = INIParser(DATA_FOLDER)
     DBMANAGER = DBManager(CONFIG.influx_server)
