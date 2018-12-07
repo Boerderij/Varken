@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.3-nightly](https://github.com/Boerderij/Varken/tree/v0.3-nightly) (2018-12-07)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.2-nightly...v0.3-nightly)
+
+**Implemented enhancements:**
+
+- Create Changelog for nightly release [\#39](https://github.com/Boerderij/Varken/issues/39)
+- Create proper logging [\#34](https://github.com/Boerderij/Varken/issues/34)
+
+**Closed issues:**
+
+- Remove "dashboard" folder and subfolders [\#42](https://github.com/Boerderij/Varken/issues/42)
+- Remove "Legacy" folder [\#41](https://github.com/Boerderij/Varken/issues/41)
+
 ## [v0.2-nightly](https://github.com/Boerderij/Varken/tree/v0.2-nightly) (2018-12-06)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v0.2-nightly)
 
