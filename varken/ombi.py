@@ -39,7 +39,8 @@ class OmbiAPI(object):
             {
                 "measurement": "Ombi",
                 "tags": {
-                    "type": "Request_Total"
+                    "type": "Request_Total",
+                    "server": self.server.id
                 },
                 "time": self.now,
                 "fields": {
