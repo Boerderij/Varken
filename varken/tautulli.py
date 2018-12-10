@@ -8,7 +8,7 @@ from varken.structures import TautulliStream
 
 
 class TautulliAPI(object):
-    def __init__(self, server, dbmanager):
+    def __init__(self, server, dbmanager, data_folder):
         # Set Time of initialization
         self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.dbmanager = dbmanager
@@ -17,6 +17,7 @@ class TautulliAPI(object):
         self.session.params = {'apikey': self.server.api_key, 'cmd': 'get_activity'}
         self.endpoint = '/api/v2'
         self.logger = logging.getLogger()
+        self.data_folder = data_folder
 
     def __repr__(self):
         return "<tautulli-{}>".format(self.server.id)
@@ -41,13 +42,13 @@ class TautulliAPI(object):
 
         for session in sessions:
             try:
-                geodata = geo_lookup(session.ip_address_public)
+                geodata = geo_lookup(session.ip_address_public, self.data_folder)
             except (ValueError, AddressNotFoundError):
                 if self.server.fallback_ip:
-                    geodata = geo_lookup(self.server.fallback_ip)
+                    geodata = geo_lookup(self.server.fallback_ip, self.data_folder)
                 else:
                     my_ip = self.session.get('http://ip.42.pl/raw').text
-                    geodata = geo_lookup(my_ip)
+                    geodata = geo_lookup(my_ip, self.data_folder)
 
             if not all([geodata.location.latitude, geodata.location.longitude]):
                 latitude = 37.234332396
