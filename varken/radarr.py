@@ -43,10 +43,15 @@ class RadarrAPI(object):
                     ma = 0
                 else:
                     ma = 1
-                movie_name = '{} ({})'.format(movie.title, movie.year)
-                missing.append((movie_name, ma, movie.tmdbId))
 
-        for title, ma, mid in missing:
+                movie_name = '{} ({})'.format(movie.title, movie.year)
+
+                title_slug =  movie.titleSlug
+
+                missing.append((movie_name, ma, movie.tmdbId, title_slug))
+
+
+        for title, ma, mid, title_slug in missing:
             hash_id = hashit('{}{}{}'.format(self.server.id, title, mid))
             influx_payload.append(
                 {
@@ -56,7 +61,8 @@ class RadarrAPI(object):
                         "Missing_Available": ma,
                         "tmdbId": mid,
                         "server": self.server.id,
-                        "name": title
+                        "name": title,
+                        "titleSlug": title_slug
                     },
                     "time": self.now,
                     "fields": {
@@ -94,7 +100,10 @@ class RadarrAPI(object):
 
         for queue_item in download_queue:
             movie = queue_item.movie
+
             name = '{} ({})'.format(movie.title, movie.year)
+
+            title_slug =  movie.titleSlug
 
             if queue_item.protocol.upper() == 'USENET':
                 protocol_id = 1
@@ -102,9 +111,9 @@ class RadarrAPI(object):
                 protocol_id = 0
 
             queue.append((name, queue_item.quality['quality']['name'], queue_item.protocol.upper(),
-                          protocol_id, queue_item.id))
+                          protocol_id, queue_item.id, title_slug))
 
-        for name, quality, protocol, protocol_id, qid in queue:
+        for name, quality, protocol, protocol_id, qid, title_slug in queue:
             hash_id = hashit('{}{}{}'.format(self.server.id, name, quality))
             influx_payload.append(
                 {
@@ -116,7 +125,8 @@ class RadarrAPI(object):
                         "name": name,
                         "quality": quality,
                         "protocol": protocol,
-                        "protocol_id": protocol_id
+                        "protocol_id": protocol_id,
+                        "titleSlug": title_slug
                     },
                     "time": self.now,
                     "fields": {
