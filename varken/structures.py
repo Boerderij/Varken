@@ -70,6 +70,14 @@ class InfluxServer(NamedTuple):
     username: str = 'root'
     password: str = 'root'
 
+class CiscoASAFirewall(NamedTuple):
+    id: int = None
+    url: str = '192.168.1.1'
+    username: str = 'cisco'
+    password: str = 'cisco'
+    outside_interface: str = None
+    verify_ssl: bool = False
+    get_bandwidth_run_seconds: int = 30
 
 class OmbiRequestCounts(NamedTuple):
     pending: int = 0

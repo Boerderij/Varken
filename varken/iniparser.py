@@ -2,14 +2,14 @@ import configparser
 import logging
 from sys import exit
 from os.path import join, exists
-from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer
+from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
 
 logger = logging.getLogger()
 
 
 class INIParser(object):
     def __init__(self, data_folder):
-        self.config = configparser.ConfigParser()
+        self.config = configparser.ConfigParser(interpolation=None)
         self.data_folder = data_folder
 
         self.influx_server = InfluxServer()
@@ -26,8 +26,8 @@ class INIParser(object):
         self.tautulli_enabled = False
         self.tautulli_servers = []
 
-        self.asa_enabled = False
-        self.asa = None
+        self.ciscoasa_enabled = False
+        self.ciscoasa_firewalls = []
 
         self.parse_opts()
 
@@ -172,15 +172,22 @@ class INIParser(object):
                 self.ombi_servers.append(server)
 
         # Parse ASA opts
-        if self.config.getboolean('global', 'asa'):
-            self.asa_enabled = True
-            url = self.config.get('asa', 'url')
-            username = self.config.get('asa', 'username')
-            password = self.config.get('asa', 'password')
-            scheme = 'https://' if self.config.getboolean('asa', 'ssl') else 'http://'
-            verify_ssl = self.config.getboolean('asa', 'verify_ssl')
-            if scheme != 'https://':
-                verify_ssl = False
-            db_name = self.config.get('asa', 'influx_db')
+        self.ciscoasa_enabled = self.enable_check('ciscoasa_firewall_ids')
 
-            self.asa = (scheme + url, username, password, verify_ssl, db_name)
+        if self.ciscoasa_enabled:
+            fids = self.config.get('global', 'ciscoasa_firewall_ids').strip(' ').split(',')
+            for firewall_id in fids:
+                ciscoasa_section = 'ciscoasa-' + firewall_id
+                url = self.config.get(ciscoasa_section, 'url')
+                username = self.config.get(ciscoasa_section, 'username')
+                password = self.config.get(ciscoasa_section, 'password')
+                scheme = 'https://' if self.config.getboolean(ciscoasa_section, 'ssl') else 'http://'
+                verify_ssl = self.config.getboolean(ciscoasa_section, 'verify_ssl')
+                if scheme != 'https://':
+                    verify_ssl = False
+                outside_interface = self.config.get(ciscoasa_section, 'outside_interface')
+                get_bandwidth_run_seconds = self.config.getint(ciscoasa_section, 'get_bandwidth_run_seconds')
+
+                firewall = CiscoASAFirewall(firewall_id, scheme + url, username, password, outside_interface,
+                                            verify_ssl, get_bandwidth_run_seconds)
+                self.ciscoasa_firewalls.append(firewall)
