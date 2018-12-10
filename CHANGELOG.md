@@ -8,6 +8,10 @@
 - Add cisco asa from legacy [\#44](https://github.com/Boerderij/Varken/issues/44)
 - Add server ID to ombi to differenciate [\#43](https://github.com/Boerderij/Varken/issues/43)
 
+**Merged pull requests:**
+
+- v1.0 Merge [\#45](https://github.com/Boerderij/Varken/pull/45) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
 ## [v0.3-nightly](https://github.com/Boerderij/Varken/tree/v0.3-nightly) (2018-12-07)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v0.2-nightly...v0.3-nightly)
 
