@@ -2,10 +2,10 @@ import os
 import time
 import tarfile
 import hashlib
+import urllib3
 import geoip2.database
 import logging
 
-from functools import update_wrapper
 from json.decoder import JSONDecodeError
 from os.path import abspath, join
 from requests.exceptions import InvalidSchema, SSLError
@@ -58,6 +58,8 @@ def connection_handler(session, request, verify):
     v = verify
     return_json = False
 
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
     try:
         get = s.send(r, verify=v)
         if get.status_code == 401:
@@ -69,6 +71,10 @@ def connection_handler(session, request, verify):
                 return_json = get.json()
             except JSONDecodeError:
                 logger.error('No JSON response... BORKED! Let us know in discord')
+        # 204 No Content is for ASA only
+        elif get.status_code == 204:
+            if get.headers['X-Auth-Token']:
+                return get.headers['X-Auth-Token']
 
     except InvalidSchema:
         logger.error('You added http(s):// in the config file. Don\'t do that.')
