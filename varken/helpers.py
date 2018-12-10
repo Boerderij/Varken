@@ -14,21 +14,22 @@ from urllib.request import urlretrieve
 logger = logging.getLogger('varken')
 
 
-def geoip_download():
-    tar_dbfile = abspath(join('.', 'data', 'GeoLite2-City.tar.gz'))
+def geoip_download(data_folder):
+    datafolder = data_folder
+    tar_dbfile = abspath(join(datafolder, 'GeoLite2-City.tar.gz'))
     url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
     urlretrieve(url, tar_dbfile)
     tar = tarfile.open(tar_dbfile, 'r:gz')
     for files in tar.getmembers():
         if 'GeoLite2-City.mmdb' in files.name:
             files.name = os.path.basename(files.name)
-            tar.extract(files, abspath(join('.', 'data')))
+            tar.extract(files, datafolder)
     os.remove(tar_dbfile)
 
 
-def geo_lookup(ipaddress):
-
-    dbfile = abspath(join('.', 'data', 'GeoLite2-City.mmdb'))
+def geo_lookup(ipaddress, data_folder):
+    datafolder = data_folder
+    dbfile = abspath(join(datafolder, 'GeoLite2-City.mmdb'))
     now = time.time()
 
     try:
@@ -36,9 +37,9 @@ def geo_lookup(ipaddress):
         db_age = now - dbinfo.st_ctime
         if db_age > (35 * 86400):
             os.remove(dbfile)
-            geoip_download()
+            geoip_download(datafolder)
     except FileNotFoundError:
-        geoip_download()
+        geoip_download(datafolder)
 
     reader = geoip2.database.Reader(dbfile)
 
