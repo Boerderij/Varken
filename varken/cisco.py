@@ -39,7 +39,6 @@ class CiscoAPI(object):
             return
 
         req = self.session.prepare_request(Request('GET', self.firewall.url + endpoint))
-        print(req.headers)
         get = connection_handler(self.session, req, self.firewall.verify_ssl)
 
         if not get:

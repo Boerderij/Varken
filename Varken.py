@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     if CONFIG.tautulli_enabled:
         for server in CONFIG.tautulli_servers:
-            TAUTULLI = TautulliAPI(server, DBMANAGER)
+            TAUTULLI = TautulliAPI(server, DBMANAGER, DATA_FOLDER)
             if server.get_activity:
                 schedule.every(server.get_activity_run_seconds).seconds.do(threaded, TAUTULLI.get_activity)
 
