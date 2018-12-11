@@ -79,13 +79,14 @@ docker rm varken
 ```
 
 ### InfluxDB
-[InfluxDB Installation documentation](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/)
+[InfluxDB Installation Documentation](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/)
 Influxdb is required but not packaged as part of Varken. Varken will create
 its database on its own. If you choose to give varken user permissions that
 do not include database creation, please ensure you create an influx database
 named `varken`
 
 ### Grafana
+[Grafana Installation Documentation(http://docs.grafana.org/installation/)
 Grafana is used in our examples but not required, nor packaged as part of
 Varken. Panel example pictures are pinned in the grafana-panels channel of
 discord. Future releases may contain a json-generator, but it does not exist
