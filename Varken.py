@@ -58,6 +58,8 @@ if __name__ == "__main__":
     vl = VarkenLogger(data_folder=DATA_FOLDER, debug=opts.debug)
     vl.logger.info('Starting Varken...')
 
+    vl.logger.info('Data folder is "%s"', DATA_FOLDER)
+
     vl.logger.info(u"{} {} ({}{})".format(
             platform.system(), platform.release(), platform.version(),
             ' - {}'.format(PLATFORM_LINUX_DISTRO) if PLATFORM_LINUX_DISTRO else ''
