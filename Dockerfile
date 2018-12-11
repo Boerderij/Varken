@@ -6,7 +6,10 @@ ARG branch="master"
 
 ENV branch=$branch
 
+#COPY / /app/Varken
+
 RUN \
+    echo $PWD && ls && \
     git clone --single-branch -b $branch https://github.com/Boerderij/Varken.git /app && \
     python3 -m pip install -r /app/requirements.txt && \
     chown -R abc:abc \
