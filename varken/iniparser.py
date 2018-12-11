@@ -68,7 +68,7 @@ class INIParser(object):
 
         if self.sonarr_enabled:
             for server_id in self.sonarr_enabled:
-                sonarr_section = 'sonarr-' + server_id
+                sonarr_section = 'sonarr-' + str(server_id)
                 url = self.config.get(sonarr_section, 'url')
                 apikey = self.config.get(sonarr_section, 'apikey')
                 scheme = 'https://' if self.config.getboolean(sonarr_section, 'ssl') else 'http://'
@@ -92,7 +92,7 @@ class INIParser(object):
 
         if self.radarr_enabled:
             for server_id in self.radarr_enabled:
-                radarr_section = 'radarr-' + server_id
+                radarr_section = 'radarr-' + str(server_id)
                 try:
                     url = self.config.get(radarr_section, 'url')
                     apikey = self.config.get(radarr_section, 'apikey')
@@ -117,7 +117,7 @@ class INIParser(object):
 
         if self.tautulli_enabled:
             for server_id in self.tautulli_enabled:
-                tautulli_section = 'tautulli-' + server_id
+                tautulli_section = 'tautulli-' + str(server_id)
                 try:
                     url = self.config.get(tautulli_section, 'url')
                     fallback_ip = self.config.get(tautulli_section, 'fallback_ip')
@@ -141,7 +141,7 @@ class INIParser(object):
 
         if self.ombi_enabled:
             for server_id in self.ombi_enabled:
-                ombi_section = 'ombi-' + server_id
+                ombi_section = 'ombi-' + str(server_id)
                 try:
                     url = self.config.get(ombi_section, 'url')
                     apikey = self.config.get(ombi_section, 'apikey')
@@ -166,7 +166,7 @@ class INIParser(object):
 
         if self.ciscoasa_enabled:
             for firewall_id in self.ciscoasa_enabled:
-                ciscoasa_section = 'ciscoasa-' + firewall_id
+                ciscoasa_section = 'ciscoasa-' + str(firewall_id)
                 try:
                     url = self.config.get(ciscoasa_section, 'url')
                     username = self.config.get(ciscoasa_section, 'username')
