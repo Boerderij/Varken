@@ -6,7 +6,7 @@ ARG branch="master"
 
 ENV branch=$branch
 
-COPY / /app/Varken
+COPY / /app
 
 RUN \
     python3 -m pip install -r /app/requirements.txt && \
