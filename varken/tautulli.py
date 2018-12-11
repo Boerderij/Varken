@@ -9,8 +9,6 @@ from varken.structures import TautulliStream
 
 class TautulliAPI(object):
     def __init__(self, server, dbmanager, data_folder):
-        # Set Time of initialization
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.dbmanager = dbmanager
         self.server = server
         self.session = Session()
@@ -23,7 +21,7 @@ class TautulliAPI(object):
         return "<tautulli-{}>".format(self.server.id)
 
     def get_activity(self):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
 
         req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint))
@@ -119,7 +117,7 @@ class TautulliAPI(object):
                         "device_type": session.platform,
                         "server": self.server.id
                     },
-                    "time": self.now,
+                    "time": now,
                     "fields": {
                         "hash": hash_id
                     }
@@ -133,7 +131,7 @@ class TautulliAPI(object):
                     "type": "current_stream_stats",
                     "server": self.server.id
                 },
-                "time": self.now,
+                "time": now,
                 "fields": {
                     "stream_count": int(get['stream_count']),
                     "total_bandwidth": int(get['total_bandwidth']),
