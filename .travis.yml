@@ -5,7 +5,7 @@ jobs:
   include:
     - stage: "Build and Push"
       script:
-        - docker build -t boerderij/varken:$TRAVIS_BRANCH .
+        - docker build --build-arg branch=$TRAVIS_BRANCH -t boerderij/varken:$TRAVIS_BRANCH .
         - docker images
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker push boerderij/varken:$TRAVIS_BRANCH
