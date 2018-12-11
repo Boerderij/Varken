@@ -1,11 +1,17 @@
 services:
   - docker
 
-script:
-  - docker build -t boerderij/varken:$TRAVIS_BRANCH .
-  - docker images
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push boerderij/varken:$TRAVIS_BRANCH
+jobs:
+  include:
+    - stage: "Build and Push"
+      name: "Build"
+      script:
+        - docker build -t boerderij/varken:$TRAVIS_BRANCH .
+        - docker images
+    - name: "Push"
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker push boerderij/varken:$TRAVIS_BRANCH
 
 env:
   global:
