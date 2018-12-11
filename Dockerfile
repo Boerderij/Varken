@@ -2,7 +2,7 @@ FROM lsiobase/alpine.python3
 
 LABEL maintainer="dirtycajunrice"
 
-ENV branch="master"
+#ENV branch="master"
 
 RUN \
     git clone --single-branch -b $branch https://github.com/Boerderij/Varken.git /app && \
