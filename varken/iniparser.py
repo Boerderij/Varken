@@ -29,20 +29,20 @@ class INIParser(object):
         self.ciscoasa_enabled = False
         self.ciscoasa_firewalls = []
 
-        try:
-            self.parse_opts()
-        except configparser.NoOptionError as e:
-            logger.error(e)
+        self.parse_opts()
 
     def enable_check(self, server_type=None):
         t = server_type
-        global_server_ids = self.config.get('global', t)
-        if global_server_ids.lower() in ['false', 'no', '0']:
-            logger.info('%s disabled.', t.upper())
-            return False
-        else:
-            sids = self.clean_check(global_server_ids, t)
-            return sids
+        try:
+            global_server_ids = self.config.get('global', t)
+            if global_server_ids.lower() in ['false', 'no', '0']:
+                logger.info('%s disabled.', t.upper())
+                return False
+            else:
+                sids = self.clean_check(global_server_ids, t)
+                return sids
+        except configparser.NoOptionError as e:
+            logger.error(e)
 
     @staticmethod
     def clean_check(server_id_list, server_type=None):
