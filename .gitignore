@@ -12,3 +12,4 @@ data/varken.ini
 .idea/
 Legacy/configuration.py
 varken-venv/
+logs/
