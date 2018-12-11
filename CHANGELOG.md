@@ -1,6 +1,31 @@
 # Change Log
 
-## [v1.0](https://github.com/Boerderij/Varken/tree/v1.0) (2018-12-09)
+## [v1.1](https://github.com/Boerderij/Varken/tree/v1.1) (2018-12-11)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.0...v1.1)
+
+**Implemented enhancements:**
+
+- Convert missing available to True False  [\#54](https://github.com/Boerderij/Varken/issues/54)
+- Handle invalid config better and log it [\#51](https://github.com/Boerderij/Varken/issues/51)
+- Feature Request - Include value from Radarr [\#50](https://github.com/Boerderij/Varken/issues/50)
+- Change true/false to 0/1 for missing movies [\#47](https://github.com/Boerderij/Varken/issues/47)
+
+**Fixed bugs:**
+
+- \[BUG\] Time does not update from "today" [\#56](https://github.com/Boerderij/Varken/issues/56)
+- geoip\_download does not account for moving data folder [\#46](https://github.com/Boerderij/Varken/issues/46)
+
+**Closed issues:**
+
+- Initial startup requires admin access to InfluxDB [\#53](https://github.com/Boerderij/Varken/issues/53)
+- Ability to add custom tautulli port [\#49](https://github.com/Boerderij/Varken/issues/49)
+
+**Merged pull requests:**
+
+- v1.1 Merge [\#57](https://github.com/Boerderij/Varken/pull/57) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- Update issue templates [\#55](https://github.com/Boerderij/Varken/pull/55) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [v1.0](https://github.com/Boerderij/Varken/tree/v1.0) (2018-12-10)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v0.3-nightly...v1.0)
 
 **Implemented enhancements:**
