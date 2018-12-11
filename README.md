@@ -48,8 +48,6 @@ systemctl enable varken
 ```
 ### Docker
 
-Repo is included in [Boerderij/docker-Varken](https://github.com/Boerderij/docker-Varken)
-
 [![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken")
 [![Docker-Version](https://images.microbadger.com/badges/version/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken")
 [![Docker Pulls](https://img.shields.io/docker/pulls/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
@@ -88,7 +86,7 @@ do not include database creation, please ensure you create an influx database
 named `varken`
 
 ### Grafana
-[Grafana Installation Documentation(http://docs.grafana.org/installation/)
+[Grafana Installation Documentation](http://docs.grafana.org/installation/)
 
 Grafana is used in our examples but not required, nor packaged as part of
 Varken. Panel example pictures are pinned in the grafana-panels channel of
