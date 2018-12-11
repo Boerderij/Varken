@@ -80,21 +80,21 @@ def connection_handler(session, request, verify):
     try:
         get = s.send(r, verify=v)
         if get.status_code == 401:
-            logger.info('Your api key is incorrect for {}'.format(r.url))
+            logger.info('Your api key is incorrect for %s', r.url)
         elif get.status_code == 404:
-            logger.info('This url doesnt even resolve: {}'.format(r.url))
+            logger.info('This url doesnt even resolve: %s', r.url)
         elif get.status_code == 200:
             try:
                 return_json = get.json()
             except JSONDecodeError:
-                logger.error('No JSON response... BORKED! Let us know in discord')
+                logger.error('No JSON response. Response is: %s', get.text)
         # 204 No Content is for ASA only
         elif get.status_code == 204:
             if get.headers['X-Auth-Token']:
                 return get.headers['X-Auth-Token']
 
     except InvalidSchema:
-        logger.error('You added http(s):// in the config file. Don\'t do that.')
+        logger.error("You added http(s):// in the config file. Don't do that.")
 
     except SSLError as e:
         logger.error('Either your host is unreachable or you have an SSL issue. : %s', e)
