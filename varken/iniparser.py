@@ -2,6 +2,8 @@ import configparser
 import logging
 from sys import exit
 from os.path import join, exists
+
+from varken.helpers import clean_sid_check
 from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
 
 logger = logging.getLogger()
@@ -37,31 +39,11 @@ class INIParser(object):
             global_server_ids = self.config.get('global', t)
             if global_server_ids.lower() in ['false', 'no', '0']:
                 logger.info('%s disabled.', t.upper())
-                return False
             else:
-                sids = self.clean_check(global_server_ids, t)
+                sids = clean_sid_check(global_server_ids, t)
                 return sids
         except configparser.NoOptionError as e:
             logger.error(e)
-
-    @staticmethod
-    def clean_check(server_id_list, server_type=None):
-        t = server_type
-        sid_list = server_id_list
-        cleaned_list = sid_list.replace(' ', '').split(',')
-        valid_sids = []
-        for sid in cleaned_list:
-            try:
-                valid_sids.append(int(sid))
-            except ValueError:
-                logger.error("{} is not a valid server id number".format(sid))
-
-        if valid_sids:
-            logger.info('%s : %s', t.upper(), valid_sids)
-            return valid_sids
-        else:
-            logger.error('No valid %s', t.upper())
-            return False
 
     def read_file(self):
         file_path = join(self.data_folder, 'varken.ini')
@@ -85,9 +67,7 @@ class INIParser(object):
         self.sonarr_enabled = self.enable_check('sonarr_server_ids')
 
         if self.sonarr_enabled:
-            sids = self.config.get('global', 'sonarr_server_ids').strip(' ').split(',')
-
-            for server_id in sids:
+            for server_id in self.sonarr_enabled:
                 sonarr_section = 'sonarr-' + server_id
                 url = self.config.get(sonarr_section, 'url')
                 apikey = self.config.get(sonarr_section, 'apikey')
@@ -111,9 +91,7 @@ class INIParser(object):
         self.radarr_enabled = self.enable_check('radarr_server_ids')
 
         if self.radarr_enabled:
-            sids = self.config.get('global', 'radarr_server_ids').strip(' ').split(',')
-
-            for server_id in sids:
+            for server_id in self.radarr_enabled:
                 radarr_section = 'radarr-' + server_id
                 url = self.config.get(radarr_section, 'url')
                 apikey = self.config.get(radarr_section, 'apikey')
@@ -134,9 +112,7 @@ class INIParser(object):
         self.tautulli_enabled = self.enable_check('tautulli_server_ids')
 
         if self.tautulli_enabled:
-            sids = self.config.get('global', 'tautulli_server_ids').strip(' ').split(',')
-
-            for server_id in sids:
+            for server_id in self.tautulli_enabled:
                 tautulli_section = 'tautulli-' + server_id
                 url = self.config.get(tautulli_section, 'url')
                 fallback_ip = self.config.get(tautulli_section, 'fallback_ip')
@@ -156,8 +132,7 @@ class INIParser(object):
         self.ombi_enabled = self.enable_check('ombi_server_ids')
 
         if self.ombi_enabled:
-            sids = self.config.get('global', 'ombi_server_ids').strip(' ').split(',')
-            for server_id in sids:
+            for server_id in self.ombi_enabled:
                 ombi_section = 'ombi-' + server_id
                 url = self.config.get(ombi_section, 'url')
                 apikey = self.config.get(ombi_section, 'apikey')
@@ -178,8 +153,7 @@ class INIParser(object):
         self.ciscoasa_enabled = self.enable_check('ciscoasa_firewall_ids')
 
         if self.ciscoasa_enabled:
-            fids = self.config.get('global', 'ciscoasa_firewall_ids').strip(' ').split(',')
-            for firewall_id in fids:
+            for firewall_id in self.ciscoasa_enabled:
                 ciscoasa_section = 'ciscoasa-' + firewall_id
                 url = self.config.get(ciscoasa_section, 'url')
                 username = self.config.get(ciscoasa_section, 'username')
