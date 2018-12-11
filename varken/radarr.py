@@ -46,9 +46,7 @@ class RadarrAPI(object):
 
                 movie_name = '{} ({})'.format(movie.title, movie.year)
 
-                title_slug =  movie.titleSlug
-
-                missing.append((movie_name, ma, movie.tmdbId, title_slug))
+                missing.append((movie_name, ma, movie.tmdbId, movie.titleSlug))
 
 
         for title, ma, mid, title_slug in missing:
@@ -103,15 +101,13 @@ class RadarrAPI(object):
 
             name = '{} ({})'.format(movie.title, movie.year)
 
-            title_slug =  movie.titleSlug
-
             if queue_item.protocol.upper() == 'USENET':
                 protocol_id = 1
             else:
                 protocol_id = 0
 
             queue.append((name, queue_item.quality['quality']['name'], queue_item.protocol.upper(),
-                          protocol_id, queue_item.id, title_slug))
+                          protocol_id, queue_item.id, movie.titleSlug))
 
         for name, quality, protocol, protocol_id, qid, title_slug in queue:
             hash_id = hashit('{}{}{}'.format(self.server.id, name, quality))
