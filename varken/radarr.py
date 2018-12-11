@@ -40,9 +40,9 @@ class RadarrAPI(object):
         for movie in movies:
             if not movie.downloaded:
                 if movie.isAvailable:
-                    ma = True
+                    ma = 0
                 else:
-                    ma = False
+                    ma = 1
 
                 movie_name = '{} ({})'.format(movie.title, movie.year)
 
