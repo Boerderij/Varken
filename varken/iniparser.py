@@ -69,23 +69,27 @@ class INIParser(object):
         if self.sonarr_enabled:
             for server_id in self.sonarr_enabled:
                 sonarr_section = 'sonarr-' + str(server_id)
-                url = self.config.get(sonarr_section, 'url')
-                apikey = self.config.get(sonarr_section, 'apikey')
-                scheme = 'https://' if self.config.getboolean(sonarr_section, 'ssl') else 'http://'
-                verify_ssl = self.config.getboolean(sonarr_section, 'verify_ssl')
-                if scheme != 'https://':
-                    verify_ssl = False
-                queue = self.config.getboolean(sonarr_section, 'queue')
-                missing_days = self.config.getint(sonarr_section, 'missing_days')
-                future_days = self.config.getint(sonarr_section, 'future_days')
-                missing_days_run_seconds = self.config.getint(sonarr_section, 'missing_days_run_seconds')
-                future_days_run_seconds = self.config.getint(sonarr_section, 'future_days_run_seconds')
-                queue_run_seconds = self.config.getint(sonarr_section, 'queue_run_seconds')
+                try:
+                    url = self.config.get(sonarr_section, 'url')
+                    apikey = self.config.get(sonarr_section, 'apikey')
+                    scheme = 'https://' if self.config.getboolean(sonarr_section, 'ssl') else 'http://'
+                    verify_ssl = self.config.getboolean(sonarr_section, 'verify_ssl')
+                    if scheme != 'https://':
+                        verify_ssl = False
+                    queue = self.config.getboolean(sonarr_section, 'queue')
+                    missing_days = self.config.getint(sonarr_section, 'missing_days')
+                    future_days = self.config.getint(sonarr_section, 'future_days')
+                    missing_days_run_seconds = self.config.getint(sonarr_section, 'missing_days_run_seconds')
+                    future_days_run_seconds = self.config.getint(sonarr_section, 'future_days_run_seconds')
+                    queue_run_seconds = self.config.getint(sonarr_section, 'queue_run_seconds')
 
-                server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
-                                      missing_days_run_seconds, future_days, future_days_run_seconds,
-                                      queue, queue_run_seconds)
-                self.sonarr_servers.append(server)
+                    server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
+                                          missing_days_run_seconds, future_days, future_days_run_seconds,
+                                          queue, queue_run_seconds)
+                    self.sonarr_servers.append(server)
+                except configparser.NoOptionError as e:
+                    self.radarr_enabled = False
+                    logger.error('%s disabled. Error: %s', sonarr_section, e)
 
         # Parse Radarr options
         self.radarr_enabled = self.enable_check('radarr_server_ids')
