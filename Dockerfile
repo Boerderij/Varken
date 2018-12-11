@@ -2,10 +2,6 @@ FROM lsiobase/alpine.python3
 
 LABEL maintainer="dirtycajunrice"
 
-ARG branch="master"
-
-ENV branch=$branch
-
 COPY / /app
 
 RUN \
