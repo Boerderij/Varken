@@ -8,7 +8,7 @@ import logging
 
 from json.decoder import JSONDecodeError
 from os.path import abspath, join
-from requests.exceptions import InvalidSchema, SSLError
+from requests.exceptions import InvalidSchema, SSLError, ConnectionError
 from urllib.request import urlretrieve
 
 logger = logging.getLogger('varken')
@@ -98,6 +98,9 @@ def connection_handler(session, request, verify):
 
     except SSLError as e:
         logger.error('Either your host is unreachable or you have an SSL issue. : %s', e)
+
+    except ConnectionError as e:
+        logger.error('Cannot resolve the url/ip/port. Check connectivity. Error: %s', e)
 
     return return_json
 
