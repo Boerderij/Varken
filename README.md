@@ -24,8 +24,8 @@ Requirements:
 git clone https://github.com/Boerderij/Varken.git /opt/Varken
 
 # Follow the systemd install instructions located in varken.systemd
-nano /opt/Varken/varken.systemd
 cp /opt/Varken/varken.systemd /etc/systemd/system/varken.service
+nano /etc/systemd/system/varken.service
 
 # Create venv in project
 /usr/bin/python3 -m venv /opt/Varken/varken-venv
