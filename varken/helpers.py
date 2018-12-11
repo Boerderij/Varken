@@ -109,3 +109,21 @@ def mkdir_p(path):
         os.makedirs(path, exist_ok=True)
     except Exception as e:
         logger.error('Could not create folder %s : %s ', path, e)
+
+
+def clean_sid_check(server_id_list, server_type=None):
+    t = server_type
+    sid_list = server_id_list
+    cleaned_list = sid_list.replace(' ', '').split(',')
+    valid_sids = []
+    for sid in cleaned_list:
+        try:
+            valid_sids.append(int(sid))
+        except ValueError:
+            logger.error("{} is not a valid server id number".format(sid))
+    if valid_sids:
+        logger.info('%s : %s', t.upper(), valid_sids)
+        return valid_sids
+    else:
+        logger.error('No valid %s', t.upper())
+        return False
