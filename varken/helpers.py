@@ -16,14 +16,24 @@ logger = logging.getLogger('varken')
 
 def geoip_download(data_folder):
     datafolder = data_folder
+
     tar_dbfile = abspath(join(datafolder, 'GeoLite2-City.tar.gz'))
+
     url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
+    logger.info('Downloading GeoLite2 from %s', url)
     urlretrieve(url, tar_dbfile)
+
     tar = tarfile.open(tar_dbfile, 'r:gz')
+    logging.debug('Opening GeoLite2 tar file : %s', tar_dbfile)
+
     for files in tar.getmembers():
         if 'GeoLite2-City.mmdb' in files.name:
+            logging.debug('"GeoLite2-City.mmdb" FOUND in tar file')
             files.name = os.path.basename(files.name)
+
             tar.extract(files, datafolder)
+            logging.debug('%s has been extracted to %s', files, datafolder)
+
     os.remove(tar_dbfile)
 
 
