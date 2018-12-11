@@ -8,10 +8,7 @@ from varken.structures import Queue, TVShow
 
 class SonarrAPI(object):
     def __init__(self, server, dbmanager):
-        # Set Time of initialization
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.dbmanager = dbmanager
-        self.today = str(date.today())
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
@@ -24,9 +21,10 @@ class SonarrAPI(object):
 
     def get_missing(self):
         endpoint = '/api/calendar'
+        today = str(date.today())
         last_days = str(date.today() + timedelta(days=-self.server.missing_days))
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
-        params = {'start': last_days, 'end': self.today}
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        params = {'start': last_days, 'end': today}
         influx_payload = []
         missing = []
 
@@ -63,7 +61,7 @@ class SonarrAPI(object):
                         "sxe": sxe,
                         "airs": air_date
                     },
-                    "time": self.now,
+                    "time": now,
                     "fields": {
                         "hash": hash_id
 
@@ -75,11 +73,12 @@ class SonarrAPI(object):
 
     def get_future(self):
         endpoint = '/api/calendar/'
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        today = str(date.today())
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         future = str(date.today() + timedelta(days=self.server.future_days))
         influx_payload = []
         air_days = []
-        params = {'start': self.today, 'end': future}
+        params = {'start': today, 'end': future}
 
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
         get = connection_handler(self.session, req, self.server.verify_ssl)
@@ -116,7 +115,7 @@ class SonarrAPI(object):
                         "airs": air_date,
                         "downloaded": dl_status
                     },
-                    "time": self.now,
+                    "time": now,
                     "fields": {
                         "hash": hash_id
                     }
@@ -128,7 +127,7 @@ class SonarrAPI(object):
     def get_queue(self):
         influx_payload = []
         endpoint = '/api/queue'
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         queue = []
 
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
@@ -168,7 +167,7 @@ class SonarrAPI(object):
                         "protocol": protocol,
                         "protocol_id": protocol_id
                     },
-                    "time": self.now,
+                    "time": now,
                     "fields": {
                         "hash": hash_id
                     }
