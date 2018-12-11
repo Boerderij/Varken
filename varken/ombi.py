@@ -8,7 +8,6 @@ from varken.structures import OmbiRequestCounts
 
 class OmbiAPI(object):
     def __init__(self, server, dbmanager):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.dbmanager = dbmanager
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
@@ -20,7 +19,7 @@ class OmbiAPI(object):
         return "<ombi-{}>".format(self.server.id)
 
     def get_total_requests(self):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         tv_endpoint = '/api/v1/Request/tv'
         movie_endpoint = "/api/v1/Request/movie"
 
@@ -42,7 +41,7 @@ class OmbiAPI(object):
                     "type": "Request_Total",
                     "server": self.server.id
                 },
-                "time": self.now,
+                "time": now,
                 "fields": {
                     "total": movie_requests + tv_requests,
                     "movies": movie_requests,
@@ -54,7 +53,7 @@ class OmbiAPI(object):
         self.dbmanager.write_points(influx_payload)
 
     def get_request_counts(self):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/Request/count'
 
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
@@ -70,7 +69,7 @@ class OmbiAPI(object):
                 "tags": {
                     "type": "Request_Counts"
                 },
-                "time": self.now,
+                "time": now,
                 "fields": {
                     "pending": requests.pending,
                     "approved": requests.approved,

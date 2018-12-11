@@ -8,7 +8,6 @@ from varken.structures import Movie, Queue
 
 class RadarrAPI(object):
     def __init__(self, server, dbmanager):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.dbmanager = dbmanager
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
@@ -21,7 +20,7 @@ class RadarrAPI(object):
 
     def get_missing(self):
         endpoint = '/api/movie'
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
         missing = []
 
@@ -45,9 +44,7 @@ class RadarrAPI(object):
                     ma = 1
 
                 movie_name = '{} ({})'.format(movie.title, movie.year)
-
                 missing.append((movie_name, ma, movie.tmdbId, movie.titleSlug))
-
 
         for title, ma, mid, title_slug in missing:
             hash_id = hashit('{}{}{}'.format(self.server.id, title, mid))
@@ -62,7 +59,7 @@ class RadarrAPI(object):
                         "name": title,
                         "titleSlug": title_slug
                     },
-                    "time": self.now,
+                    "time": now,
                     "fields": {
                         "hash": hash_id
                     }
@@ -73,7 +70,7 @@ class RadarrAPI(object):
 
     def get_queue(self):
         endpoint = '/api/queue'
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
         queue = []
 
@@ -124,7 +121,7 @@ class RadarrAPI(object):
                         "protocol_id": protocol_id,
                         "titleSlug": title_slug
                     },
-                    "time": self.now,
+                    "time": now,
                     "fields": {
                         "hash": hash_id
                     }
