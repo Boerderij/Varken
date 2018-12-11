@@ -3,7 +3,7 @@ services:
 
 script:
   - docker build -t boerderij/varken:$TRAVIS_BRANCH .
-  - docker ps -a
+  - docker images
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker push boerderij/varken:$TRAVIS_BRANCH
 
