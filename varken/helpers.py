@@ -33,12 +33,14 @@ def geoip_download(data_folder):
 
             tar.extract(files, datafolder)
             logging.debug('%s has been extracted to %s', files, datafolder)
-
+        
     os.remove(tar_dbfile)
 
 
 def geo_lookup(ipaddress, data_folder):
     datafolder = data_folder
+    logging.debug('Reading GeoLite2 from %s', datafolder)
+
     dbfile = abspath(join(datafolder, 'GeoLite2-City.mmdb'))
     now = time.time()
 
@@ -46,9 +48,13 @@ def geo_lookup(ipaddress, data_folder):
         dbinfo = os.stat(dbfile)
         db_age = now - dbinfo.st_ctime
         if db_age > (35 * 86400):
+            logging.info('GeoLite2 DB is older than 35 days. Attempting to re-download...')
+
             os.remove(dbfile)
+
             geoip_download(datafolder)
     except FileNotFoundError:
+        logging.error('GeoLite2 DB not found. Attempting to download...')
         geoip_download(datafolder)
 
     reader = geoip2.database.Reader(dbfile)
