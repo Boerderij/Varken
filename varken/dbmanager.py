@@ -17,5 +17,5 @@ class DBManager(object):
 
     def write_points(self, data):
         d = data
-        logger.debug('Writing Data to InfluxDB {}'.format(d))
+        logger.debug('Writing Data to InfluxDB %s', d)
         self.influx.write_points(d)
