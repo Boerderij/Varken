@@ -59,7 +59,8 @@ systemctl enable varken
 docker run -d \
   --name=varken \
   -v <path to data>:/config \
-  -e PGID=<gid> -e PUID=<uid>  \
+  -e PGID=<gid> -e PUID=<uid> \
+  -e TZ=America/Chicago \
   boerderij/varken
 ```
 </p>
