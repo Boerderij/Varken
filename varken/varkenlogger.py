@@ -3,10 +3,35 @@ import logging
 from logging.handlers import RotatingFileHandler
 from varken.helpers import mkdir_p
 
+
 FILENAME = "varken.log"
 MAX_SIZE = 5000000  # 5 MB
 MAX_FILES = 5
 LOG_FOLDER = 'logs'
+
+
+# Taken from Hellowlol/HTPC-Manager/Tautulli
+class BlacklistFilter(logging.Filter):
+    """
+    Log filter for blacklisted tokens and passwords
+    """
+    blacklisted_strings = ['apikey',  'username',  'password']
+
+    def __init__(self, filteredstrings):
+        self.filtered_strings = filteredstrings
+
+    def filter(self, record):
+        for item in self.filtered_strings:
+            try:
+                if item in record.msg:
+                    record.msg = record.msg.replace(item, 8 * '*' + item[-2:])
+                if any(item in str(arg) for arg in record.args):
+                    record.args = tuple(arg.replace(item, 8 * '*' + item[-2:]) if isinstance(arg, str) else arg
+                                        for arg in record.args)
+
+            except:
+                pass
+        return True
 
 
 class VarkenLogger(object):
