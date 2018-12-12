@@ -8,6 +8,7 @@ import schedule
 import threading
 import platform
 import distro
+import os
 
 from sys import exit
 from time import sleep
@@ -53,6 +54,9 @@ if __name__ == "__main__":
                 exit("Read permission error for {}".format(ARG_FOLDER))
         else:
             exit("{} does not exist".format(ARG_FOLDER))
+
+    if os.getenv('DEBUG', False) == 'True':
+        opts.debug = True
 
     # Initiate the logger
     vl = VarkenLogger(data_folder=DATA_FOLDER, debug=opts.debug)
