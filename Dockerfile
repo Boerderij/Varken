@@ -2,6 +2,8 @@ FROM lsiobase/alpine.python3
 
 LABEL maintainer="dirtycajunrice"
 
+ENV DEBUG="False"
+
 COPY / /app
 
 RUN \
@@ -9,8 +11,6 @@ RUN \
     chown -R abc:abc \
     /config \
     /app
-
-ENV DEBUG="False"
 
 CMD cp /app/data/varken.example.ini /config/varken.example.ini && python3 /app/Varken.py --data-folder /config
 
