@@ -55,8 +55,12 @@ if __name__ == "__main__":
         else:
             exit("{} does not exist".format(ARG_FOLDER))
 
-    if os.getenv('DEBUG', False) == 'True':
-        opts.debug = True
+    # Set Debug to True if DEBUG env is set
+    enable_opts = ['True', 'true', 'yes']
+    debug_opts = ['debug', 'Debug', 'DEBUG']
+
+    opts.debug = True if any([os.getenv(string, False) for true in enable_opts
+                              for string in debug_opts if os.getenv(string, False) == true]) else False
 
     # Initiate the logger
     vl = VarkenLogger(data_folder=DATA_FOLDER, debug=opts.debug)
