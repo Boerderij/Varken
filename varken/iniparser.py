@@ -63,7 +63,8 @@ class INIParser(object):
                 self.config.read_file(config_ini)
             self.config_blacklist()
         else:
-            exit('Config file missing (varken.ini) in %s', self.data_folder)
+            self.logger.error('Config file missing (varken.ini) in %s', self.data_folder)
+            exit(1)
 
     def parse_opts(self):
         self.read_file()
