@@ -40,8 +40,6 @@ class TautulliAPI(object):
             self.logger.error('TypeError has occurred : %s while creating TautulliStream structure', e)
             return
 
-
-
         for session in sessions:
             # Check to see if ip_address_public atribute exists as it was introduced in v2
             try:
