@@ -1,5 +1,7 @@
 import configparser
 import logging
+import re
+
 from sys import exit
 from os.path import join, exists
 
@@ -40,7 +42,7 @@ class INIParser(object):
         filtered_strings = [section.get(k) for key, section in self.config.items()
                                  for k in section if k in BlacklistFilter.blacklisted_strings]
         self.filtered_strings = list(filter(None, filtered_strings))
-        
+
         for handler in self.logger.handlers:
             handler.addFilter(BlacklistFilter(set(self.filtered_strings)))
 
@@ -66,12 +68,34 @@ class INIParser(object):
             self.logger.error('Config file missing (varken.ini) in %s', self.data_folder)
             exit(1)
 
+    def url_check(self, url=None):
+        url_check = url
+
+        regex = re.compile(
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
+            r'localhost|' #localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
+            r'(?::\d+)?' # optional port
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE
+            )
+
+        valid = re.match(regex, url_check) is not None
+        if not valid:
+            self.logger.error('%s is invalid! URL must host/IP and port if not 80 or 443. ie. localhost:8080', url_check)
+            exit(1)
+        else:
+            self.logger.debug('%s is a vlaid URL in the config', url_check)
+            return url_check
+
     def parse_opts(self):
         self.read_file()
         # Parse InfluxDB options
         url = self.config.get('influxdb', 'url')
+
         port = self.config.getint('influxdb', 'port')
+
         username = self.config.get('influxdb', 'username')
+
         password = self.config.get('influxdb', 'password')
 
         self.influx_server = InfluxServer(url, port, username, password)
@@ -83,29 +107,40 @@ class INIParser(object):
             for server_id in self.sonarr_enabled:
                 sonarr_section = 'sonarr-' + str(server_id)
                 try:
-                    url = self.config.get(sonarr_section, 'url')
+                    url = self.url_check(self.config.get(sonarr_section, 'url'))
+
                     apikey = self.config.get(sonarr_section, 'apikey')
+
                     scheme = 'https://' if self.config.getboolean(
                         sonarr_section, 'ssl') else 'http://'
+
                     verify_ssl = self.config.getboolean(
                         sonarr_section, 'verify_ssl')
+
                     if scheme != 'https://':
                         verify_ssl = False
+
                     queue = self.config.getboolean(sonarr_section, 'queue')
+
                     missing_days = self.config.getint(
                         sonarr_section, 'missing_days')
+
                     future_days = self.config.getint(
                         sonarr_section, 'future_days')
+
                     missing_days_run_seconds = self.config.getint(
                         sonarr_section, 'missing_days_run_seconds')
+
                     future_days_run_seconds = self.config.getint(
                         sonarr_section, 'future_days_run_seconds')
+
                     queue_run_seconds = self.config.getint(
                         sonarr_section, 'queue_run_seconds')
 
                     server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
                                           missing_days_run_seconds, future_days, future_days_run_seconds,
                                           queue, queue_run_seconds)
+
                     self.sonarr_servers.append(server)
                 except configparser.NoOptionError as e:
                     self.radarr_enabled = False
@@ -119,19 +154,27 @@ class INIParser(object):
             for server_id in self.radarr_enabled:
                 radarr_section = 'radarr-' + str(server_id)
                 try:
-                    url = self.config.get(radarr_section, 'url')
+                    url = self.url_check(self.config.get(radarr_section, 'url'))
+
                     apikey = self.config.get(radarr_section, 'apikey')
+
                     scheme = 'https://' if self.config.getboolean(
                         radarr_section, 'ssl') else 'http://'
+
                     verify_ssl = self.config.getboolean(
                         radarr_section, 'verify_ssl')
+
                     if scheme != 'https://':
                         verify_ssl = False
+
                     queue = self.config.getboolean(radarr_section, 'queue')
+
                     queue_run_seconds = self.config.getint(
                         radarr_section, 'queue_run_seconds')
+
                     get_missing = self.config.getboolean(
                         radarr_section, 'get_missing')
+
                     get_missing_run_seconds = self.config.getint(
                         radarr_section, 'get_missing_run_seconds')
 
@@ -150,18 +193,25 @@ class INIParser(object):
             for server_id in self.tautulli_enabled:
                 tautulli_section = 'tautulli-' + str(server_id)
                 try:
-                    url = self.config.get(tautulli_section, 'url')
+                    url = self.url_check(self.config.get(tautulli_section, 'url'))
+
                     fallback_ip = self.config.get(
                         tautulli_section, 'fallback_ip')
+
                     apikey = self.config.get(tautulli_section, 'apikey')
+
                     scheme = 'https://' if self.config.getboolean(
                         tautulli_section, 'ssl') else 'http://'
+
                     verify_ssl = self.config.getboolean(
                         tautulli_section, 'verify_ssl')
+
                     if scheme != 'https://':
                         verify_ssl = False
+
                     get_activity = self.config.getboolean(
                         tautulli_section, 'get_activity')
+
                     get_activity_run_seconds = self.config.getint(
                         tautulli_section, 'get_activity_run_seconds')
 
@@ -180,20 +230,28 @@ class INIParser(object):
             for server_id in self.ombi_enabled:
                 ombi_section = 'ombi-' + str(server_id)
                 try:
-                    url = self.config.get(ombi_section, 'url')
+                    url = self.url_check(self.config.get(ombi_section, 'url'))
+
                     apikey = self.config.get(ombi_section, 'apikey')
+
                     scheme = 'https://' if self.config.getboolean(
                         ombi_section, 'ssl') else 'http://'
+
                     verify_ssl = self.config.getboolean(
                         ombi_section, 'verify_ssl')
+
                     if scheme != 'https://':
                         verify_ssl = False
+
                     request_type_counts = self.config.getboolean(
                         ombi_section, 'get_request_type_counts')
+
                     request_type_run_seconds = self.config.getint(
                         ombi_section, 'request_type_run_seconds')
+
                     request_total_counts = self.config.getboolean(
                         ombi_section, 'get_request_total_counts')
+
                     request_total_run_seconds = self.config.getint(
                         ombi_section, 'request_total_run_seconds')
 
@@ -212,17 +270,24 @@ class INIParser(object):
             for firewall_id in self.ciscoasa_enabled:
                 ciscoasa_section = 'ciscoasa-' + str(firewall_id)
                 try:
-                    url = self.config.get(ciscoasa_section, 'url')
+                    url = self.url_check(self.config.get(ciscoasa_section, 'url'))
+
                     username = self.config.get(ciscoasa_section, 'username')
+
                     password = self.config.get(ciscoasa_section, 'password')
+
                     scheme = 'https://' if self.config.getboolean(
                         ciscoasa_section, 'ssl') else 'http://'
+
                     verify_ssl = self.config.getboolean(
                         ciscoasa_section, 'verify_ssl')
+
                     if scheme != 'https://':
                         verify_ssl = False
+
                     outside_interface = self.config.get(
                         ciscoasa_section, 'outside_interface')
+
                     get_bandwidth_run_seconds = self.config.getint(
                         ciscoasa_section, 'get_bandwidth_run_seconds')
 
