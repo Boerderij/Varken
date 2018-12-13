@@ -33,13 +33,13 @@ def geoip_download(data_folder):
 
             tar.extract(files, datafolder)
             logging.debug('%s has been extracted to %s', files, datafolder)
-        
+
     os.remove(tar_dbfile)
 
 
 def geo_lookup(ipaddress, data_folder):
     datafolder = data_folder
-    logging.debug('Reading GeoLite2 from %s', datafolder)
+    logging.debug('Reading GeoLite2 DB from %s', datafolder)
 
     dbfile = abspath(join(datafolder, 'GeoLite2-City.mmdb'))
     now = time.time()
