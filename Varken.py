@@ -59,8 +59,9 @@ if __name__ == "__main__":
     enable_opts = ['True', 'true', 'yes']
     debug_opts = ['debug', 'Debug', 'DEBUG']
 
-    opts.debug = True if any([os.getenv(string, False) for true in enable_opts
-                              for string in debug_opts if os.getenv(string, False) == true]) else False
+    if not opts.debug:
+        opts.debug = True if any([os.getenv(string, False) for true in enable_opts
+                                  for string in debug_opts if os.getenv(string, False) == true]) else False
 
     # Initiate the logger
     vl = VarkenLogger(data_folder=DATA_FOLDER, debug=opts.debug)
