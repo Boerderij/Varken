@@ -1,4 +1,6 @@
+import os
 import logging
+
 from requests import Session, Request
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
@@ -38,7 +40,16 @@ class TautulliAPI(object):
             self.logger.error('TypeError has occurred : %s while creating TautulliStream structure', e)
             return
 
+
+
         for session in sessions:
+            # Check to see if ip_address_public atribute exists as it was introduced in v2
+            try:
+                getattr(session, 'ip_address_public')
+            except AttributeError:
+                self.logger.error('Public IP attribute missing!!! Do you have an old version of Tautulli (v1)?')
+                os._exit(1)
+
             try:
                 geodata = geo_lookup(session.ip_address_public, self.data_folder)
             except (ValueError, AddressNotFoundError):
