@@ -68,29 +68,40 @@ class INIParser(object):
             self.logger.error('Config file missing (varken.ini) in %s', self.data_folder)
             exit(1)
 
-    def url_check(self, url=None):
+    def url_check(self, url=None, include_port=True):
         url_check = url
+        inc_port = include_port
 
-        regex = re.compile(
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
-            r'localhost|' #localhost...
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
-            r'(?::\d+)?' # optional port
-            r'(?:/?|[/?]\S+)$', re.IGNORECASE
-            )
+        search = (r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
+                  r'localhost|' #localhost...
+                  r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
+                  )
+
+        if inc_port:
+            search = (search + r'(?::\d+)?' + r'(?:/?|[/?]\S+)$')
+        else:
+            search = (search + r'(?:/?|[/?]\S+)$')
+
+        regex = re.compile('{}'.format(search), re.IGNORECASE)
+
+        print(re.match(regex, url_check))
 
         valid = re.match(regex, url_check) is not None
         if not valid:
-            self.logger.error('%s is invalid! URL must host/IP and port if not 80 or 443. ie. localhost:8080', url_check)
-            exit(1)
+            if inc_port:
+                self.logger.error('%s is invalid! URL must host/IP and port if not 80 or 443. ie. localhost:8080', url_check)
+                exit(1)
+            else:
+                self.logger.error('%s is invalid! URL must host/IP. ie. localhost', url_check)
+                exit(1)
         else:
-            self.logger.debug('%s is a vlaid URL in the config', url_check)
+            self.logger.debug('%s is a vlaid URL in the config.', url_check)
             return url_check
 
     def parse_opts(self):
         self.read_file()
         # Parse InfluxDB options
-        url = self.config.get('influxdb', 'url')
+        url = self.url_check(self.config.get('influxdb', 'url'), include_port=False)
 
         port = self.config.getint('influxdb', 'port')
 
