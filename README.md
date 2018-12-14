@@ -16,6 +16,7 @@ Requirements:
 
 <p align="center">
 <img width="800" src="https://i.imgur.com/av8e0HP.png">
+
 _Example Dashboard_
 </p>
 
