@@ -12,11 +12,25 @@ frontend
 Requirements:
 * Python3.6+
 * Python3-pip
-* InfluxDB
+* [InfluxDB](https://www.influxdata.com/)
 
 <p align="center">
 <img width="800" src="https://i.imgur.com/av8e0HP.png">
+_Example Dashboard_
 </p>
+
+Supported Modules:
+* [Sonarr](https://sonarr.tv/) - Smart PVR for newsgroup and bittorrent users.
+* [Radarr](https://radarr.video/) - A fork of Sonarr to work with movies à la Couchpotato.
+* [Tautulli](https://tautulli.com/) - A Python based monitoring and tracking tool for Plex Media Server.
+* [Ombi](https://ombi.io/) - Want a Movie or TV Show on Plex or Emby? Use Ombi!
+* Cisco ASA
+
+Key features:
+* Multiple server support for all modules
+* Geolocation mapping from [GeoLite2](https://dev.maxmind.com/geoip/geoip2/geolite2/)
+* Grafana [Worldmap Panel](https://grafana.com/plugins/grafana-worldmap-panel/installation) support
+
 
 ## Quick Setup (Git Clone)
 ```
