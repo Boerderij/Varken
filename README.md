@@ -15,9 +15,9 @@ Requirements:
 * [InfluxDB](https://www.influxdata.com/)
 
 <p align="center">
-<img width="800" src="https://i.imgur.com/av8e0HP.png">
+Example Dashboard
 
-_Example Dashboard_
+<img width="800" src="https://i.imgur.com/av8e0HP.png">
 </p>
 
 Supported Modules:
