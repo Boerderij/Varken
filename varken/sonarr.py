@@ -45,9 +45,9 @@ class SonarrAPI(object):
         for show in tv_shows:
             if not show.hasFile:
                 sxe = 'S{:0>2}E{:0>2}'.format(show.seasonNumber, show.episodeNumber)
-                missing.append((show.series['title'], sxe, show.airDate, show.title, show.id))
+                missing.append((show.series['title'], sxe, show.airDateUtc, show.title, show.id))
 
-        for series_title, sxe, air_date, episode_title, sonarr_id in missing:
+        for series_title, sxe, air_date_utc, episode_title, sonarr_id in missing:
             hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
             influx_payload.append(
                 {
@@ -59,7 +59,7 @@ class SonarrAPI(object):
                         "name": series_title,
                         "epname": episode_title,
                         "sxe": sxe,
-                        "airs": air_date
+                        "airsUTC": air_date_utc
                     },
                     "time": now,
                     "fields": {
@@ -98,9 +98,9 @@ class SonarrAPI(object):
                 downloaded = 1
             else:
                 downloaded = 0
-            air_days.append((show.series['title'], downloaded, sxe, show.title, show.airDate, show.id))
+            air_days.append((show.series['title'], downloaded, sxe, show.title, show.airDateUtc, show.id))
 
-        for series_title, dl_status, sxe, episode_title, air_date, sonarr_id in air_days:
+        for series_title, dl_status, sxe, episode_title, air_date_utc, sonarr_id in air_days:
             hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
             influx_payload.append(
                 {
@@ -112,7 +112,7 @@ class SonarrAPI(object):
                         "name": series_title,
                         "epname": episode_title,
                         "sxe": sxe,
-                        "airs": air_date,
+                        "airsUTC": air_date_utc,
                         "downloaded": dl_status
                     },
                     "time": now,
