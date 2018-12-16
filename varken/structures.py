@@ -337,3 +337,50 @@ class Movie(NamedTuple):
     physicalReleaseNote: str = None
     website: str = None
     id: int = None
+
+class OmbiMovieRequest(NamedTuple):
+    theMovieDbId: int = None
+    issueId: None = None
+    issues: None = None
+    subscribed: bool = None
+    showSubscribe: bool = None
+    rootPathOverride: int = None
+    qualityOverride: int = None
+    imdbId: str = None
+    overview: str = None
+    posterPath: str = None
+    releaseDate: str = None
+    digitalReleaseDate: None = None
+    status: str = None
+    background: str = None
+    released: bool = None
+    digitalRelease: bool = None
+    title: str = None
+    approved: bool = None
+    markedAsApproved: str = None
+    requestedDate: str = None
+    available: bool = None
+    markedAsAvailable: None = None
+    requestedUserId: str = None
+    denied: bool = None
+    markedAsDenied: str = None
+    deniedReason: None = None
+    requestType: int = None
+    requestedUser: dict = None
+    canApprove: bool = None
+    id: int = None
+
+class OmbiTVRequest(NamedTuple):
+    tvDbId: int = None
+    imdbId: str = None
+    qualityOverride: None = None
+    rootFolder: None = None
+    overview: str = None
+    title: str = None
+    posterPath: str = None
+    background: str = None
+    releaseDate: str = None
+    status: str = None
+    totalSeasons: int = None
+    childRequests: list = None
+    id: int = None

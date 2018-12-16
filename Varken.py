@@ -108,7 +108,7 @@ if __name__ == "__main__":
             if server.request_type_counts:
                 schedule.every(server.request_type_run_seconds).seconds.do(threaded, OMBI.get_request_counts)
             if server.request_total_counts:
-                schedule.every(server.request_total_run_seconds).seconds.do(threaded, OMBI.get_total_requests)
+                schedule.every(server.request_total_run_seconds).seconds.do(threaded, OMBI.get_all_requests)
 
     if CONFIG.ciscoasa_enabled:
         for firewall in CONFIG.ciscoasa_firewalls:
