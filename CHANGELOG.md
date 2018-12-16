@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.2-nightly](https://github.com/Boerderij/Varken/tree/v1.2-nightly) (2018-12-16)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.1...v1.2-nightly)
+
+**Implemented enhancements:**
+
+- \[Feature Request\]: Pull list of requests \(instead of just counts\) [\#58](https://github.com/Boerderij/Varken/issues/58)
+- Feature Request  , Add Sickchill [\#48](https://github.com/Boerderij/Varken/issues/48)
+
 ## [v1.1](https://github.com/Boerderij/Varken/tree/v1.1) (2018-12-11)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.0...v1.1)
 
