@@ -70,6 +70,16 @@ class InfluxServer(NamedTuple):
     username: str = 'root'
     password: str = 'root'
 
+
+class SickChillServer(NamedTuple):
+    id: int = None
+    url: str = None
+    api_key: str = None
+    verify_ssl: bool = False
+    get_missing: bool = False
+    get_missing_run_seconds: int = 30
+
+
 class CiscoASAFirewall(NamedTuple):
     id: int = None
     url: str = '192.168.1.1'
@@ -384,3 +394,19 @@ class OmbiTVRequest(NamedTuple):
     totalSeasons: int = None
     childRequests: list = None
     id: int = None
+
+class SickChillTVShow(NamedTuple):
+    airdate: str = None
+    airs: str = None
+    ep_name: str = None
+    ep_plot: str = None
+    episode: int = None
+    indexerid: int = None
+    network: str = None
+    paused: int = None
+    quality: str = None
+    season: int = None
+    show_name: str = None
+    show_status: str = None
+    tvdbid: int = None
+    weekday: int = None
