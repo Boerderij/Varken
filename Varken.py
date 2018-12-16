@@ -21,6 +21,7 @@ from varken.sonarr import SonarrAPI
 from varken.tautulli import TautulliAPI
 from varken.radarr import RadarrAPI
 from varken.ombi import OmbiAPI
+from varken.sickchill import SickChillAPI
 from varken.cisco import CiscoAPI
 from varken.dbmanager import DBManager
 from varken.varkenlogger import VarkenLogger
@@ -110,6 +111,12 @@ if __name__ == "__main__":
             if server.request_total_counts:
                 schedule.every(server.request_total_run_seconds).seconds.do(threaded, OMBI.get_all_requests)
 
+    if CONFIG.sickchill_enabled:
+        for server in CONFIG.sickchill_servers:
+            SICKCHILL = SickChillAPI(server, DBMANAGER)
+            if server.get_missing:
+                schedule.every(server.get_missing_run_seconds).seconds.do(threaded, SICKCHILL.get_missing)
+
     if CONFIG.ciscoasa_enabled:
         for firewall in CONFIG.ciscoasa_firewalls:
             ASA = CiscoAPI(firewall, DBMANAGER)
@@ -117,7 +124,7 @@ if __name__ == "__main__":
 
     # Run all on startup
     SERVICES_ENABLED = [CONFIG.ombi_enabled, CONFIG.radarr_enabled, CONFIG.tautulli_enabled,
-                        CONFIG.sonarr_enabled, CONFIG.ciscoasa_enabled]
+                        CONFIG.sonarr_enabled, CONFIG.ciscoasa_enabled, CONFIG.sickchill_enabled]
     if not [enabled for enabled in SERVICES_ENABLED if enabled]:
         exit("All services disabled. Exiting")
     schedule.run_all()
