@@ -2,8 +2,8 @@ import logging
 from requests import Session, Request
 from datetime import datetime, timezone
 
-from varken.helpers import connection_handler
-from varken.structures import OmbiRequestCounts
+from varken.helpers import connection_handler, hashit
+from varken.structures import OmbiRequestCounts, OmbiMovieRequest, OmbiTVRequest
 
 
 class OmbiAPI(object):
@@ -18,7 +18,7 @@ class OmbiAPI(object):
     def __repr__(self):
         return "<ombi-{}>".format(self.server.id)
 
-    def get_total_requests(self):
+    def get_all_requests(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         tv_endpoint = '/api/v1/Request/tv'
         movie_endpoint = "/api/v1/Request/movie"
@@ -31,8 +31,20 @@ class OmbiAPI(object):
         if not all([get_tv, get_movie]):
             return
 
-        movie_requests = len(get_movie)
-        tv_requests = len(get_tv)
+        movie_request_count = len(get_movie)
+        tv_request_count = len(get_tv)
+
+        try:
+            tv_show_requests = [OmbiTVRequest(**show) for show in get_tv]
+        except TypeError as e:
+            self.logger.error('TypeError has occurred : %s while creating OmbiTVRequest structure', e)
+            return
+
+        try:
+            movie_requests = [OmbiMovieRequest(**movie) for movie in get_movie]
+        except TypeError as e:
+            self.logger.error('TypeError has occurred : %s while creating OmbiMovieRequest structure', e)
+            return
 
         influx_payload = [
             {
@@ -43,12 +55,73 @@ class OmbiAPI(object):
                 },
                 "time": now,
                 "fields": {
-                    "total": movie_requests + tv_requests,
-                    "movies": movie_requests,
-                    "tv_shows": tv_requests
+                    "total": movie_request_count + tv_request_count,
+                    "movies": movie_request_count,
+                    "tv_shows": tv_request_count
                 }
             }
         ]
+        # Request Type: Movie = 1, TV Show = 0
+        for movie in movie_requests:
+            hash_id = hashit(f'{movie.id}{movie.theMovieDbId}{movie.title}')
+            status = None
+            # Denied = 0, Approved = 1, Completed = 2
+            if movie.denied:
+                status = 0
+            elif movie.approved and movie.available:
+                status = 2
+            elif movie.approved:
+                status = 1
+
+            influx_payload.append(
+                {
+                    "measurement": "Ombi",
+                    "tags": {
+                        "type": "Requests",
+                        "server": self.server.id,
+                        "request_type": 1,
+                        "status": status,
+                        "title": movie.title,
+                        "requested_user": movie.requestedUser['userAlias'],
+                        "requested_date": movie.requestedDate
+                    },
+                    "time": now,
+                    "fields": {
+                        "hash": hash_id
+                    }
+                }
+            )
+
+        for show in tv_show_requests:
+            hash_id = hashit(f'{show.id}{show.tvDbId}{show.title}')
+            status = None
+            # Denied = 0, Approved = 1, Completed = 2
+            if show.childRequests[0]['denied']:
+                status = 0
+            elif show.childRequests[0]['approved'] and show.childRequests[0]['available']:
+                status = 2
+            elif show.childRequests[0]['approved']:
+                status = 1
+
+            influx_payload.append(
+                {
+                    "measurement": "Ombi",
+                    "tags": {
+                        "type": "Requests",
+                        "server": self.server.id,
+                        "request_type": 0,
+                        "status": status,
+                        "title": show.title,
+                        "requested_user": show.childRequests[0]['requestedUser']['userAlias'],
+                        "requested_date": show.childRequests[0]['requestedDate']
+                    },
+                    "time": now,
+                    "fields": {
+                        "hash": hash_id
+                    }
+                }
+            )
+
 
         self.dbmanager.write_points(influx_payload)
 
