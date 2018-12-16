@@ -22,6 +22,7 @@ Example Dashboard
 
 Supported Modules:
 * [Sonarr](https://sonarr.tv/) - Smart PVR for newsgroup and bittorrent users.
+* [SickChill](https://sickchill.github.io/) - SickChill is an automatic Video Library Manager for TV Shows.
 * [Radarr](https://radarr.video/) - A fork of Sonarr to work with movies à la Couchpotato.
 * [Tautulli](https://tautulli.com/) - A Python based monitoring and tracking tool for Plex Media Server.
 * [Ombi](https://ombi.io/) - Want a Movie or TV Show on Plex or Emby? Use Ombi!
