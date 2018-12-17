@@ -11,7 +11,7 @@ from os.path import abspath, join
 from requests.exceptions import InvalidSchema, SSLError, ConnectionError
 from urllib.request import urlretrieve
 
-logger = logging.getLogger('varken')
+logger = logging.getLogger()
 
 
 def geoip_download(data_folder):
