@@ -36,7 +36,7 @@ class BlacklistFilter(logging.Filter):
 
 class VarkenLogger(object):
     """docstring for ."""
-    def __init__(self, log_path=None, debug=None, data_folder=None):
+    def __init__(self, debug=None, data_folder=None):
         self.data_folder = data_folder
         self.log_level = debug
 
