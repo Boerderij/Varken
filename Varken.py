@@ -17,9 +17,11 @@ from varken.sonarr import SonarrAPI
 from varken.radarr import RadarrAPI
 from varken.iniparser import INIParser
 from varken.dbmanager import DBManager
+from varken.helpers import GeoIPHandler
 from varken.tautulli import TautulliAPI
 from varken.sickchill import SickChillAPI
 from varken.varkenlogger import VarkenLogger
+
 
 PLATFORM_LINUX_DISTRO = ' '.join(x for x in linux_distribution() if x)
 
@@ -95,8 +97,10 @@ if __name__ == "__main__":
                 schedule.every(server.future_days_run_seconds).seconds.do(threaded, SONARR.get_future)
 
     if CONFIG.tautulli_enabled:
+        GEOIPHANDLER = GeoIPHandler(DATA_FOLDER)
+        schedule.every(12).to(24).hours.do(threaded, GEOIPHANDLER.update)
         for server in CONFIG.tautulli_servers:
-            TAUTULLI = TautulliAPI(server, DBMANAGER, DATA_FOLDER)
+            TAUTULLI = TautulliAPI(server, DBMANAGER, GEOIPHANDLER)
             if server.get_activity:
                 schedule.every(server.get_activity_run_seconds).seconds.do(threaded, TAUTULLI.get_activity)
 

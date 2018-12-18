@@ -75,8 +75,6 @@ class INIParser(object):
 
         regex = compile('{}'.format(search), IGNORECASE)
 
-        print(match(regex, url_check))
-
         valid = match(regex, url_check) is not None
         if not valid:
             if inc_port:

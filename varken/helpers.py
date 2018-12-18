@@ -1,7 +1,8 @@
-from time import time
 from hashlib import md5
-from tarfile import open
+from tarfile import open as taropen
+from datetime import date
 from logging import getLogger
+from calendar import monthcalendar
 from geoip2.database import Reader
 from urllib3 import disable_warnings
 from os import stat, remove, makedirs
@@ -14,52 +15,63 @@ from requests.exceptions import InvalidSchema, SSLError, ConnectionError
 logger = getLogger()
 
 
-def geoip_download(data_folder):
-    datafolder = data_folder
+class GeoIPHandler(object):
+    def __init__(self, data_folder):
+        self.data_folder = data_folder
+        self.dbfile = abspath(join(self.data_folder, 'GeoLite2-City.mmdb'))
+        self.logger = getLogger()
+        self.update()
 
-    tar_dbfile = abspath(join(datafolder, 'GeoLite2-City.tar.gz'))
+        self.logger.info('Opening persistent connection to GeoLite2 DB...')
+        self.reader = Reader(self.dbfile)
 
-    url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
-    logger.info('Downloading GeoLite2 from %s', url)
-    urlretrieve(url, tar_dbfile)
+    def lookup(self, ipaddress):
+        ip = ipaddress
+        self.logger.debug('Getting lat/long for Tautulli stream')
+        return self.reader.city(ip)
 
-    tar = open(tar_dbfile, 'r:gz')
-    logger.debug('Opening GeoLite2 tar file : %s', tar_dbfile)
+    def update(self):
+        today = date.today()
+        dbdate = None
+        try:
+            dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
+        except FileNotFoundError:
+            self.logger.error("Could not find GeoLite2 DB as: %s", self.dbfile)
+            self.download()
+        first_wednesday_day = [week[2:3][0] for week in monthcalendar(today.year, today.month) if week[2:3][0] != 0][0]
+        first_wednesday_date = date(today.year, today.month, first_wednesday_day)
 
-    for files in tar.getmembers():
-        if 'GeoLite2-City.mmdb' in files.name:
-            logger.debug('"GeoLite2-City.mmdb" FOUND in tar file')
-            files.name = basename(files.name)
+        if dbdate < first_wednesday_date < today:
+            self.logger.info("Newer GeoLite2 DB available, Updating...")
+            remove(self.dbfile)
+            self.download()
+        else:
+            td = first_wednesday_date - today
+            if td.days < 0:
+                self.logger.debug('Geolite2 DB is only %s days old. Keeping current copy', abs(td.days))
+            else:
+                self.logger.debug('Geolite2 DB will update in %s days', abs(td.days))
 
-            tar.extract(files, datafolder)
-            logger.debug('%s has been extracted to %s', files, datafolder)
 
-    remove(tar_dbfile)
+    def download(self):
+        tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))
+        url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
 
+        self.logger.info('Downloading GeoLite2 from %s', url)
+        urlretrieve(url, tar_dbfile)
 
-def geo_lookup(ipaddress, data_folder):
-    datafolder = data_folder
-    logger.debug('Reading GeoLite2 DB from %s', datafolder)
+        self.logger.debug('Opening GeoLite2 tar file : %s', tar_dbfile)
 
-    dbfile = abspath(join(datafolder, 'GeoLite2-City.mmdb'))
-    now = time()
+        tar = taropen(tar_dbfile, 'r:gz')
 
-    try:
-        dbinfo = stat(dbfile)
-        db_age = now - dbinfo.st_ctime
-        if db_age > (35 * 86400):
-            logger.info('GeoLite2 DB is older than 35 days. Attempting to re-download...')
-
-            remove(dbfile)
-
-            geoip_download(datafolder)
-    except FileNotFoundError:
-        logger.error('GeoLite2 DB not found. Attempting to download...')
-        geoip_download(datafolder)
-
-    reader = Reader(dbfile)
-
-    return reader.city(ipaddress)
+        for files in tar.getmembers():
+            if 'GeoLite2-City.mmdb' in files.name:
+                self.logger.debug('"GeoLite2-City.mmdb" FOUND in tar file')
+                files.name = basename(files.name)
+                tar.extract(files, self.data_folder)
+                self.logger.debug('%s has been extracted to %s', files, self.data_folder)
+        tar.close()
+        remove(tar_dbfile)
 
 
 def hashit(string):
