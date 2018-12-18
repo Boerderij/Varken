@@ -7,7 +7,7 @@ from urllib3 import disable_warnings
 from os import stat, remove, makedirs
 from urllib.request import urlretrieve
 from json.decoder import JSONDecodeError
-from os.path import abspath, join, basename
+from os.path import abspath, join, basename, isdir
 from urllib3.exceptions import InsecureRequestWarning
 from requests.exceptions import InvalidSchema, SSLError, ConnectionError
 
@@ -108,8 +108,9 @@ def connection_handler(session, request, verify):
 def mkdir_p(path):
     templogger = getLogger('temp')
     try:
-        templogger.info('Creating folder %s ', path)
-        makedirs(path, exist_ok=True)
+        if not isdir(path):
+            templogger.info('Creating folder %s ', path)
+            makedirs(path, exist_ok=True)
     except Exception as e:
         templogger.error('Could not create folder %s : %s ', path, e)
 
