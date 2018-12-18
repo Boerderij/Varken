@@ -4,18 +4,18 @@ from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 
 from varken.structures import TautulliStream
-from varken.helpers import geo_lookup, hashit, connection_handler
+from varken.helpers import hashit, connection_handler
 
 
 class TautulliAPI(object):
-    def __init__(self, server, dbmanager, data_folder):
+    def __init__(self, server, dbmanager, geoiphandler):
         self.dbmanager = dbmanager
         self.server = server
+        self.geoiphandler = geoiphandler
         self.session = Session()
         self.session.params = {'apikey': self.server.api_key, 'cmd': 'get_activity'}
         self.endpoint = '/api/v2'
         self.logger = getLogger()
-        self.data_folder = data_folder
 
     def __repr__(self):
         return f"<tautulli-{self.server.id}>"
@@ -47,13 +47,13 @@ class TautulliAPI(object):
                 exit(1)
 
             try:
-                geodata = geo_lookup(session.ip_address_public, self.data_folder)
+                geodata = self.geoiphandler.lookup(session.ip_address_public)
             except (ValueError, AddressNotFoundError):
                 if self.server.fallback_ip:
-                    geodata = geo_lookup(self.server.fallback_ip, self.data_folder)
+                    geodata = self.geoiphandler.lookup(self.server.fallback_ip)
                 else:
                     my_ip = self.session.get('http://ip.42.pl/raw').text
-                    geodata = geo_lookup(my_ip, self.data_folder)
+                    geodata = self.geoiphandler.lookup(my_ip)
 
             if not all([geodata.location.latitude, geodata.location.longitude]):
                 latitude = 37.234332396
