@@ -64,8 +64,8 @@ systemctl enable varken
 ```
 ### Docker
 
-[![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken")
-[![Docker-Version](https://images.microbadger.com/badges/version/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken")
+[![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
+[![Docker-Version](https://images.microbadger.com/badges/version/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
 [![Docker Pulls](https://img.shields.io/docker/pulls/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
 [![Docker Stars](https://img.shields.io/docker/stars/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
 <details><summary>Example</summary>
