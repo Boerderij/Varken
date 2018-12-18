@@ -1,5 +1,20 @@
 # Change Log
 
+## [v1.3-nightly](https://github.com/Boerderij/Varken/tree/v1.3-nightly) (2018-12-17)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.2-nightly...v1.3-nightly)
+
+**Implemented enhancements:**
+
+- Create randomized 12-24 hour checks to update GeoLite DB after the first wednesday of the month [\#60](https://github.com/Boerderij/Varken/issues/60)
+
+**Fixed bugs:**
+
+- \[BUG\] Add Catchall to ombi requests [\#59](https://github.com/Boerderij/Varken/issues/59)
+
+**Closed issues:**
+
+- Unify naming and cleanup duplication in iniparser [\#61](https://github.com/Boerderij/Varken/issues/61)
+
 ## [v1.2-nightly](https://github.com/Boerderij/Varken/tree/v1.2-nightly) (2018-12-16)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.1...v1.2-nightly)
 
