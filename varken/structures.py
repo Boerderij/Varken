@@ -1,4 +1,13 @@
+from sys import version_info
 from typing import NamedTuple
+from logging import getLogger
+
+logger = getLogger('temp')
+# Check for python3.6 or newer to resolve erroneous typing.NamedTuple issues
+if version_info < (3, 6):
+    logger.error('Varken requires python3.6 or newer. You are on python%s.%s - Exiting...',
+                 version_info.major, version_info.minor)
+    exit(1)
 
 
 class Queue(NamedTuple):
@@ -88,6 +97,7 @@ class CiscoASAFirewall(NamedTuple):
     outside_interface: str = None
     verify_ssl: bool = False
     get_bandwidth_run_seconds: int = 30
+
 
 class OmbiRequestCounts(NamedTuple):
     pending: int = 0
@@ -348,6 +358,7 @@ class Movie(NamedTuple):
     website: str = None
     id: int = None
 
+
 class OmbiMovieRequest(NamedTuple):
     theMovieDbId: int = None
     issueId: None = None
@@ -380,6 +391,7 @@ class OmbiMovieRequest(NamedTuple):
     canApprove: bool = None
     id: int = None
 
+
 class OmbiTVRequest(NamedTuple):
     tvDbId: int = None
     imdbId: str = None
@@ -394,6 +406,7 @@ class OmbiTVRequest(NamedTuple):
     totalSeasons: int = None
     childRequests: list = None
     id: int = None
+
 
 class SickChillTVShow(NamedTuple):
     airdate: str = None

@@ -1,9 +1,9 @@
-import logging
+from logging import getLogger
 from requests import Session, Request
-from datetime import datetime, timezone, date, timedelta
+from datetime import datetime, timezone
 
-from varken.helpers import hashit, connection_handler
 from varken.structures import SickChillTVShow
+from varken.helpers import hashit, connection_handler
 
 
 class SickChillAPI(object):
@@ -14,10 +14,10 @@ class SickChillAPI(object):
         self.session = Session()
         self.session.params = {'limit': 1000}
         self.endpoint = f"/api/{self.server.api_key}"
-        self.logger = logging.getLogger()
+        self.logger = getLogger()
 
     def __repr__(self):
-        return "<sickchill-{}>".format(self.server.id)
+        return f"<sickchill-{self.server.id}>"
 
     def get_missing(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -39,8 +39,8 @@ class SickChillAPI(object):
 
         for key, section in get['data'].items():
             for show in section:
-                sxe = 'S{:0>2}E{:0>2}'.format(show.season, show.episode)
-                hash_id = hashit('{}{}{}'.format(self.server.id, show.show_name, sxe))
+                sxe = f'S{show.season:0>2}E{show.episode:0>2}'
+                hash_id = hashit(f'{self.server.id}{show.show_name}{sxe}')
                 missing_types = [(0, 'future'), (1, 'later'), (2, 'soon'), (3, 'today'), (4, 'missed')]
                 influx_payload.append(
                     {

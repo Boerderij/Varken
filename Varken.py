@@ -1,36 +1,30 @@
-import sys
-
-# Check for python3.6 or newer to resolve erroneous typing.NamedTuple issues
-if sys.version_info < (3, 6):
-    exit('Varken requires python3.6 or newer')
-
-import schedule
-import threading
 import platform
-import distro
-import os
+import schedule
 
-from sys import exit
 from time import sleep
-from os import access, R_OK
+from sys import version
+from threading import Thread
+from os import access, R_OK, getenv
+from distro import linux_distribution
 from os.path import isdir, abspath, dirname, join
 from argparse import ArgumentParser, RawTextHelpFormatter
+from logging import getLogger, StreamHandler, Formatter, DEBUG
 
-from varken.iniparser import INIParser
-from varken.sonarr import SonarrAPI
-from varken.tautulli import TautulliAPI
-from varken.radarr import RadarrAPI
 from varken.ombi import OmbiAPI
-from varken.sickchill import SickChillAPI
 from varken.cisco import CiscoAPI
+from varken.sonarr import SonarrAPI
+from varken.radarr import RadarrAPI
+from varken.iniparser import INIParser
 from varken.dbmanager import DBManager
+from varken.tautulli import TautulliAPI
+from varken.sickchill import SickChillAPI
 from varken.varkenlogger import VarkenLogger
 
-PLATFORM_LINUX_DISTRO = ' '.join(x for x in distro.linux_distribution() if x)
+PLATFORM_LINUX_DISTRO = ' '.join(x for x in linux_distribution() if x)
 
 
 def threaded(job):
-    thread = threading.Thread(target=job)
+    thread = Thread(target=job)
     thread.start()
 
 
@@ -46,23 +40,32 @@ if __name__ == "__main__":
 
     DATA_FOLDER = abspath(join(dirname(__file__), 'data'))
 
+    templogger = getLogger('temp')
+    templogger.setLevel(DEBUG)
+    tempch = StreamHandler()
+    tempformatter = Formatter('%(asctime)s : %(levelname)s : %(module)s : %(message)s', '%Y-%m-%d %H:%M:%S')
+    tempch.setFormatter(tempformatter)
+    templogger.addHandler(tempch)
+
     if opts.data_folder:
         ARG_FOLDER = opts.data_folder
 
         if isdir(ARG_FOLDER):
             DATA_FOLDER = ARG_FOLDER
-            if not access(ARG_FOLDER, R_OK):
-                exit("Read permission error for {}".format(ARG_FOLDER))
+            if not access(DATA_FOLDER, R_OK):
+                templogger.error("Read permission error for %s", DATA_FOLDER)
+                exit(1)
         else:
-            exit("{} does not exist".format(ARG_FOLDER))
+            templogger.error("%s does not exist", ARG_FOLDER)
+            exit(1)
 
     # Set Debug to True if DEBUG env is set
     enable_opts = ['True', 'true', 'yes']
     debug_opts = ['debug', 'Debug', 'DEBUG']
 
     if not opts.debug:
-        opts.debug = True if any([os.getenv(string, False) for true in enable_opts
-                                  for string in debug_opts if os.getenv(string, False) == true]) else False
+        opts.debug = True if any([getenv(string, False) for true in enable_opts
+                                  for string in debug_opts if getenv(string, False) == true]) else False
 
     # Initiate the logger
     vl = VarkenLogger(data_folder=DATA_FOLDER, debug=opts.debug)
@@ -70,11 +73,10 @@ if __name__ == "__main__":
 
     vl.logger.info('Data folder is "%s"', DATA_FOLDER)
 
-    vl.logger.info(u"{} {} ({}{})".format(
-            platform.system(), platform.release(), platform.version(),
-            ' - {}'.format(PLATFORM_LINUX_DISTRO) if PLATFORM_LINUX_DISTRO else ''
-        ))
-    vl.logger.info(u"Python {}".format(sys.version))
+    vl.logger.info(u"%s %s (%s%s)", platform.system(), platform.release(), platform.version(),
+                   f' - {PLATFORM_LINUX_DISTRO}' if PLATFORM_LINUX_DISTRO else '')
+
+    vl.logger.info(u"Python %s", version)
 
     CONFIG = INIParser(DATA_FOLDER)
     DBMANAGER = DBManager(CONFIG.influx_server)
@@ -126,7 +128,8 @@ if __name__ == "__main__":
     SERVICES_ENABLED = [CONFIG.ombi_enabled, CONFIG.radarr_enabled, CONFIG.tautulli_enabled,
                         CONFIG.sonarr_enabled, CONFIG.ciscoasa_enabled, CONFIG.sickchill_enabled]
     if not [enabled for enabled in SERVICES_ENABLED if enabled]:
-        exit("All services disabled. Exiting")
+        vl.logger.error("All services disabled. Exiting")
+        exit(1)
     schedule.run_all()
 
     while True:

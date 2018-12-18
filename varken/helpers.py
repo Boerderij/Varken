@@ -106,12 +106,12 @@ def connection_handler(session, request, verify):
 
 
 def mkdir_p(path):
-    """http://stackoverflow.com/a/600612/190597 (tzot)"""
+    templogger = logging.getLogger('temp')
     try:
-        logger.info('Creating folder %s ', path)
+        templogger.info('Creating folder %s ', path)
         os.makedirs(path, exist_ok=True)
     except Exception as e:
-        logger.error('Could not create folder %s : %s ', path, e)
+        templogger.error('Could not create folder %s : %s ', path, e)
 
 
 def clean_sid_check(server_id_list, server_type=None):
@@ -123,7 +123,7 @@ def clean_sid_check(server_id_list, server_type=None):
         try:
             valid_sids.append(int(sid))
         except ValueError:
-            logger.error("{} is not a valid server id number".format(sid))
+            logger.error("%s is not a valid server id number", sid)
     if valid_sids:
         logger.info('%s : %s', t.upper(), valid_sids)
         return valid_sids
