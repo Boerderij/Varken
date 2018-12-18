@@ -12,6 +12,7 @@ from logging import getLogger, StreamHandler, Formatter, DEBUG
 
 from varken.ombi import OmbiAPI
 from varken.cisco import CiscoAPI
+from varken import VERSION, BRANCH
 from varken.sonarr import SonarrAPI
 from varken.radarr import RadarrAPI
 from varken.iniparser import INIParser
@@ -77,6 +78,8 @@ if __name__ == "__main__":
                    f' - {PLATFORM_LINUX_DISTRO}' if PLATFORM_LINUX_DISTRO else '')
 
     vl.logger.info(u"Python %s", version)
+
+    vl.logger.info("Varken v%s-%s", VERSION, BRANCH)
 
     CONFIG = INIParser(DATA_FOLDER)
     DBMANAGER = DBManager(CONFIG.influx_server)
