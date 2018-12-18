@@ -1,4 +1,4 @@
-import logging
+from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
 
@@ -13,10 +13,10 @@ class OmbiAPI(object):
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.session.headers = {'Apikey': self.server.api_key}
-        self.logger = logging.getLogger()
+        self.logger = getLogger()
 
     def __repr__(self):
-        return "<ombi-{}>".format(self.server.id)
+        return f"<ombi-{self.server.id}>"
 
     def get_all_requests(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -94,14 +94,16 @@ class OmbiAPI(object):
 
         for show in tv_show_requests:
             hash_id = hashit(f'{show.id}{show.tvDbId}{show.title}')
-            status = None
-            # Denied = 0, Approved = 1, Completed = 2
+
+            # Denied = 0, Approved = 1, Completed = 2, Pending = 3
             if show.childRequests[0]['denied']:
                 status = 0
             elif show.childRequests[0]['approved'] and show.childRequests[0]['available']:
                 status = 2
             elif show.childRequests[0]['approved']:
                 status = 1
+            else:
+                status = 3
 
             influx_payload.append(
                 {
@@ -121,7 +123,6 @@ class OmbiAPI(object):
                     }
                 }
             )
-
 
         self.dbmanager.write_points(influx_payload)
 

@@ -1,12 +1,10 @@
-import os
-import logging
-
+from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 
-from varken.helpers import geo_lookup, hashit, connection_handler
 from varken.structures import TautulliStream
+from varken.helpers import geo_lookup, hashit, connection_handler
 
 
 class TautulliAPI(object):
@@ -16,11 +14,11 @@ class TautulliAPI(object):
         self.session = Session()
         self.session.params = {'apikey': self.server.api_key, 'cmd': 'get_activity'}
         self.endpoint = '/api/v2'
-        self.logger = logging.getLogger()
+        self.logger = getLogger()
         self.data_folder = data_folder
 
     def __repr__(self):
-        return "<tautulli-{}>".format(self.server.id)
+        return f"<tautulli-{self.server.id}>"
 
     def get_activity(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -41,12 +39,12 @@ class TautulliAPI(object):
             return
 
         for session in sessions:
-            # Check to see if ip_address_public atribute exists as it was introduced in v2
+            # Check to see if ip_address_public attribute exists as it was introduced in v2
             try:
                 getattr(session, 'ip_address_public')
             except AttributeError:
                 self.logger.error('Public IP attribute missing!!! Do you have an old version of Tautulli (v1)?')
-                os._exit(1)
+                exit(1)
 
             try:
                 geodata = geo_lookup(session.ip_address_public, self.data_folder)
@@ -94,8 +92,7 @@ class TautulliAPI(object):
             if session.platform == 'Roku':
                 product_version = session.product_version.split('-')[0]
 
-            hash_id = hashit('{}{}{}{}'.format(session.session_id, session.session_key, session.username,
-                                               session.full_title))
+            hash_id = hashit(f'{session.session_id}{session.session_key}{session.username}{session.full_title}')
             influx_payload.append(
                 {
                     "measurement": "Tautulli",
@@ -118,8 +115,7 @@ class TautulliAPI(object):
                         "progress_percent": session.progress_percent,
                         "region_code": geodata.subdivisions.most_specific.iso_code,
                         "location": geodata.city.name,
-                        "full_location": '{} - {}'.format(geodata.subdivisions.most_specific.name,
-                                                          geodata.city.name),
+                        "full_location": f'{geodata.subdivisions.most_specific.name} - {geodata.city.name}',
                         "latitude": latitude,
                         "longitude": longitude,
                         "player_state": player_state,

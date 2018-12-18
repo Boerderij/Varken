@@ -1,4 +1,4 @@
-import logging
+from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
 
@@ -13,12 +13,12 @@ class CiscoAPI(object):
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.session.auth = (self.firewall.username, self.firewall.password)
-        self.logger = logging.getLogger()
+        self.logger = getLogger()
 
         self.get_token()
 
     def __repr__(self):
-        return "<ciscoasa-{}>".format(self.firewall.id)
+        return f"<ciscoasa-{self.firewall.id}>"
 
     def get_token(self):
         endpoint = '/api/tokenservices'

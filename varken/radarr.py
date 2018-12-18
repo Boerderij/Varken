@@ -1,9 +1,9 @@
-import logging
+from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
 
-from varken.helpers import hashit, connection_handler
 from varken.structures import Movie, Queue
+from varken.helpers import hashit, connection_handler
 
 
 class RadarrAPI(object):
@@ -13,10 +13,10 @@ class RadarrAPI(object):
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.session.headers = {'X-Api-Key': self.server.api_key}
-        self.logger = logging.getLogger()
+        self.logger = getLogger()
 
     def __repr__(self):
-        return "<radarr-{}>".format(self.server.id)
+        return f"<radarr-{self.server.id}>"
 
     def get_missing(self):
         endpoint = '/api/movie'
@@ -43,11 +43,11 @@ class RadarrAPI(object):
                 else:
                     ma = 1
 
-                movie_name = '{} ({})'.format(movie.title, movie.year)
+                movie_name = f'{movie.title} ({movie.year})'
                 missing.append((movie_name, ma, movie.tmdbId, movie.titleSlug))
 
         for title, ma, mid, title_slug in missing:
-            hash_id = hashit('{}{}{}'.format(self.server.id, title, mid))
+            hash_id = hashit(f'{self.server.id}{title}{mid}')
             influx_payload.append(
                 {
                     "measurement": "Radarr",
@@ -96,7 +96,7 @@ class RadarrAPI(object):
         for queue_item in download_queue:
             movie = queue_item.movie
 
-            name = '{} ({})'.format(movie.title, movie.year)
+            name = f'{movie.title} ({movie.year})'
 
             if queue_item.protocol.upper() == 'USENET':
                 protocol_id = 1
@@ -107,7 +107,7 @@ class RadarrAPI(object):
                           protocol_id, queue_item.id, movie.titleSlug))
 
         for name, quality, protocol, protocol_id, qid, title_slug in queue:
-            hash_id = hashit('{}{}{}'.format(self.server.id, name, quality))
+            hash_id = hashit(f'{self.server.id}{name}{quality}')
             influx_payload.append(
                 {
                     "measurement": "Radarr",

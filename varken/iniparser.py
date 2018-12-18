@@ -1,22 +1,20 @@
-import configparser
-import logging
-import re
-
-from sys import exit
+from logging import getLogger
 from os.path import join, exists
+from re import match, compile, IGNORECASE
+from configparser import ConfigParser, NoOptionError
 
 from varken.helpers import clean_sid_check
+from varken.structures import SickChillServer
 from varken.varkenlogger import BlacklistFilter
 from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
-from varken.structures import SickChillServer
 
 
 class INIParser(object):
     def __init__(self, data_folder):
-        self.config = configparser.ConfigParser(interpolation=None)
+        self.config = ConfigParser(interpolation=None)
         self.data_folder = data_folder
 
-        self.logger = logging.getLogger()
+        self.logger = getLogger()
 
         self.influx_server = InfluxServer()
 
@@ -59,7 +57,7 @@ class INIParser(object):
             else:
                 sids = clean_sid_check(global_server_ids, t)
                 return sids
-        except configparser.NoOptionError as e:
+        except NoOptionError as e:
             self.logger.error(e)
 
     def read_file(self):
@@ -86,11 +84,11 @@ class INIParser(object):
         else:
             search = (search + r'(?:/?|[/?]\S+)$')
 
-        regex = re.compile('{}'.format(search), re.IGNORECASE)
+        regex = compile('{}'.format(search), IGNORECASE)
 
-        print(re.match(regex, url_check))
+        print(match(regex, url_check))
 
-        valid = re.match(regex, url_check) is not None
+        valid = match(regex, url_check) is not None
         if not valid:
             if inc_port:
                 self.logger.error('%s is invalid! URL must host/IP and port if not 80 or 443. ie. localhost:8080',
@@ -151,7 +149,7 @@ class INIParser(object):
                                           queue, queue_run_seconds)
 
                     self.sonarr_servers.append(server)
-                except configparser.NoOptionError as e:
+                except NoOptionError as e:
                     self.sonarr_enabled = False
                     self.logger.error(
                         '%s disabled. Error: %s', section, e)
@@ -185,7 +183,7 @@ class INIParser(object):
                     server = RadarrServer(server_id, scheme + url, apikey, verify_ssl, queue, queue_run_seconds,
                                           get_missing, get_missing_run_seconds)
                     self.radarr_servers.append(server)
-                except configparser.NoOptionError as e:
+                except NoOptionError as e:
                     self.radarr_enabled = False
                     self.logger.error(
                         '%s disabled. Error: %s', section, e)
@@ -217,7 +215,7 @@ class INIParser(object):
                     server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl, get_activity,
                                             get_activity_run_seconds)
                     self.tautulli_servers.append(server)
-                except configparser.NoOptionError as e:
+                except NoOptionError as e:
                     self.tautulli_enabled = False
                     self.logger.error(
                         '%s disabled. Error: %s', section, e)
@@ -251,7 +249,7 @@ class INIParser(object):
                     server = OmbiServer(server_id, scheme + url, apikey, verify_ssl, request_type_counts,
                                         request_type_run_seconds, request_total_counts, request_total_run_seconds)
                     self.ombi_servers.append(server)
-                except configparser.NoOptionError as e:
+                except NoOptionError as e:
                     self.ombi_enabled = False
                     self.logger.error(
                         '%s disabled. Error: %s', section, e)
@@ -281,7 +279,7 @@ class INIParser(object):
                     server = SickChillServer(server_id, scheme + url, apikey, verify_ssl,
                                              get_missing, get_missing_run_seconds)
                     self.sickchill_servers.append(server)
-                except configparser.NoOptionError as e:
+                except NoOptionError as e:
                     self.sickchill_enabled = False
                     self.logger.error(
                         '%s disabled. Error: %s', section, e)
@@ -313,7 +311,7 @@ class INIParser(object):
                     firewall = CiscoASAFirewall(firewall_id, scheme + url, username, password, outside_interface,
                                                 verify_ssl, get_bandwidth_run_seconds)
                     self.ciscoasa_firewalls.append(firewall)
-                except configparser.NoOptionError as e:
+                except NoOptionError as e:
                     self.ciscoasa_enabled = False
                     self.logger.error(
                         '%s disabled. Error: %s', section, e)

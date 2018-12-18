@@ -1,9 +1,9 @@
-import logging
+from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
-from varken.helpers import hashit, connection_handler
 from varken.structures import Queue, TVShow
+from varken.helpers import hashit, connection_handler
 
 
 class SonarrAPI(object):
@@ -14,10 +14,10 @@ class SonarrAPI(object):
         self.session = Session()
         self.session.headers = {'X-Api-Key': self.server.api_key}
         self.session.params = {'pageSize': 1000}
-        self.logger = logging.getLogger()
+        self.logger = getLogger()
 
     def __repr__(self):
-        return "<sonarr-{}>".format(self.server.id)
+        return f"<sonarr-{self.server.id}>"
 
     def get_missing(self):
         endpoint = '/api/calendar'
@@ -44,11 +44,11 @@ class SonarrAPI(object):
         # Add show to missing list if file does not exist
         for show in tv_shows:
             if not show.hasFile:
-                sxe = 'S{:0>2}E{:0>2}'.format(show.seasonNumber, show.episodeNumber)
+                sxe = f'S{show.seasonNumber:0>2}E{show.episodeNumber:0>2}'
                 missing.append((show.series['title'], sxe, show.airDateUtc, show.title, show.id))
 
         for series_title, sxe, air_date_utc, episode_title, sonarr_id in missing:
-            hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
+            hash_id = hashit(f'{self.server.id}{series_title}{sxe}')
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -93,7 +93,7 @@ class SonarrAPI(object):
             return
 
         for show in tv_shows:
-            sxe = 'S{:0>2}E{:0>2}'.format(show.seasonNumber, show.episodeNumber)
+            sxe = f'S{show.seasonNumber:0>2}E{show.episodeNumber:0>2}'
             if show.hasFile:
                 downloaded = 1
             else:
@@ -101,7 +101,7 @@ class SonarrAPI(object):
             air_days.append((show.series['title'], downloaded, sxe, show.title, show.airDateUtc, show.id))
 
         for series_title, dl_status, sxe, episode_title, air_date_utc, sonarr_id in air_days:
-            hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
+            hash_id = hashit(f'{self.server.id}{series_title}{sxe}')
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
@@ -143,7 +143,7 @@ class SonarrAPI(object):
             return
 
         for show in download_queue:
-            sxe = 'S{:0>2}E{:0>2}'.format(show.episode['seasonNumber'], show.episode['episodeNumber'])
+            sxe = f"S{show.episode['seasonNumber']:0>2}E{show.episode['episodeNumber']:0>2}"
             if show.protocol.upper() == 'USENET':
                 protocol_id = 1
             else:
@@ -153,7 +153,7 @@ class SonarrAPI(object):
                           protocol_id, sxe, show.id))
 
         for series_title, episode_title, protocol, protocol_id, sxe, sonarr_id in queue:
-            hash_id = hashit('{}{}{}'.format(self.server.id, series_title, sxe))
+            hash_id = hashit(f'{self.server.id}{series_title}{sxe}')
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
