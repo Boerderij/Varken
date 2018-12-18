@@ -45,7 +45,7 @@ class VarkenLogger(object):
             self.log_level = INFO
 
         # Make the log directory if it does not exist
-        mkdir_p('{}/{}'.format(self.data_folder, BlacklistFilter.log_folder))
+        mkdir_p(f'{self.data_folder}/{BlacklistFilter.log_folder}')
 
         # Create the Logger
         self.logger = getLogger()

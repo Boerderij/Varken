@@ -1,17 +1,17 @@
-import os
-import time
-import tarfile
-import hashlib
-import urllib3
-import geoip2.database
-import logging
-
-from json.decoder import JSONDecodeError
-from os.path import abspath, join
-from requests.exceptions import InvalidSchema, SSLError, ConnectionError
+from time import time
+from hashlib import md5
+from tarfile import open
+from logging import getLogger
+from geoip2.database import Reader
+from urllib3 import disable_warnings
+from os import stat, remove, makedirs
 from urllib.request import urlretrieve
+from json.decoder import JSONDecodeError
+from os.path import abspath, join, basename
+from urllib3.exceptions import InsecureRequestWarning
+from requests.exceptions import InvalidSchema, SSLError, ConnectionError
 
-logger = logging.getLogger()
+logger = getLogger()
 
 
 def geoip_download(data_folder):
@@ -23,48 +23,48 @@ def geoip_download(data_folder):
     logger.info('Downloading GeoLite2 from %s', url)
     urlretrieve(url, tar_dbfile)
 
-    tar = tarfile.open(tar_dbfile, 'r:gz')
-    logging.debug('Opening GeoLite2 tar file : %s', tar_dbfile)
+    tar = open(tar_dbfile, 'r:gz')
+    logger.debug('Opening GeoLite2 tar file : %s', tar_dbfile)
 
     for files in tar.getmembers():
         if 'GeoLite2-City.mmdb' in files.name:
-            logging.debug('"GeoLite2-City.mmdb" FOUND in tar file')
-            files.name = os.path.basename(files.name)
+            logger.debug('"GeoLite2-City.mmdb" FOUND in tar file')
+            files.name = basename(files.name)
 
             tar.extract(files, datafolder)
-            logging.debug('%s has been extracted to %s', files, datafolder)
+            logger.debug('%s has been extracted to %s', files, datafolder)
 
-    os.remove(tar_dbfile)
+    remove(tar_dbfile)
 
 
 def geo_lookup(ipaddress, data_folder):
     datafolder = data_folder
-    logging.debug('Reading GeoLite2 DB from %s', datafolder)
+    logger.debug('Reading GeoLite2 DB from %s', datafolder)
 
     dbfile = abspath(join(datafolder, 'GeoLite2-City.mmdb'))
-    now = time.time()
+    now = time()
 
     try:
-        dbinfo = os.stat(dbfile)
+        dbinfo = stat(dbfile)
         db_age = now - dbinfo.st_ctime
         if db_age > (35 * 86400):
-            logging.info('GeoLite2 DB is older than 35 days. Attempting to re-download...')
+            logger.info('GeoLite2 DB is older than 35 days. Attempting to re-download...')
 
-            os.remove(dbfile)
+            remove(dbfile)
 
             geoip_download(datafolder)
     except FileNotFoundError:
-        logging.error('GeoLite2 DB not found. Attempting to download...')
+        logger.error('GeoLite2 DB not found. Attempting to download...')
         geoip_download(datafolder)
 
-    reader = geoip2.database.Reader(dbfile)
+    reader = Reader(dbfile)
 
     return reader.city(ipaddress)
 
 
 def hashit(string):
     encoded = string.encode()
-    hashed = hashlib.md5(encoded).hexdigest()
+    hashed = md5(encoded).hexdigest()
 
     return hashed
 
@@ -75,7 +75,7 @@ def connection_handler(session, request, verify):
     v = verify
     return_json = False
 
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    disable_warnings(InsecureRequestWarning)
 
     try:
         get = s.send(r, verify=v)
@@ -106,10 +106,10 @@ def connection_handler(session, request, verify):
 
 
 def mkdir_p(path):
-    templogger = logging.getLogger('temp')
+    templogger = getLogger('temp')
     try:
         templogger.info('Creating folder %s ', path)
-        os.makedirs(path, exist_ok=True)
+        makedirs(path, exist_ok=True)
     except Exception as e:
         templogger.error('Could not create folder %s : %s ', path, e)
 

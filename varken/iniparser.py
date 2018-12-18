@@ -44,6 +44,9 @@ class INIParser(object):
         filtered_strings = [section.get(k) for key, section in self.config.items()
                             for k in section if k in BlacklistFilter.blacklisted_strings]
         self.filtered_strings = list(filter(None, filtered_strings))
+        # Added matching for domains that use /locations. ConnectionPool ignores the location in logs
+        domains_only = list([ string.split('/')[0] for string in filtered_strings if '/' in string ])
+        self.filtered_strings.extend(domains_only)
 
         for handler in self.logger.handlers:
             handler.addFilter(BlacklistFilter(set(self.filtered_strings)))
