@@ -120,7 +120,7 @@ if __name__ == "__main__":
                 schedule.every(server.get_missing_run_seconds).seconds.do(threaded, SICKCHILL.get_missing)
 
     if CONFIG.ciscoasa_enabled:
-        for firewall in CONFIG.ciscoasa_firewalls:
+        for firewall in CONFIG.ciscoasa_servers:
             ASA = CiscoAPI(firewall, DBMANAGER)
             schedule.every(firewall.get_bandwidth_run_seconds).seconds.do(threaded, ASA.get_bandwidth)
 
