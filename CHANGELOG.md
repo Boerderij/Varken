@@ -1,5 +1,44 @@
 # Change Log
 
+## [v1.4](https://github.com/Boerderij/Varken/tree/v1.4) (2018-12-18)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.3-nightly...v1.4)
+
+**Implemented enhancements:**
+
+- \[Feature Request\] Add tautulli request for library stats [\#64](https://github.com/Boerderij/Varken/issues/64)
+
+**Fixed bugs:**
+
+- \[BUG\] Ombi all requests missing half of "pending" option [\#63](https://github.com/Boerderij/Varken/issues/63)
+- \[BUG\] asa bug with checking for apikey [\#62](https://github.com/Boerderij/Varken/issues/62)
+
+**Merged pull requests:**
+
+- v1.4 Merge [\#65](https://github.com/Boerderij/Varken/pull/65) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [v1.3-nightly](https://github.com/Boerderij/Varken/tree/v1.3-nightly) (2018-12-18)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.2-nightly...v1.3-nightly)
+
+**Implemented enhancements:**
+
+- Create randomized 12-24 hour checks to update GeoLite DB after the first wednesday of the month [\#60](https://github.com/Boerderij/Varken/issues/60)
+
+**Fixed bugs:**
+
+- \[BUG\] Add Catchall to ombi requests [\#59](https://github.com/Boerderij/Varken/issues/59)
+
+**Closed issues:**
+
+- Unify naming and cleanup duplication in iniparser [\#61](https://github.com/Boerderij/Varken/issues/61)
+
+## [v1.2-nightly](https://github.com/Boerderij/Varken/tree/v1.2-nightly) (2018-12-16)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.1...v1.2-nightly)
+
+**Implemented enhancements:**
+
+- \[Feature Request\]: Pull list of requests \(instead of just counts\) [\#58](https://github.com/Boerderij/Varken/issues/58)
+- Feature Request  , Add Sickchill [\#48](https://github.com/Boerderij/Varken/issues/48)
+
 ## [v1.1](https://github.com/Boerderij/Varken/tree/v1.1) (2018-12-11)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.0...v1.1)
 

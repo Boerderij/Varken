@@ -1,196 +1,208 @@
-import configparser
-import logging
-from sys import exit
+from logging import getLogger
 from os.path import join, exists
-from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
+from re import match, compile, IGNORECASE
+from configparser import ConfigParser, NoOptionError
 
-logger = logging.getLogger()
+from varken.helpers import clean_sid_check
+from varken.structures import SickChillServer
+from varken.varkenlogger import BlacklistFilter
+from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
 
 
 class INIParser(object):
     def __init__(self, data_folder):
-        self.config = configparser.ConfigParser(interpolation=None)
+        self.config = ConfigParser(interpolation=None)
         self.data_folder = data_folder
+
+        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli',  'sickchill', 'ciscoasa']
+        for service in self.services:
+            setattr(self, f'{service}_servers', [])
+
+        self.logger = getLogger()
 
         self.influx_server = InfluxServer()
 
-        self.sonarr_enabled = False
-        self.sonarr_servers = []
-
-        self.radarr_enabled = False
-        self.radarr_servers = []
-
-        self.ombi_enabled = False
-        self.ombi_servers = []
-
-        self.tautulli_enabled = False
-        self.tautulli_servers = []
-
-        self.ciscoasa_enabled = False
-        self.ciscoasa_firewalls = []
-
         self.parse_opts()
+
+        self.filtered_strings = None
+
+    def config_blacklist(self):
+        filtered_strings = [section.get(k) for key, section in self.config.items()
+                            for k in section if k in BlacklistFilter.blacklisted_strings]
+        self.filtered_strings = list(filter(None, filtered_strings))
+        # Added matching for domains that use /locations. ConnectionPool ignores the location in logs
+        domains_only = [string.split('/')[0] for string in filtered_strings if '/' in string]
+        self.filtered_strings.extend(domains_only)
+
+        for handler in self.logger.handlers:
+            handler.addFilter(BlacklistFilter(set(self.filtered_strings)))
 
     def enable_check(self, server_type=None):
         t = server_type
         try:
             global_server_ids = self.config.get('global', t)
             if global_server_ids.lower() in ['false', 'no', '0']:
-                logger.info('%s disabled.', t.upper())
-                return False
+                self.logger.info('%s disabled.', t.upper())
             else:
-                sids = self.clean_check(global_server_ids, t)
+                sids = clean_sid_check(global_server_ids, t)
                 return sids
-        except configparser.NoOptionError as e:
-            logger.error(e)
-
-    @staticmethod
-    def clean_check(server_id_list, server_type=None):
-        t = server_type
-        sid_list = server_id_list
-        cleaned_list = sid_list.replace(' ', '').split(',')
-        valid_sids = []
-        for sid in cleaned_list:
-            try:
-                valid_sids.append(int(sid))
-            except ValueError:
-                logger.error("{} is not a valid server id number".format(sid))
-
-        if valid_sids:
-            logger.info('%s : %s', t.upper(), valid_sids)
-            return valid_sids
-        else:
-            logger.error('No valid %s', t.upper())
-            return False
+        except NoOptionError as e:
+            self.logger.error(e)
 
     def read_file(self):
         file_path = join(self.data_folder, 'varken.ini')
         if exists(file_path):
             with open(file_path) as config_ini:
                 self.config.read_file(config_ini)
+            self.config_blacklist()
         else:
-            exit('Config file missing (varken.ini) in {}'.format(self.data_folder))
+            self.logger.error('Config file missing (varken.ini) in %s', self.data_folder)
+            exit(1)
+
+    def url_check(self, url=None, include_port=True):
+        url_check = url
+        inc_port = include_port
+
+        search = (r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+                  r'localhost|'  # localhost...
+                  r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+                  )
+
+        if inc_port:
+            search = (search + r'(?::\d+)?' + r'(?:/?|[/?]\S+)$')
+        else:
+            search = (search + r'(?:/?|[/?]\S+)$')
+
+        regex = compile('{}'.format(search), IGNORECASE)
+
+        valid = match(regex, url_check) is not None
+        if not valid:
+            if inc_port:
+                self.logger.error('%s is invalid! URL must host/IP and port if not 80 or 443. ie. localhost:8080',
+                                  url_check)
+                exit(1)
+            else:
+                self.logger.error('%s is invalid! URL must host/IP. ie. localhost', url_check)
+                exit(1)
+        else:
+            self.logger.debug('%s is a valid URL in the config.', url_check)
+            return url_check
 
     def parse_opts(self):
         self.read_file()
         # Parse InfluxDB options
-        url = self.config.get('influxdb', 'url')
+        url = self.url_check(self.config.get('influxdb', 'url'), include_port=False)
+
         port = self.config.getint('influxdb', 'port')
+
         username = self.config.get('influxdb', 'username')
+
         password = self.config.get('influxdb', 'password')
 
         self.influx_server = InfluxServer(url, port, username, password)
 
-        # Parse Sonarr options
-        self.sonarr_enabled = self.enable_check('sonarr_server_ids')
+        # Check for all enabled services
+        for service in self.services:
+            setattr(self, f'{service}_enabled', self.enable_check(f'{service}_server_ids'))
+            service_enabled = getattr(self, f'{service}_enabled')
 
-        if self.sonarr_enabled:
-            sids = self.config.get('global', 'sonarr_server_ids').strip(' ').split(',')
+            if service_enabled:
+                for server_id in service_enabled:
+                    server = None
+                    section = f"{service}-{server_id}"
+                    try:
+                        url = self.url_check(self.config.get(section, 'url'))
 
-            for server_id in sids:
-                sonarr_section = 'sonarr-' + server_id
-                url = self.config.get(sonarr_section, 'url')
-                apikey = self.config.get(sonarr_section, 'apikey')
-                scheme = 'https://' if self.config.getboolean(sonarr_section, 'ssl') else 'http://'
-                verify_ssl = self.config.getboolean(sonarr_section, 'verify_ssl')
-                if scheme != 'https://':
-                    verify_ssl = False
-                queue = self.config.getboolean(sonarr_section, 'queue')
-                missing_days = self.config.getint(sonarr_section, 'missing_days')
-                future_days = self.config.getint(sonarr_section, 'future_days')
-                missing_days_run_seconds = self.config.getint(sonarr_section, 'missing_days_run_seconds')
-                future_days_run_seconds = self.config.getint(sonarr_section, 'future_days_run_seconds')
-                queue_run_seconds = self.config.getint(sonarr_section, 'queue_run_seconds')
+                        apikey = None
+                        if service != 'ciscoasa':
+                            apikey = self.config.get(section, 'apikey')
 
-                server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
-                                      missing_days_run_seconds, future_days, future_days_run_seconds,
-                                      queue, queue_run_seconds)
-                self.sonarr_servers.append(server)
+                        scheme = 'https://' if self.config.getboolean(section, 'ssl') else 'http://'
 
-        # Parse Radarr options
-        self.radarr_enabled = self.enable_check('radarr_server_ids')
+                        verify_ssl = self.config.getboolean(section, 'verify_ssl')
 
-        if self.radarr_enabled:
-            sids = self.config.get('global', 'radarr_server_ids').strip(' ').split(',')
+                        if scheme != 'https://':
+                            verify_ssl = False
 
-            for server_id in sids:
-                radarr_section = 'radarr-' + server_id
-                url = self.config.get(radarr_section, 'url')
-                apikey = self.config.get(radarr_section, 'apikey')
-                scheme = 'https://' if self.config.getboolean(radarr_section, 'ssl') else 'http://'
-                verify_ssl = self.config.getboolean(radarr_section, 'verify_ssl')
-                if scheme != 'https://':
-                    verify_ssl = False
-                queue = self.config.getboolean(radarr_section, 'queue')
-                queue_run_seconds = self.config.getint(radarr_section, 'queue_run_seconds')
-                get_missing = self.config.getboolean(radarr_section, 'get_missing')
-                get_missing_run_seconds = self.config.getint(radarr_section, 'get_missing_run_seconds')
+                        if service == 'sonarr':
+                            queue = self.config.getboolean(section, 'queue')
 
-                server = RadarrServer(server_id, scheme + url, apikey, verify_ssl, queue, queue_run_seconds,
-                                      get_missing, get_missing_run_seconds)
-                self.radarr_servers.append(server)
+                            missing_days = self.config.getint(section, 'missing_days')
 
-        # Parse Tautulli options
-        self.tautulli_enabled = self.enable_check('tautulli_server_ids')
+                            future_days = self.config.getint(section, 'future_days')
 
-        if self.tautulli_enabled:
-            sids = self.config.get('global', 'tautulli_server_ids').strip(' ').split(',')
+                            missing_days_run_seconds = self.config.getint(section, 'missing_days_run_seconds')
 
-            for server_id in sids:
-                tautulli_section = 'tautulli-' + server_id
-                url = self.config.get(tautulli_section, 'url')
-                fallback_ip = self.config.get(tautulli_section, 'fallback_ip')
-                apikey = self.config.get(tautulli_section, 'apikey')
-                scheme = 'https://' if self.config.getboolean(tautulli_section, 'ssl') else 'http://'
-                verify_ssl = self.config.getboolean(tautulli_section, 'verify_ssl')
-                if scheme != 'https://':
-                    verify_ssl = False
-                get_activity = self.config.getboolean(tautulli_section, 'get_activity')
-                get_activity_run_seconds = self.config.getint(tautulli_section, 'get_activity_run_seconds')
+                            future_days_run_seconds = self.config.getint(section, 'future_days_run_seconds')
 
-                server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl, get_activity,
-                                        get_activity_run_seconds)
-                self.tautulli_servers.append(server)
+                            queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
 
-        # Parse Ombi options
-        self.ombi_enabled = self.enable_check('ombi_server_ids')
+                            server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
+                                                  missing_days_run_seconds, future_days, future_days_run_seconds,
+                                                  queue, queue_run_seconds)
 
-        if self.ombi_enabled:
-            sids = self.config.get('global', 'ombi_server_ids').strip(' ').split(',')
-            for server_id in sids:
-                ombi_section = 'ombi-' + server_id
-                url = self.config.get(ombi_section, 'url')
-                apikey = self.config.get(ombi_section, 'apikey')
-                scheme = 'https://' if self.config.getboolean(ombi_section, 'ssl') else 'http://'
-                verify_ssl = self.config.getboolean(ombi_section, 'verify_ssl')
-                if scheme != 'https://':
-                    verify_ssl = False
-                request_type_counts = self.config.getboolean(ombi_section, 'get_request_type_counts')
-                request_type_run_seconds = self.config.getint(ombi_section, 'request_type_run_seconds')
-                request_total_counts = self.config.getboolean(ombi_section, 'get_request_total_counts')
-                request_total_run_seconds = self.config.getint(ombi_section, 'request_total_run_seconds')
+                        if service == 'radarr':
+                            queue = self.config.getboolean(section, 'queue')
 
-                server = OmbiServer(server_id, scheme + url, apikey, verify_ssl, request_type_counts,
-                                    request_type_run_seconds, request_total_counts, request_total_run_seconds)
-                self.ombi_servers.append(server)
+                            queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
 
-        # Parse ASA opts
-        self.ciscoasa_enabled = self.enable_check('ciscoasa_firewall_ids')
+                            get_missing = self.config.getboolean(section, 'get_missing')
 
-        if self.ciscoasa_enabled:
-            fids = self.config.get('global', 'ciscoasa_firewall_ids').strip(' ').split(',')
-            for firewall_id in fids:
-                ciscoasa_section = 'ciscoasa-' + firewall_id
-                url = self.config.get(ciscoasa_section, 'url')
-                username = self.config.get(ciscoasa_section, 'username')
-                password = self.config.get(ciscoasa_section, 'password')
-                scheme = 'https://' if self.config.getboolean(ciscoasa_section, 'ssl') else 'http://'
-                verify_ssl = self.config.getboolean(ciscoasa_section, 'verify_ssl')
-                if scheme != 'https://':
-                    verify_ssl = False
-                outside_interface = self.config.get(ciscoasa_section, 'outside_interface')
-                get_bandwidth_run_seconds = self.config.getint(ciscoasa_section, 'get_bandwidth_run_seconds')
+                            get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
 
-                firewall = CiscoASAFirewall(firewall_id, scheme + url, username, password, outside_interface,
-                                            verify_ssl, get_bandwidth_run_seconds)
-                self.ciscoasa_firewalls.append(firewall)
+                            server = RadarrServer(server_id, scheme + url, apikey, verify_ssl, queue, queue_run_seconds,
+                                                  get_missing, get_missing_run_seconds)
+
+                        if service == 'tautulli':
+                            fallback_ip = self.config.get(section, 'fallback_ip')
+
+                            get_activity = self.config.getboolean(section, 'get_activity')
+
+                            get_activity_run_seconds = self.config.getint(section, 'get_activity_run_seconds')
+
+                            get_stats = self.config.getboolean(section, 'get_stats')
+
+                            get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
+
+                            server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl,
+                                                    get_activity, get_activity_run_seconds, get_stats,
+                                                    get_stats_run_seconds)
+
+                        if service == 'ombi':
+                            request_type_counts = self.config.getboolean(section, 'get_request_type_counts')
+
+                            request_type_run_seconds = self.config.getint(section, 'request_type_run_seconds')
+
+                            request_total_counts = self.config.getboolean(section, 'get_request_total_counts')
+
+                            request_total_run_seconds = self.config.getint(section, 'request_total_run_seconds')
+
+                            server = OmbiServer(server_id, scheme + url, apikey, verify_ssl, request_type_counts,
+                                                request_type_run_seconds, request_total_counts,
+                                                request_total_run_seconds)
+
+                        if service == 'sickchill':
+                            get_missing = self.config.getboolean(section, 'get_missing')
+
+                            get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
+
+                            server = SickChillServer(server_id, scheme + url, apikey, verify_ssl,
+                                                     get_missing, get_missing_run_seconds)
+
+                        if service == 'ciscoasa':
+                            username = self.config.get(section, 'username')
+
+                            password = self.config.get(section, 'password')
+
+                            outside_interface = self.config.get(section, 'outside_interface')
+
+                            get_bandwidth_run_seconds = self.config.getint(section, 'get_bandwidth_run_seconds')
+
+                            server = CiscoASAFirewall(server_id, scheme + url, username, password, outside_interface,
+                                                      verify_ssl, get_bandwidth_run_seconds)
+
+                        getattr(self, f'{service}_servers').append(server)
+
+                    except NoOptionError as e:
+                        setattr(self, f'{service}_enabled', False)
+                        self.logger.error('%s disabled. Error: %s', section, e)

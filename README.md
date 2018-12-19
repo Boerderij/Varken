@@ -12,11 +12,27 @@ frontend
 Requirements:
 * Python3.6+
 * Python3-pip
-* InfluxDB
+* [InfluxDB](https://www.influxdata.com/)
 
 <p align="center">
-<img width="800" src="https://i.imgur.com/av8e0HP.png">
+Example Dashboard
+
+<img width="800" src="https://nickflix.io/sharex/firefox_NxdrqisVLF.png">
 </p>
+
+Supported Modules:
+* [Sonarr](https://sonarr.tv/) - Smart PVR for newsgroup and bittorrent users.
+* [SickChill](https://sickchill.github.io/) - SickChill is an automatic Video Library Manager for TV Shows.
+* [Radarr](https://radarr.video/) - A fork of Sonarr to work with movies à la Couchpotato.
+* [Tautulli](https://tautulli.com/) - A Python based monitoring and tracking tool for Plex Media Server.
+* [Ombi](https://ombi.io/) - Want a Movie or TV Show on Plex or Emby? Use Ombi!
+* Cisco ASA
+
+Key features:
+* Multiple server support for all modules
+* Geolocation mapping from [GeoLite2](https://dev.maxmind.com/geoip/geoip2/geolite2/)
+* Grafana [Worldmap Panel](https://grafana.com/plugins/grafana-worldmap-panel/installation) support
+
 
 ## Quick Setup (Git Clone)
 ```
@@ -24,8 +40,8 @@ Requirements:
 git clone https://github.com/Boerderij/Varken.git /opt/Varken
 
 # Follow the systemd install instructions located in varken.systemd
-nano /opt/Varken/varken.systemd
 cp /opt/Varken/varken.systemd /etc/systemd/system/varken.service
+nano /etc/systemd/system/varken.service
 
 # Create venv in project
 /usr/bin/python3 -m venv /opt/Varken/varken-venv
@@ -48,8 +64,8 @@ systemctl enable varken
 ```
 ### Docker
 
-[![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken")
-[![Docker-Version](https://images.microbadger.com/badges/version/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken")
+[![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
+[![Docker-Version](https://images.microbadger.com/badges/version/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
 [![Docker Pulls](https://img.shields.io/docker/pulls/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
 [![Docker Stars](https://img.shields.io/docker/stars/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
 <details><summary>Example</summary>
@@ -59,7 +75,8 @@ systemctl enable varken
 docker run -d \
   --name=varken \
   -v <path to data>:/config \
-  -e PGID=<gid> -e PUID=<uid>  \
+  -e PGID=<gid> -e PUID=<uid> \
+  -e TZ=America/Chicago \
   boerderij/varken
 ```
 </p>
