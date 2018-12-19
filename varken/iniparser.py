@@ -160,8 +160,13 @@ class INIParser(object):
 
                             get_activity_run_seconds = self.config.getint(section, 'get_activity_run_seconds')
 
+                            get_stats = self.config.getboolean(section, 'get_stats')
+
+                            get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
+
                             server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl,
-                                                    get_activity, get_activity_run_seconds)
+                                                    get_activity, get_activity_run_seconds, get_stats,
+                                                    get_stats_run_seconds)
 
                         if service == 'ombi':
                             request_type_counts = self.config.getboolean(section, 'get_request_type_counts')
