@@ -82,7 +82,7 @@ class INIParser(object):
                                   url_check)
                 exit(1)
             else:
-                self.logger.error('%s is invalid! URL must host/IP. ie. localhost', url_check)
+                self.logger.error('%s is invalid! URL must FQDN host/IP. ie. localhost', url_check)
                 exit(1)
         else:
             self.logger.debug('%s is a valid URL in the config.', url_check)
