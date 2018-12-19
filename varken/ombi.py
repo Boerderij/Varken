@@ -28,7 +28,8 @@ class OmbiAPI(object):
         get_tv = connection_handler(self.session, tv_req, self.server.verify_ssl)
         get_movie = connection_handler(self.session, movie_req, self.server.verify_ssl)
 
-        if not all([get_tv, get_movie]):
+        if not any([get_tv, get_movie]):
+            self.logger.error('No json replies. Discarding job')
             return
 
         movie_request_count = len(get_movie)
