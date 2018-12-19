@@ -17,7 +17,7 @@ Requirements:
 <p align="center">
 Example Dashboard
 
-<img width="800" src="https://i.imgur.com/av8e0HP.png">
+<img width="800" src="https://nickflix.io/sharex/ZPESqG6BdS.png">
 </p>
 
 Supported Modules:
