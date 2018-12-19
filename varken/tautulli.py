@@ -1,30 +1,31 @@
-import logging
+from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
 from geoip2.errors import AddressNotFoundError
 
-from varken.helpers import geo_lookup, hashit, connection_handler
 from varken.structures import TautulliStream
+from varken.helpers import hashit, connection_handler
 
 
 class TautulliAPI(object):
-    def __init__(self, server, dbmanager, data_folder):
+    def __init__(self, server, dbmanager, geoiphandler):
         self.dbmanager = dbmanager
         self.server = server
+        self.geoiphandler = geoiphandler
         self.session = Session()
-        self.session.params = {'apikey': self.server.api_key, 'cmd': 'get_activity'}
+        self.session.params = {'apikey': self.server.api_key}
         self.endpoint = '/api/v2'
-        self.logger = logging.getLogger()
-        self.data_folder = data_folder
+        self.logger = getLogger()
 
     def __repr__(self):
-        return "<tautulli-{}>".format(self.server.id)
+        return f"<tautulli-{self.server.id}>"
 
     def get_activity(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
+        params = {'cmd': 'get_activity'}
 
-        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint))
+        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
         g = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not g:
@@ -39,14 +40,21 @@ class TautulliAPI(object):
             return
 
         for session in sessions:
+            # Check to see if ip_address_public attribute exists as it was introduced in v2
             try:
-                geodata = geo_lookup(session.ip_address_public, self.data_folder)
+                getattr(session, 'ip_address_public')
+            except AttributeError:
+                self.logger.error('Public IP attribute missing!!! Do you have an old version of Tautulli (v1)?')
+                exit(1)
+
+            try:
+                geodata = self.geoiphandler.lookup(session.ip_address_public)
             except (ValueError, AddressNotFoundError):
                 if self.server.fallback_ip:
-                    geodata = geo_lookup(self.server.fallback_ip, self.data_folder)
+                    geodata = self.geoiphandler.lookup(self.server.fallback_ip)
                 else:
                     my_ip = self.session.get('http://ip.42.pl/raw').text
-                    geodata = geo_lookup(my_ip, self.data_folder)
+                    geodata = self.geoiphandler.lookup(my_ip)
 
             if not all([geodata.location.latitude, geodata.location.longitude]):
                 latitude = 37.234332396
@@ -85,8 +93,7 @@ class TautulliAPI(object):
             if session.platform == 'Roku':
                 product_version = session.product_version.split('-')[0]
 
-            hash_id = hashit('{}{}{}{}'.format(session.session_id, session.session_key, session.username,
-                                               session.full_title))
+            hash_id = hashit(f'{session.session_id}{session.session_key}{session.username}{session.full_title}')
             influx_payload.append(
                 {
                     "measurement": "Tautulli",
@@ -109,8 +116,7 @@ class TautulliAPI(object):
                         "progress_percent": session.progress_percent,
                         "region_code": geodata.subdivisions.most_specific.iso_code,
                         "location": geodata.city.name,
-                        "full_location": '{} - {}'.format(geodata.subdivisions.most_specific.name,
-                                                          geodata.city.name),
+                        "full_location": f'{geodata.subdivisions.most_specific.name} - {geodata.city.name}',
                         "latitude": latitude,
                         "longitude": longitude,
                         "player_state": player_state,
@@ -143,5 +149,39 @@ class TautulliAPI(object):
                 }
             }
         )
+
+        self.dbmanager.write_points(influx_payload)
+
+    def get_stats(self):
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        influx_payload = []
+        params = {'cmd': 'get_libraries'}
+
+        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
+        g = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not g:
+            return
+
+        get = g['response']['data']
+
+        for library in get:
+            data = {
+                    "measurement": "Tautulli",
+                    "tags": {
+                        "type": "library_stats",
+                        "server": self.server.id,
+                        "section_name": library['section_name'],
+                        "section_type": library['section_type']
+                    },
+                    "time": now,
+                    "fields": {
+                        "total": int(library['count'])
+                    }
+            }
+            if library['section_type'] == 'show':
+                data['fields']['seasons'] = int(library['parent_count'])
+                data['fields']['episodes'] = int(library['child_count'])
+            influx_payload.append(data)
 
         self.dbmanager.write_points(influx_payload)

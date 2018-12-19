@@ -2,6 +2,8 @@ FROM lsiobase/alpine.python3
 
 LABEL maintainer="dirtycajunrice"
 
+ENV DEBUG="False"
+
 COPY / /app
 
 RUN \
