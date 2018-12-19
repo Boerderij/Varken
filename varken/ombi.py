@@ -65,13 +65,15 @@ class OmbiAPI(object):
         for movie in movie_requests:
             hash_id = hashit(f'{movie.id}{movie.theMovieDbId}{movie.title}')
             status = None
-            # Denied = 0, Approved = 1, Completed = 2
+            # Denied = 0, Approved = 1, Completed = 2, Pending = 3
             if movie.denied:
                 status = 0
             elif movie.approved and movie.available:
                 status = 2
             elif movie.approved:
                 status = 1
+            else:
+                status = 3
 
             influx_payload.append(
                 {
