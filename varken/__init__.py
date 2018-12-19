@@ -1,2 +1,2 @@
-VERSION = 1.3
-BRANCH = 'nightly'
+VERSION = 1.4
+BRANCH = 'master'

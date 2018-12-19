@@ -1,6 +1,22 @@
 # Change Log
 
-## [v1.3-nightly](https://github.com/Boerderij/Varken/tree/v1.3-nightly) (2018-12-17)
+## [v1.4](https://github.com/Boerderij/Varken/tree/v1.4) (2018-12-18)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.3-nightly...v1.4)
+
+**Implemented enhancements:**
+
+- \[Feature Request\] Add tautulli request for library stats [\#64](https://github.com/Boerderij/Varken/issues/64)
+
+**Fixed bugs:**
+
+- \[BUG\] Ombi all requests missing half of "pending" option [\#63](https://github.com/Boerderij/Varken/issues/63)
+- \[BUG\] asa bug with checking for apikey [\#62](https://github.com/Boerderij/Varken/issues/62)
+
+**Merged pull requests:**
+
+- v1.4 Merge [\#65](https://github.com/Boerderij/Varken/pull/65) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [v1.3-nightly](https://github.com/Boerderij/Varken/tree/v1.3-nightly) (2018-12-18)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.2-nightly...v1.3-nightly)
 
 **Implemented enhancements:**
