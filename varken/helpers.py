@@ -27,7 +27,8 @@ class GeoIPHandler(object):
 
     def lookup(self, ipaddress):
         ip = ipaddress
-        self.logger.debug('Getting lat/long for Tautulli stream')
+        self.logger.debug('Getting lat/long for Tautulli stream using ip with last octet ending in %s',
+                          ip.split('.')[-1:])
         return self.reader.city(ip)
 
     def update(self):
