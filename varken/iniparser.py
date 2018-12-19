@@ -114,7 +114,7 @@ class INIParser(object):
                         url = self.url_check(self.config.get(section, 'url'))
 
                         apikey = None
-                        if section != 'ciscoasa':
+                        if service != 'ciscoasa':
                             apikey = self.config.get(section, 'apikey')
 
                         scheme = 'https://' if self.config.getboolean(section, 'ssl') else 'http://'
