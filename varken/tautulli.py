@@ -13,7 +13,7 @@ class TautulliAPI(object):
         self.server = server
         self.geoiphandler = geoiphandler
         self.session = Session()
-        self.session.params = {'apikey': self.server.api_key, 'cmd': 'get_activity'}
+        self.session.params = {'apikey': self.server.api_key}
         self.endpoint = '/api/v2'
         self.logger = getLogger()
 
@@ -23,8 +23,9 @@ class TautulliAPI(object):
     def get_activity(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
+        params = {'cmd': 'get_activity'}
 
-        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint))
+        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
         g = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not g:
@@ -148,5 +149,39 @@ class TautulliAPI(object):
                 }
             }
         )
+
+        self.dbmanager.write_points(influx_payload)
+
+    def get_stats(self):
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        influx_payload = []
+        params = {'cmd': 'get_libraries'}
+
+        req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
+        g = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not g:
+            return
+
+        get = g['response']['data']
+
+        for library in get:
+            data = {
+                    "measurement": "Tautulli",
+                    "tags": {
+                        "type": "library_stats",
+                        "server": self.server.id,
+                        "section_name": library['section_name'],
+                        "section_type": library['section_type']
+                    },
+                    "time": now,
+                    "fields": {
+                        "total": int(library['count'])
+                    }
+            }
+            if library['section_type'] == 'show':
+                data['fields']['seasons'] = int(library['parent_count'])
+                data['fields']['episodes'] = int(library['child_count'])
+            influx_payload.append(data)
 
         self.dbmanager.write_points(influx_payload)

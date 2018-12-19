@@ -103,6 +103,8 @@ if __name__ == "__main__":
             TAUTULLI = TautulliAPI(server, DBMANAGER, GEOIPHANDLER)
             if server.get_activity:
                 schedule.every(server.get_activity_run_seconds).seconds.do(threaded, TAUTULLI.get_activity)
+            if server.get_stats:
+                schedule.every(server.get_stats_run_seconds).seconds.do(threaded, TAUTULLI.get_stats)
 
     if CONFIG.radarr_enabled:
         for server in CONFIG.radarr_servers:
