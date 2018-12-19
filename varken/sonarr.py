@@ -150,9 +150,9 @@ class SonarrAPI(object):
                 protocol_id = 0
 
             queue.append((show.series['title'], show.episode['title'], show.protocol.upper(),
-                          protocol_id, sxe, show.id))
+                          protocol_id, sxe, show.id, show.quality['quality']['name']))
 
-        for series_title, episode_title, protocol, protocol_id, sxe, sonarr_id in queue:
+        for series_title, episode_title, protocol, protocol_id, sxe, sonarr_id, quality in queue:
             hash_id = hashit(f'{self.server.id}{series_title}{sxe}')
             influx_payload.append(
                 {
@@ -165,7 +165,8 @@ class SonarrAPI(object):
                         "epname": episode_title,
                         "sxe": sxe,
                         "protocol": protocol,
-                        "protocol_id": protocol_id
+                        "protocol_id": protocol_id,
+                        "quality": quality
                     },
                     "time": now,
                     "fields": {
@@ -173,5 +174,4 @@ class SonarrAPI(object):
                     }
                 }
             )
-
         self.dbmanager.write_points(influx_payload)
