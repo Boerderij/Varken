@@ -1,9 +1,9 @@
 from hashlib import md5
-from tarfile import open as taropen
 from datetime import date
 from logging import getLogger
 from calendar import monthcalendar
 from geoip2.database import Reader
+from tarfile import open as taropen
 from urllib3 import disable_warnings
 from os import stat, remove, makedirs
 from urllib.request import urlretrieve
