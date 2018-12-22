@@ -63,8 +63,9 @@ class INIParser(object):
         url_check = url
         inc_port = include_port
 
-        search = (r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+        search = (r'(?:([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}|'  # domain...
                   r'localhost|'  # localhost...
+                  r'^[a-zA-Z0-9_-]*$|'
                   r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
                   )
 
