@@ -66,10 +66,10 @@ class INIParser(object):
 
         search = (r'(?:([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}|'  # domain...
                   r'localhost|'  # localhost...
-                  r'^[a-zA-Z0-9_-]*|'
+                  r'^[a-zA-Z0-9_-]*|' # hostname only. My soul dies a little every time this is used...
                   r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
                   )
-
+        # Include search for port if it is needed.
         if inc_port:
             search = (search + r'(?::\d+)?' + r'(?:/?|[/?]\S+)$')
         else:
