@@ -65,7 +65,7 @@ class INIParser(object):
 
         search = (r'(?:([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}|'  # domain...
                   r'localhost|'  # localhost...
-                  r'^[a-zA-Z0-9_-]*$|'
+                  r'^[a-zA-Z0-9_-]*|'
                   r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
                   )
 
