@@ -166,7 +166,7 @@ class OmbiAPI(object):
 
         self.dbmanager.write_points(influx_payload)
 
-    def get_issues_counts(self):
+    def get_issue_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/Issues/count'
 
