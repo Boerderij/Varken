@@ -142,6 +142,8 @@ class TautulliStream(NamedTuple):
     subtitles: int = None
     stream_subtitle_language: str = None
     channel_stream: int = None
+    channel_icon: str = None
+    channel_title: str = None
     video_bitrate: str = None
     is_allow_sync: int = None
     stream_video_bitrate: str = None
@@ -297,6 +299,7 @@ class TautulliStream(NamedTuple):
     stream_subtitle_container: str = None
     sub_type: str = None
     extra_type: str = None
+    _cache_time: str = None
 
 
 class TVShow(NamedTuple):
