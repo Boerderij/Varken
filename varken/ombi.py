@@ -104,14 +104,13 @@ class OmbiAPI(object):
             status = None
 
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
-            if show.childRequests[0]['denied'] is True:
+            if show.childRequests[0]['denied']:
                 status = 0
-                print(str(show.childRequests[0]['denied']) + ' ' + show.title)
 
-            elif show.childRequests[0]['approved'] is True and show.childRequests[0]['available'] is True:
+            elif show.childRequests[0]['approved'] and show.childRequests[0]['available']:
                 status = 2
 
-            elif show.childRequests[0]['approved'] is True:
+            elif show.childRequests[0]['approved']:
                 status = 1
 
             else:
