@@ -61,10 +61,10 @@ class OmbiServer(NamedTuple):
     request_type_run_seconds: int = 30
     request_total_counts: bool = False
     request_total_run_seconds: int = 30
-    request_issues_counts: bool = False
-    request_issues_type_run_seconds: int = 30
-    issues_total_counts: bool = False
-    issues_total_run_seconds: int = 30
+    issue_status_counts: bool = False
+    issue_status_run_seconds: int = 30
+    issue_total_counts: bool = False
+    issue_total_run_seconds: int = 30
 
 
 class TautulliServer(NamedTuple):
