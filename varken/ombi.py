@@ -66,13 +66,17 @@ class OmbiAPI(object):
         for movie in movie_requests:
             hash_id = hashit(f'{movie.id}{movie.theMovieDbId}{movie.title}')
             status = None
+
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
             if movie.denied:
                 status = 0
+
             elif movie.approved and movie.available:
                 status = 2
+
             elif movie.approved:
                 status = 1
+
             else:
                 status = 3
 
@@ -97,14 +101,19 @@ class OmbiAPI(object):
 
         for show in tv_show_requests:
             hash_id = hashit(f'{show.id}{show.tvDbId}{show.title}')
+            status = None
 
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
-            if show.childRequests[0]['denied']:
+            if show.childRequests[0]['denied'] is True:
                 status = 0
-            elif show.childRequests[0]['approved'] and show.childRequests[0]['available']:
+                print(str(show.childRequests[0]['denied']) + ' ' + show.title)
+
+            elif show.childRequests[0]['approved'] is True and show.childRequests[0]['available'] is True:
                 status = 2
-            elif show.childRequests[0]['approved']:
+
+            elif show.childRequests[0]['approved'] is True:
                 status = 1
+
             else:
                 status = 3
 
