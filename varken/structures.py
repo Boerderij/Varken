@@ -410,6 +410,9 @@ class OmbiTVRequest(NamedTuple):
     totalSeasons: int = None
     childRequests: list = None
     id: int = None
+    denied: bool = None
+    markedAsDenied: str = None
+    deniedReason: None = None
 
 
 class SickChillTVShow(NamedTuple):
