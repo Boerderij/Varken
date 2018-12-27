@@ -3,7 +3,7 @@ from requests import Session, Request
 from datetime import datetime, timezone
 
 from varken.helpers import connection_handler, hashit
-from varken.structures import OmbiRequestCounts, OmbiMovieRequest, OmbiTVRequest
+from varken.structures import OmbiRequestCounts, OmbiIssuesCounts, OmbiMovieRequest, OmbiTVRequest
 
 
 class OmbiAPI(object):
@@ -160,6 +160,34 @@ class OmbiAPI(object):
                     "pending": requests.pending,
                     "approved": requests.approved,
                     "available": requests.available
+                }
+            }
+        ]
+
+        self.dbmanager.write_points(influx_payload)
+
+    def get_issues_counts(self):
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        endpoint = '/api/v1/Issues/count'
+
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
+        requests = OmbiIssuesCounts(**get)
+        influx_payload = [
+            {
+                "measurement": "Ombi",
+                "tags": {
+                    "type": "Issues_Counts"
+                },
+                "time": now,
+                "fields": {
+                    "pending": requests.pending,
+                    "in_progress": requests.inProgress,
+                    "resolved": requests.resolved
                 }
             }
         ]

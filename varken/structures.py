@@ -61,6 +61,8 @@ class OmbiServer(NamedTuple):
     request_type_run_seconds: int = 30
     request_total_counts: bool = False
     request_total_run_seconds: int = 30
+    request_issues_counts: bool = False
+    request_issues_type_run_seconds: int = 30
 
 
 class TautulliServer(NamedTuple):
@@ -105,6 +107,11 @@ class OmbiRequestCounts(NamedTuple):
     pending: int = 0
     approved: int = 0
     available: int = 0
+
+class OmbiIssuesCounts(NamedTuple):
+    pending: int = 0
+    inProgress: int = 0
+    resolved: int = 0
 
 
 class TautulliStream(NamedTuple):
