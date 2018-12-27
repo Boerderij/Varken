@@ -299,7 +299,6 @@ class TautulliStream(NamedTuple):
     stream_subtitle_container: str = None
     sub_type: str = None
     extra_type: str = None
-    _cache_time: str = None
 
 
 class TVShow(NamedTuple):
