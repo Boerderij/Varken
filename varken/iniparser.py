@@ -179,9 +179,13 @@ class INIParser(object):
 
                             request_total_run_seconds = self.config.getint(section, 'request_total_run_seconds')
 
+                            request_issues_counts = self.config.getboolean(section, 'get_request_issues_counts')
+
+                            request_issues_type_run_seconds = self.config.getint(section, 'request_type_issues_run_seconds')
+
                             server = OmbiServer(server_id, scheme + url, apikey, verify_ssl, request_type_counts,
                                                 request_type_run_seconds, request_total_counts,
-                                                request_total_run_seconds)
+                                                request_total_run_seconds, request_issues_counts, request_issues_type_run_seconds)
 
                         if service == 'sickchill':
                             get_missing = self.config.getboolean(section, 'get_missing')
