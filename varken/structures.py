@@ -63,6 +63,8 @@ class OmbiServer(NamedTuple):
     request_total_run_seconds: int = 30
     request_issues_counts: bool = False
     request_issues_type_run_seconds: int = 30
+    issues_total_counts: bool = False
+    issues_total_run_seconds: int = 30
 
 
 class TautulliServer(NamedTuple):
@@ -400,6 +402,22 @@ class OmbiMovieRequest(NamedTuple):
     requestType: int = None
     requestedUser: dict = None
     canApprove: bool = None
+    id: int = None
+
+class OmbiIssue(NamedTuple):
+    title: str = None
+    requestType:  int = None
+    providerId: int = None
+    requestId: int = None
+    subject: str = None
+    description: str = None
+    issueCategoryId: int = None
+    issueCategory: dict = None
+    status: int = None
+    resovledDate: None = None
+    userReportedId: str = None
+    userReported: str = None
+    comments: str = None
     id: int = None
 
 
