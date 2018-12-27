@@ -65,7 +65,6 @@ class OmbiAPI(object):
         # Request Type: Movie = 1, TV Show = 0
         for movie in movie_requests:
             hash_id = hashit(f'{movie.id}{movie.theMovieDbId}{movie.title}')
-            status = None
 
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
             if movie.denied:
@@ -101,7 +100,6 @@ class OmbiAPI(object):
 
         for show in tv_show_requests:
             hash_id = hashit(f'{show.id}{show.tvDbId}{show.title}')
-            status = None
 
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
             if show.childRequests[0]['denied']:
