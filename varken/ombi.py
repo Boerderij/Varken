@@ -3,7 +3,7 @@ from requests import Session, Request
 from datetime import datetime, timezone
 
 from varken.helpers import connection_handler, hashit
-from varken.structures import OmbiRequestCounts, OmbiIssuesCounts, OmbiIssue, OmbiMovieRequest, OmbiTVRequest
+from varken.structures import OmbiRequestCounts, OmbiIssuesCounts, OmbiMovieRequest, OmbiTVRequest
 
 
 class OmbiAPI(object):
@@ -191,64 +191,5 @@ class OmbiAPI(object):
                 }
             }
         ]
-
-        self.dbmanager.write_points(influx_payload)
-
-    def get_all_issues(self):
-        now = datetime.now(timezone.utc).astimezone().isoformat()
-        endpoint = '/api/v1/Issues/'
-
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
-        get_issues = connection_handler(self.session, req, self.server.verify_ssl)
-        
-
-        if not any([get_issues]):
-            self.logger.error('No json replies. Discarding job')
-            return
-
-        issues_count = len(get_issues)
-
-        try:
-            issue_list = [OmbiIssue(**issue) for issue in get_issues]
-        except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating OmbiIssue structure', e)
-            return
-
-        influx_payload = [
-            {
-                "measurement": "Ombi",
-                "tags": {
-                    "type": "Issues_Total",
-                    "server": self.server.id
-                },
-                "time": now,
-                "fields": {
-                    "total": issues_count
-                }
-            }
-        ]
-        # Request Type: Movie = 1, TV Show = 0
-        # Status: 0 = Pending, 1 = In Progress, 2 = Resolved
-        for issue in issue_list:
-            hash_id = hashit(f'{issue.id}{issue.requestId}{issue.title}')
-
-            influx_payload.append(
-                {
-                    "measurement": "Ombi",
-                    "tags": {
-                        "type": "Issues",
-                        "server": self.server.id,
-                        "request_type": issue.requestType,
-                        "status": issue.status,
-                        "title": issue.title,
-                        "subject": issue.subject,
-                        "description": issue.description
-                    },
-                    "time": now,
-                    "fields": {
-                        "hash": hash_id
-                    }
-                }
-            )
 
         self.dbmanager.write_points(influx_payload)
