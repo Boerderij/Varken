@@ -27,17 +27,20 @@ class GeoIPHandler(object):
 
     def lookup(self, ipaddress):
         ip = ipaddress
-        self.logger.debug('Getting lat/long for Tautulli stream')
+        self.logger.debug('Getting lat/long for Tautulli stream using ip with last octet ending in %s',
+                          ip.split('.')[-1:])
         return self.reader.city(ip)
 
     def update(self):
         today = date.today()
-        dbdate = None
+
         try:
             dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
         except FileNotFoundError:
             self.logger.error("Could not find GeoLite2 DB as: %s", self.dbfile)
             self.download()
+            dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
+
         first_wednesday_day = [week[2:3][0] for week in monthcalendar(today.year, today.month) if week[2:3][0] != 0][0]
         first_wednesday_date = date(today.year, today.month, first_wednesday_day)
 
@@ -51,7 +54,6 @@ class GeoIPHandler(object):
                 self.logger.debug('Geolite2 DB is only %s days old. Keeping current copy', abs(td.days))
             else:
                 self.logger.debug('Geolite2 DB will update in %s days', abs(td.days))
-
 
     def download(self):
         tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))

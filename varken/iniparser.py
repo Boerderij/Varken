@@ -59,15 +59,17 @@ class INIParser(object):
             self.logger.error('Config file missing (varken.ini) in %s', self.data_folder)
             exit(1)
 
-    def url_check(self, url=None, include_port=True):
+    def url_check(self, url=None, include_port=True, section=None):
         url_check = url
+        module = section
         inc_port = include_port
 
-        search = (r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+        search = (r'(?:([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}|'  # domain...
                   r'localhost|'  # localhost...
+                  r'^[a-zA-Z0-9_-]*|'  # hostname only. My soul dies a little every time this is used...
                   r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
                   )
-
+        # Include search for port if it is needed.
         if inc_port:
             search = (search + r'(?::\d+)?' + r'(?:/?|[/?]\S+)$')
         else:
@@ -78,28 +80,28 @@ class INIParser(object):
         valid = match(regex, url_check) is not None
         if not valid:
             if inc_port:
-                self.logger.error('%s is invalid! URL must host/IP and port if not 80 or 443. ie. localhost:8080',
-                                  url_check)
+                self.logger.error('%s is invalid in module [%s]! URL must host/IP and '
+                                  'port if not 80 or 443. ie. localhost:8080',
+                                  url_check, module)
                 exit(1)
             else:
-                self.logger.error('%s is invalid! URL must host/IP. ie. localhost', url_check)
+                self.logger.error('%s is invalid in module [%s]! URL must host/IP. ie. localhost', url_check, module)
                 exit(1)
         else:
-            self.logger.debug('%s is a valid URL in the config.', url_check)
+            self.logger.debug('%s is a valid URL in module [%s].', url_check, module)
             return url_check
 
     def parse_opts(self):
         self.read_file()
         # Parse InfluxDB options
-        url = self.url_check(self.config.get('influxdb', 'url'), include_port=False)
+        url = self.url_check(self.config.get('influxdb', 'url'), include_port=False, section='influxdb')
 
         port = self.config.getint('influxdb', 'port')
 
         username = self.config.get('influxdb', 'username')
 
         password = self.config.get('influxdb', 'password')
-
-        self.influx_server = InfluxServer(url, port, username, password)
+        self.influx_server = InfluxServer(url=url, port=port, username=username, password=password)
 
         # Check for all enabled services
         for service in self.services:
@@ -111,7 +113,7 @@ class INIParser(object):
                     server = None
                     section = f"{service}-{server_id}"
                     try:
-                        url = self.url_check(self.config.get(section, 'url'))
+                        url = self.url_check(self.config.get(section, 'url'), section=section)
 
                         apikey = None
                         if service != 'ciscoasa':
@@ -137,9 +139,11 @@ class INIParser(object):
 
                             queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
 
-                            server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
-                                                  missing_days_run_seconds, future_days, future_days_run_seconds,
-                                                  queue, queue_run_seconds)
+                            server = SonarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
+                                                  missing_days=missing_days, future_days=future_days,
+                                                  missing_days_run_seconds=missing_days_run_seconds,
+                                                  future_days_run_seconds=future_days_run_seconds,
+                                                  queue=queue, queue_run_seconds=queue_run_seconds)
 
                         if service == 'radarr':
                             queue = self.config.getboolean(section, 'queue')
@@ -150,8 +154,9 @@ class INIParser(object):
 
                             get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
 
-                            server = RadarrServer(server_id, scheme + url, apikey, verify_ssl, queue, queue_run_seconds,
-                                                  get_missing, get_missing_run_seconds)
+                            server = RadarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
+                                                  queue_run_seconds=queue_run_seconds, get_missing=get_missing,
+                                                  queue=queue, get_missing_run_seconds=get_missing_run_seconds)
 
                         if service == 'tautulli':
                             fallback_ip = self.config.get(section, 'fallback_ip')
@@ -164,9 +169,11 @@ class INIParser(object):
 
                             get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
 
-                            server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl,
-                                                    get_activity, get_activity_run_seconds, get_stats,
-                                                    get_stats_run_seconds)
+                            server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
+                                                    verify_ssl=verify_ssl, get_activity=get_activity,
+                                                    fallback_ip=fallback_ip, get_stats=get_stats,
+                                                    get_activity_run_seconds=get_activity_run_seconds,
+                                                    get_stats_run_seconds=get_stats_run_seconds)
 
                         if service == 'ombi':
                             request_type_counts = self.config.getboolean(section, 'get_request_type_counts')
@@ -177,17 +184,26 @@ class INIParser(object):
 
                             request_total_run_seconds = self.config.getint(section, 'request_total_run_seconds')
 
-                            server = OmbiServer(server_id, scheme + url, apikey, verify_ssl, request_type_counts,
-                                                request_type_run_seconds, request_total_counts,
-                                                request_total_run_seconds)
+                            issue_status_counts = self.config.getboolean(section, 'get_issue_status_counts')
+
+                            issue_status_run_seconds = self.config.getint(section, 'issue_status_run_seconds')
+
+                            server = OmbiServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
+                                                request_type_counts=request_type_counts,
+                                                request_type_run_seconds=request_type_run_seconds,
+                                                request_total_counts=request_total_counts,
+                                                request_total_run_seconds=request_total_run_seconds,
+                                                issue_status_counts=issue_status_counts,
+                                                issue_status_run_seconds=issue_status_run_seconds)
 
                         if service == 'sickchill':
                             get_missing = self.config.getboolean(section, 'get_missing')
 
                             get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
 
-                            server = SickChillServer(server_id, scheme + url, apikey, verify_ssl,
-                                                     get_missing, get_missing_run_seconds)
+                            server = SickChillServer(id=server_id, url=scheme + url, api_key=apikey,
+                                                     verify_ssl=verify_ssl, get_missing=get_missing,
+                                                     get_missing_run_seconds=get_missing_run_seconds)
 
                         if service == 'ciscoasa':
                             username = self.config.get(section, 'username')
@@ -198,8 +214,10 @@ class INIParser(object):
 
                             get_bandwidth_run_seconds = self.config.getint(section, 'get_bandwidth_run_seconds')
 
-                            server = CiscoASAFirewall(server_id, scheme + url, username, password, outside_interface,
-                                                      verify_ssl, get_bandwidth_run_seconds)
+                            server = CiscoASAFirewall(id=server_id, url=scheme + url, verify_ssl=verify_ssl,
+                                                      username=username, password=password,
+                                                      outside_interface=outside_interface,
+                                                      get_bandwidth_run_seconds=get_bandwidth_run_seconds)
 
                         getattr(self, f'{service}_servers').append(server)
 

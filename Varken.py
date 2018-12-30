@@ -121,6 +121,8 @@ if __name__ == "__main__":
                 schedule.every(server.request_type_run_seconds).seconds.do(threaded, OMBI.get_request_counts)
             if server.request_total_counts:
                 schedule.every(server.request_total_run_seconds).seconds.do(threaded, OMBI.get_all_requests)
+            if server.issue_status_counts:
+                schedule.every(server.issue_status_run_seconds).seconds.do(threaded, OMBI.get_issue_counts)
 
     if CONFIG.sickchill_enabled:
         for server in CONFIG.sickchill_servers:
