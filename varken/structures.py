@@ -61,6 +61,8 @@ class OmbiServer(NamedTuple):
     request_type_run_seconds: int = 30
     request_total_counts: bool = False
     request_total_run_seconds: int = 30
+    issue_status_counts: bool = False
+    issue_status_run_seconds: int = 30
 
 
 class TautulliServer(NamedTuple):
@@ -105,6 +107,12 @@ class OmbiRequestCounts(NamedTuple):
     pending: int = 0
     approved: int = 0
     available: int = 0
+
+
+class OmbiIssuesCounts(NamedTuple):
+    pending: int = 0
+    inProgress: int = 0
+    resolved: int = 0
 
 
 class TautulliStream(NamedTuple):
@@ -319,6 +327,7 @@ class TVShow(NamedTuple):
     sceneEpisodeNumber: int = None
     sceneSeasonNumber: int = None
     series: dict = None
+    lastSearchTime: str = None
     id: int = None
 
 
