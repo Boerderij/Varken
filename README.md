@@ -10,7 +10,7 @@ from the Plex ecosystem into InfluxDB. Examples use Grafana for a
 frontend
 
 Requirements:
-* Python3.6+
+* Python3.6.7+
 * Python3-pip
 * [InfluxDB](https://www.influxdata.com/)
 
