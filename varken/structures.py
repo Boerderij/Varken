@@ -335,6 +335,7 @@ class Movie(NamedTuple):
     added: str = None
     addOptions: str = None
     alternativeTitles: list = None
+    certification: str = None
     cleanTitle: str = None
     downloaded: bool = None
     folderName: str = None
