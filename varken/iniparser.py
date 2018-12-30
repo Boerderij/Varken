@@ -1,7 +1,7 @@
 from logging import getLogger
 from os.path import join, exists
 from re import match, compile, IGNORECASE
-from configparser import ConfigParser, NoOptionError
+from configparser import ConfigParser, NoOptionError, NoSectionError
 
 from varken.helpers import clean_sid_check
 from varken.structures import SickChillServer
@@ -22,7 +22,11 @@ class INIParser(object):
 
         self.influx_server = InfluxServer()
 
-        self.parse_opts()
+        try:
+            self.parse_opts()
+        except NoSectionError as e:
+            self.logger.error('Invalid config in (varken.ini): %s',e)
+            exit(1)
 
         self.filtered_strings = None
 
