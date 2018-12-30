@@ -6,7 +6,7 @@ logger = getLogger('temp')
 # Check for python3.6 or newer to resolve erroneous typing.NamedTuple issues
 if version_info < (3, 6, 2):
     logger.error('Varken requires python3.6.2 or newer. You are on python%s.%s.%s - Exiting...',
-                 version_info.major, version_info.minor,  version_info.micro)
+                 version_info.major, version_info.minor, version_info.micro)
     exit(1)
 
 
@@ -369,6 +369,7 @@ class Movie(NamedTuple):
     physicalRelease: str = None
     physicalReleaseNote: str = None
     website: str = None
+    addOptions: str = None
     id: int = None
 
 
