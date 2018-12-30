@@ -66,7 +66,7 @@ class INIParser(object):
 
         search = (r'(?:([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}|'  # domain...
                   r'localhost|'  # localhost...
-                  r'^[a-zA-Z0-9_-]*|' # hostname only. My soul dies a little every time this is used...
+                  r'^[a-zA-Z0-9_-]*|'  # hostname only. My soul dies a little every time this is used...
                   r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
                   )
         # Include search for port if it is needed.
@@ -80,7 +80,8 @@ class INIParser(object):
         valid = match(regex, url_check) is not None
         if not valid:
             if inc_port:
-                self.logger.error('%s is invalid in module [%s]! URL must host/IP and port if not 80 or 443. ie. localhost:8080',
+                self.logger.error('%s is invalid in module [%s]! URL must host/IP and '
+                                  'port if not 80 or 443. ie. localhost:8080',
                                   url_check, module)
                 exit(1)
             else:
@@ -179,9 +180,14 @@ class INIParser(object):
 
                             request_total_run_seconds = self.config.getint(section, 'request_total_run_seconds')
 
+                            issue_status_counts = self.config.getboolean(section, 'get_issue_status_counts')
+
+                            issue_status_run_seconds = self.config.getint(section, 'issue_status_run_seconds')
+
                             server = OmbiServer(server_id, scheme + url, apikey, verify_ssl, request_type_counts,
                                                 request_type_run_seconds, request_total_counts,
-                                                request_total_run_seconds)
+                                                request_total_run_seconds, issue_status_counts,
+                                                issue_status_run_seconds)
 
                         if service == 'sickchill':
                             get_missing = self.config.getboolean(section, 'get_missing')
