@@ -33,7 +33,7 @@ class GeoIPHandler(object):
 
     def update(self):
         today = date.today()
-        dbdate = None
+
         try:
             dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
         except FileNotFoundError:
@@ -54,7 +54,6 @@ class GeoIPHandler(object):
                 self.logger.debug('Geolite2 DB is only %s days old. Keeping current copy', abs(td.days))
             else:
                 self.logger.debug('Geolite2 DB will update in %s days', abs(td.days))
-
 
     def download(self):
         tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))
