@@ -101,8 +101,7 @@ class INIParser(object):
         username = self.config.get('influxdb', 'username')
 
         password = self.config.get('influxdb', 'password')
-
-        self.influx_server = InfluxServer(url, port, username, password)
+        self.influx_server = InfluxServer(url=url, port=port, username=username, password=password)
 
         # Check for all enabled services
         for service in self.services:
@@ -140,9 +139,11 @@ class INIParser(object):
 
                             queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
 
-                            server = SonarrServer(server_id, scheme + url, apikey, verify_ssl, missing_days,
-                                                  missing_days_run_seconds, future_days, future_days_run_seconds,
-                                                  queue, queue_run_seconds)
+                            server = SonarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
+                                                  missing_days=missing_days, future_days=future_days,
+                                                  missing_days_run_seconds=missing_days_run_seconds,
+                                                  future_days_run_seconds=future_days_run_seconds,
+                                                  queue=queue, queue_run_seconds=queue_run_seconds)
 
                         if service == 'radarr':
                             queue = self.config.getboolean(section, 'queue')
@@ -153,8 +154,9 @@ class INIParser(object):
 
                             get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
 
-                            server = RadarrServer(server_id, scheme + url, apikey, verify_ssl, queue, queue_run_seconds,
-                                                  get_missing, get_missing_run_seconds)
+                            server = RadarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
+                                                  queue_run_seconds=queue_run_seconds, get_missing=get_missing,
+                                                  queue=queue, get_missing_run_seconds=get_missing_run_seconds)
 
                         if service == 'tautulli':
                             fallback_ip = self.config.get(section, 'fallback_ip')
@@ -167,9 +169,11 @@ class INIParser(object):
 
                             get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
 
-                            server = TautulliServer(server_id, scheme + url, fallback_ip, apikey, verify_ssl,
-                                                    get_activity, get_activity_run_seconds, get_stats,
-                                                    get_stats_run_seconds)
+                            server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
+                                                    verify_ssl=verify_ssl, get_activity=get_activity,
+                                                    fallback_ip=fallback_ip, get_stats=get_stats,
+                                                    get_activity_run_seconds=get_activity_run_seconds,
+                                                    get_stats_run_seconds=get_stats_run_seconds)
 
                         if service == 'ombi':
                             request_type_counts = self.config.getboolean(section, 'get_request_type_counts')
@@ -184,18 +188,22 @@ class INIParser(object):
 
                             issue_status_run_seconds = self.config.getint(section, 'issue_status_run_seconds')
 
-                            server = OmbiServer(server_id, scheme + url, apikey, verify_ssl, request_type_counts,
-                                                request_type_run_seconds, request_total_counts,
-                                                request_total_run_seconds, issue_status_counts,
-                                                issue_status_run_seconds)
+                            server = OmbiServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
+                                                request_type_counts=request_type_counts,
+                                                request_type_run_seconds=request_type_run_seconds,
+                                                request_total_counts=request_total_counts,
+                                                request_total_run_seconds=request_total_run_seconds,
+                                                issue_status_counts=issue_status_counts,
+                                                issue_status_run_seconds=issue_status_run_seconds)
 
                         if service == 'sickchill':
                             get_missing = self.config.getboolean(section, 'get_missing')
 
                             get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
 
-                            server = SickChillServer(server_id, scheme + url, apikey, verify_ssl,
-                                                     get_missing, get_missing_run_seconds)
+                            server = SickChillServer(id=server_id, url=scheme + url, api_key=apikey,
+                                                     verify_ssl=verify_ssl, get_missing=get_missing,
+                                                     get_missing_run_seconds=get_missing_run_seconds)
 
                         if service == 'ciscoasa':
                             username = self.config.get(section, 'username')
@@ -206,8 +214,10 @@ class INIParser(object):
 
                             get_bandwidth_run_seconds = self.config.getint(section, 'get_bandwidth_run_seconds')
 
-                            server = CiscoASAFirewall(server_id, scheme + url, username, password, outside_interface,
-                                                      verify_ssl, get_bandwidth_run_seconds)
+                            server = CiscoASAFirewall(id=server_id, url=scheme + url, verify_ssl=verify_ssl,
+                                                      username=username, password=password,
+                                                      outside_interface=outside_interface,
+                                                      get_bandwidth_run_seconds=get_bandwidth_run_seconds)
 
                         getattr(self, f'{service}_servers').append(server)
 
