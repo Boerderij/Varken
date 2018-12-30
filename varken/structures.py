@@ -327,6 +327,7 @@ class TVShow(NamedTuple):
     sceneEpisodeNumber: int = None
     sceneSeasonNumber: int = None
     series: dict = None
+    lastSearchTime: str = None
     id: int = None
 
 
