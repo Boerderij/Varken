@@ -3,7 +3,7 @@ from requests import Session, Request
 from datetime import datetime, timezone
 
 from varken.helpers import connection_handler, hashit
-from varken.structures import OmbiRequestCounts, OmbiMovieRequest, OmbiTVRequest
+from varken.structures import OmbiRequestCounts, OmbiIssuesCounts, OmbiMovieRequest, OmbiTVRequest
 
 
 class OmbiAPI(object):
@@ -65,14 +65,17 @@ class OmbiAPI(object):
         # Request Type: Movie = 1, TV Show = 0
         for movie in movie_requests:
             hash_id = hashit(f'{movie.id}{movie.theMovieDbId}{movie.title}')
-            status = None
+
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
             if movie.denied:
                 status = 0
+
             elif movie.approved and movie.available:
                 status = 2
+
             elif movie.approved:
                 status = 1
+
             else:
                 status = 3
 
@@ -101,10 +104,13 @@ class OmbiAPI(object):
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
             if show.childRequests[0]['denied']:
                 status = 0
+
             elif show.childRequests[0]['approved'] and show.childRequests[0]['available']:
                 status = 2
+
             elif show.childRequests[0]['approved']:
                 status = 1
+
             else:
                 status = 3
 
@@ -151,6 +157,34 @@ class OmbiAPI(object):
                     "pending": requests.pending,
                     "approved": requests.approved,
                     "available": requests.available
+                }
+            }
+        ]
+
+        self.dbmanager.write_points(influx_payload)
+
+    def get_issue_counts(self):
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        endpoint = '/api/v1/Issues/count'
+
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            return
+
+        requests = OmbiIssuesCounts(**get)
+        influx_payload = [
+            {
+                "measurement": "Ombi",
+                "tags": {
+                    "type": "Issues_Counts"
+                },
+                "time": now,
+                "fields": {
+                    "pending": requests.pending,
+                    "in_progress": requests.inProgress,
+                    "resolved": requests.resolved
                 }
             }
         ]
