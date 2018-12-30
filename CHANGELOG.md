@@ -1,6 +1,25 @@
 # Change Log
 
-## [v1.4](https://github.com/Boerderij/Varken/tree/v1.4) (2018-12-18)
+## [v1.5](https://github.com/Boerderij/Varken/tree/v1.5) (2018-12-30)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.4...v1.5)
+
+**Implemented enhancements:**
+
+- \[Feature Request\] Add issues from Ombi [\#70](https://github.com/Boerderij/Varken/issues/70)
+- \[Feature Request\] Allow DNS Hostnames [\#66](https://github.com/Boerderij/Varken/issues/66)
+- Replace static grafana configs with a Public Example [\#32](https://github.com/Boerderij/Varken/issues/32)
+
+**Fixed bugs:**
+
+- \[BUG\] unexpected keyword argument 'channel\_icon' [\#73](https://github.com/Boerderij/Varken/issues/73)
+- \[BUG\] Unexpected keyword argument 'addOptions'  [\#68](https://github.com/Boerderij/Varken/issues/68)
+
+**Merged pull requests:**
+
+- v1.5 Merge [\#75](https://github.com/Boerderij/Varken/pull/75) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- Add Ombi Issues [\#74](https://github.com/Boerderij/Varken/pull/74) ([anderssonoscar0](https://github.com/anderssonoscar0))
+
+## [v1.4](https://github.com/Boerderij/Varken/tree/v1.4) (2018-12-19)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.3-nightly...v1.4)
 
 **Implemented enhancements:**
@@ -92,10 +111,6 @@
 ## [v0.2-nightly](https://github.com/Boerderij/Varken/tree/v0.2-nightly) (2018-12-06)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v0.2-nightly)
 
-**Implemented enhancements:**
-
-- Tautulli - multiple server support? [\#25](https://github.com/Boerderij/Varken/issues/25)
-
 **Closed issues:**
 
 - Create the DB if it does not exist. [\#38](https://github.com/Boerderij/Varken/issues/38)
@@ -105,7 +120,12 @@
 - use a config.ini instead of command-line flags [\#33](https://github.com/Boerderij/Varken/issues/33)
 - Migrate crontab to python schedule package [\#31](https://github.com/Boerderij/Varken/issues/31)
 - Consolidate missing and missing\_days in sonarr.py [\#30](https://github.com/Boerderij/Varken/issues/30)
+- Database Withou any scripts [\#29](https://github.com/Boerderij/Varken/issues/29)
+- Grafana dashboard json doesn't match format of readme screenshot? [\#28](https://github.com/Boerderij/Varken/issues/28)
 - Ombi something new \[Request\] [\#26](https://github.com/Boerderij/Varken/issues/26)
+- Users Online not populating [\#24](https://github.com/Boerderij/Varken/issues/24)
+- Missing dashboard [\#23](https://github.com/Boerderij/Varken/issues/23)
+- Is there a Docker Image available for these scripts? [\#22](https://github.com/Boerderij/Varken/issues/22)
 - Support for Linux without ASA [\#21](https://github.com/Boerderij/Varken/issues/21)
 
 **Merged pull requests:**
