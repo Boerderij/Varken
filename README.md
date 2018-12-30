@@ -103,9 +103,16 @@ do not include database creation, please ensure you create an influx database
 named `varken`
 
 ### Grafana
-[Grafana Installation Documentation](http://docs.grafana.org/installation/)
+[Grafana Installation Documentation](http://docs.grafana.org/installation/)  
+[Official Example Dashboards](https://grafana.com/dashboards?search=Varken%20%5BOfficial%5D)
 
 Grafana is used in our examples but not required, nor packaged as part of
-Varken. Panel example pictures are pinned in the grafana-panels channel of
-discord. Future releases may contain a json-generator, but it does not exist
-as varken stands today.
+Varken. Panel examples now exist in both nightly and tagged releases hosted 
+on grafana.com (link above). 
+
+1. Use the link above, then click on your desired dashboard version
+2. Click `Copy ID to Clipboard`
+3. In grafana, click your dashboards menu dropdown, and then click `Import dashboard`
+4. Paste the ID into the `Grafana.com Dashboard` field and then click into empty space on the screen. (This should change the screen to show `Importing Dashboard from Grafana.com`
+5. Select your varken datasource name in the dropdown labeled `Varken`
+6. Click Import!
