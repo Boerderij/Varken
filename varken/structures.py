@@ -10,22 +10,12 @@ if version_info < (3, 6, 2):
     exit(1)
 
 
-class Queue(NamedTuple):
-    downloadId: str = None
-    episode: dict = None
-    estimatedCompletionTime: str = None
-    id: int = None
-    movie: dict = None
-    protocol: str = None
-    quality: dict = None
-    series: dict = None
-    size: float = None
-    sizeleft: float = None
-    status: str = None
-    statusMessages: list = None
-    timeleft: str = None
-    title: str = None
-    trackedDownloadStatus: str = None
+# Server Structures
+class InfluxServer(NamedTuple):
+    password: str = 'root'
+    port: int = 8086
+    url: str = 'localhost'
+    username: str = 'root'
 
 
 class SonarrServer(NamedTuple):
@@ -77,13 +67,6 @@ class TautulliServer(NamedTuple):
     verify_ssl: bool = None
 
 
-class InfluxServer(NamedTuple):
-    password: str = 'root'
-    port: int = 8086
-    url: str = 'localhost'
-    username: str = 'root'
-
-
 class SickChillServer(NamedTuple):
     api_key: str = None
     get_missing: bool = False
@@ -103,6 +86,26 @@ class CiscoASAFirewall(NamedTuple):
     verify_ssl: bool = False
 
 
+# Shared
+class Queue(NamedTuple):
+    downloadId: str = None
+    episode: dict = None
+    estimatedCompletionTime: str = None
+    id: int = None
+    movie: dict = None
+    protocol: str = None
+    quality: dict = None
+    series: dict = None
+    size: float = None
+    sizeleft: float = None
+    status: str = None
+    statusMessages: list = None
+    timeleft: str = None
+    title: str = None
+    trackedDownloadStatus: str = None
+
+
+# Ombi Structures
 class OmbiRequestCounts(NamedTuple):
     approved: int = 0
     available: int = 0
@@ -115,6 +118,144 @@ class OmbiIssuesCounts(NamedTuple):
     resolved: int = 0
 
 
+class OmbiTVRequest(NamedTuple):
+    background: str = None
+    childRequests: list = None
+    denied: bool = None
+    deniedReason: None = None
+    id: int = None
+    imdbId: str = None
+    markedAsDenied: str = None
+    overview: str = None
+    posterPath: str = None
+    qualityOverride: None = None
+    releaseDate: str = None
+    rootFolder: None = None
+    status: str = None
+    title: str = None
+    totalSeasons: int = None
+    tvDbId: int = None
+
+
+class OmbiMovieRequest(NamedTuple):
+    approved: bool = None
+    available: bool = None
+    background: str = None
+    canApprove: bool = None
+    denied: bool = None
+    deniedReason: None = None
+    digitalRelease: bool = None
+    digitalReleaseDate: None = None
+    id: int = None
+    imdbId: str = None
+    issueId: None = None
+    issues: None = None
+    markedAsApproved: str = None
+    markedAsAvailable: None = None
+    markedAsDenied: str = None
+    overview: str = None
+    posterPath: str = None
+    qualityOverride: int = None
+    released: bool = None
+    releaseDate: str = None
+    requestedDate: str = None
+    requestedUser: dict = None
+    requestedUserId: str = None
+    requestType: int = None
+    rootPathOverride: int = None
+    showSubscribe: bool = None
+    status: str = None
+    subscribed: bool = None
+    theMovieDbId: int = None
+    title: str = None
+
+
+# Sonarr
+class TVShow(NamedTuple):
+    absoluteEpisodeNumber: int = None
+    airDate: str = None
+    airDateUtc: str = None
+    episodeFile: dict = None
+    episodeFileId: int = None
+    episodeNumber: int = None
+    hasFile: bool = None
+    id: int = None
+    lastSearchTime: str = None
+    monitored: bool = None
+    overview: str = None
+    sceneAbsoluteEpisodeNumber: int = None
+    sceneEpisodeNumber: int = None
+    sceneSeasonNumber: int = None
+    seasonNumber: int = None
+    series: dict = None
+    seriesId: int = None
+    title: str = None
+    unverifiedSceneNumbering: bool = None
+
+
+# Radarr
+class Movie(NamedTuple):
+    added: str = None
+    addOptions: str = None
+    alternativeTitles: list = None
+    certification: str = None
+    cleanTitle: str = None
+    downloaded: bool = None
+    folderName: str = None
+    genres: list = None
+    hasFile: bool = None
+    id: int = None
+    images: list = None
+    imdbId: str = None
+    inCinemas: str = None
+    isAvailable: bool = None
+    lastInfoSync: str = None
+    minimumAvailability: str = None
+    monitored: bool = None
+    movieFile: dict = None
+    overview: str = None
+    path: str = None
+    pathState: str = None
+    physicalRelease: str = None
+    physicalReleaseNote: str = None
+    profileId: int = None
+    qualityProfileId: int = None
+    ratings: dict = None
+    runtime: int = None
+    secondaryYear: str = None
+    secondaryYearSourceId: int = None
+    sizeOnDisk: int = None
+    sortTitle: str = None
+    status: str = None
+    studio: str = None
+    tags: list = None
+    title: str = None
+    titleSlug: str = None
+    tmdbId: int = None
+    website: str = None
+    year: int = None
+    youTubeTrailerId: str = None
+
+
+# Sickchill
+class SickChillTVShow(NamedTuple):
+    airdate: str = None
+    airs: str = None
+    episode: int = None
+    ep_name: str = None
+    ep_plot: str = None
+    indexerid: int = None
+    network: str = None
+    paused: int = None
+    quality: str = None
+    season: int = None
+    show_name: str = None
+    show_status: str = None
+    tvdbid: int = None
+    weekday: int = None
+
+
+# Tautulli
 class TautulliStream(NamedTuple):
     actors: list = None
     added_at: str = None
@@ -307,137 +448,3 @@ class TautulliStream(NamedTuple):
     width: str = None
     writers: list = None
     year: str = None
-
-
-class TVShow(NamedTuple):
-    absoluteEpisodeNumber: int = None
-    airDate: str = None
-    airDateUtc: str = None
-    episodeFile: dict = None
-    episodeFileId: int = None
-    episodeNumber: int = None
-    hasFile: bool = None
-    id: int = None
-    lastSearchTime: str = None
-    monitored: bool = None
-    overview: str = None
-    sceneAbsoluteEpisodeNumber: int = None
-    sceneEpisodeNumber: int = None
-    sceneSeasonNumber: int = None
-    seasonNumber: int = None
-    series: dict = None
-    seriesId: int = None
-    title: str = None
-    unverifiedSceneNumbering: bool = None
-
-
-class Movie(NamedTuple):
-    added: str = None
-    addOptions: str = None
-    alternativeTitles: list = None
-    certification: str = None
-    cleanTitle: str = None
-    downloaded: bool = None
-    folderName: str = None
-    genres: list = None
-    hasFile: bool = None
-    id: int = None
-    images: list = None
-    imdbId: str = None
-    inCinemas: str = None
-    isAvailable: bool = None
-    lastInfoSync: str = None
-    minimumAvailability: str = None
-    monitored: bool = None
-    movieFile: dict = None
-    overview: str = None
-    path: str = None
-    pathState: str = None
-    physicalRelease: str = None
-    physicalReleaseNote: str = None
-    profileId: int = None
-    qualityProfileId: int = None
-    ratings: dict = None
-    runtime: int = None
-    secondaryYear: str = None
-    secondaryYearSourceId: int = None
-    sizeOnDisk: int = None
-    sortTitle: str = None
-    status: str = None
-    studio: str = None
-    tags: list = None
-    title: str = None
-    titleSlug: str = None
-    tmdbId: int = None
-    website: str = None
-    year: int = None
-    youTubeTrailerId: str = None
-
-
-class OmbiMovieRequest(NamedTuple):
-    approved: bool = None
-    available: bool = None
-    background: str = None
-    canApprove: bool = None
-    denied: bool = None
-    deniedReason: None = None
-    digitalRelease: bool = None
-    digitalReleaseDate: None = None
-    id: int = None
-    imdbId: str = None
-    issueId: None = None
-    issues: None = None
-    markedAsApproved: str = None
-    markedAsAvailable: None = None
-    markedAsDenied: str = None
-    overview: str = None
-    posterPath: str = None
-    qualityOverride: int = None
-    released: bool = None
-    releaseDate: str = None
-    requestedDate: str = None
-    requestedUser: dict = None
-    requestedUserId: str = None
-    requestType: int = None
-    rootPathOverride: int = None
-    showSubscribe: bool = None
-    status: str = None
-    subscribed: bool = None
-    theMovieDbId: int = None
-    title: str = None
-
-
-class OmbiTVRequest(NamedTuple):
-    background: str = None
-    childRequests: list = None
-    denied: bool = None
-    deniedReason: None = None
-    id: int = None
-    imdbId: str = None
-    markedAsDenied: str = None
-    overview: str = None
-    posterPath: str = None
-    qualityOverride: None = None
-    releaseDate: str = None
-    rootFolder: None = None
-    status: str = None
-    title: str = None
-    totalSeasons: int = None
-    tvDbId: int = None
-
-
-class SickChillTVShow(NamedTuple):
-    airdate: str = None
-    airs: str = None
-    episode: int = None
-    ep_name: str = None
-    ep_plot: str = None
-    indexerid: int = None
-    network: str = None
-    paused: int = None
-    quality: str = None
-    season: int = None
-    show_name: str = None
-    show_status: str = None
-    tvdbid: int = None
-    weekday: int = None
