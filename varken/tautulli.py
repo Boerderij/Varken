@@ -108,6 +108,8 @@ class TautulliAPI(object):
                         "quality": quality,
                         "video_decision": video_decision.title(),
                         "transcode_decision": decision.title(),
+                        "transcode_hw_decoding": session.transcode_hw_decoding,
+                        "transcode_hw_encoding": session.transcode_hw_encoding,
                         "media_type": session.media_type.title(),
                         "audio_codec": session.audio_codec.upper(),
                         "audio_profile": session.audio_profile.upper(),
