@@ -108,6 +108,7 @@ class OmbiRequestCounts(NamedTuple):
     approved: int = 0
     available: int = 0
 
+
 class OmbiIssuesCounts(NamedTuple):
     pending: int = 0
     inProgress: int = 0
