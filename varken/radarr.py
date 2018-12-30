@@ -2,7 +2,7 @@ from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
 
-from varken.structures import Movie, Queue
+from varken.structures import RadarrMovie, Queue
 from varken.helpers import hashit, connection_handler
 
 
@@ -31,9 +31,9 @@ class RadarrAPI(object):
             return
 
         try:
-            movies = [Movie(**movie) for movie in get]
+            movies = [RadarrMovie(**movie) for movie in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating Movie structure', e)
+            self.logger.error('TypeError has occurred : %s while creating RadarrMovie structure', e)
             return
 
         for movie in movies:
@@ -82,9 +82,9 @@ class RadarrAPI(object):
 
         for movie in get:
             try:
-                movie['movie'] = Movie(**movie['movie'])
+                movie['movie'] = RadarrMovie(**movie['movie'])
             except TypeError as e:
-                self.logger.error('TypeError has occurred : %s while creating Movie structure', e)
+                self.logger.error('TypeError has occurred : %s while creating RadarrMovie structure', e)
                 return
 
         try:

@@ -2,7 +2,7 @@ from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
-from varken.structures import Queue, TVShow
+from varken.structures import Queue, SonarrTVShow
 from varken.helpers import hashit, connection_handler
 
 
@@ -34,11 +34,11 @@ class SonarrAPI(object):
         if not get:
             return
 
-        # Iteratively create a list of TVShow Objects from response json
+        # Iteratively create a list of SonarrTVShow Objects from response json
         try:
-            tv_shows = [TVShow(**show) for show in get]
+            tv_shows = [SonarrTVShow(**show) for show in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating TVShow structure', e)
+            self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure', e)
             return
 
         # Add show to missing list if file does not exist
@@ -87,9 +87,9 @@ class SonarrAPI(object):
             return
 
         try:
-            tv_shows = [TVShow(**show) for show in get]
+            tv_shows = [SonarrTVShow(**show) for show in get]
         except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating TVShow structure', e)
+            self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure', e)
             return
 
         for show in tv_shows:

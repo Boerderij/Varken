@@ -171,7 +171,7 @@ class OmbiMovieRequest(NamedTuple):
 
 
 # Sonarr
-class TVShow(NamedTuple):
+class SonarrTVShow(NamedTuple):
     absoluteEpisodeNumber: int = None
     airDate: str = None
     airDateUtc: str = None
@@ -194,7 +194,7 @@ class TVShow(NamedTuple):
 
 
 # Radarr
-class Movie(NamedTuple):
+class RadarrMovie(NamedTuple):
     added: str = None
     addOptions: str = None
     alternativeTitles: list = None
