@@ -51,3 +51,5 @@ named `varken`
 
 ### Grafana
 [Grafana Installation Documentation](http://docs.grafana.org/installation/)  
+
+Official dashboard installation steps can be found in the [wiki](https://github.com/Boerderij/Varken/wiki/Installation#grafana)
