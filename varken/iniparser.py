@@ -11,24 +11,19 @@ from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliSe
 
 class INIParser(object):
     def __init__(self, data_folder):
-        self.config = ConfigParser(interpolation=None)
+        self.config = None
         self.data_folder = data_folder
-
+        self.filtered_strings = None
         self.services = ['sonarr', 'radarr', 'ombi', 'tautulli',  'sickchill', 'ciscoasa']
-        for service in self.services:
-            setattr(self, f'{service}_servers', [])
 
         self.logger = getLogger()
-
         self.influx_server = InfluxServer()
 
         try:
-            self.parse_opts()
+            self.parse_opts(read_file=True)
         except NoSectionError as e:
-            self.logger.error('Invalid config in (varken.ini): %s',e)
-            exit(1)
-
-        self.filtered_strings = None
+            self.logger.error('Missing section in (varken.ini): %s', e)
+            self.rectify_ini()
 
     def config_blacklist(self):
         filtered_strings = [section.get(k) for key, section in self.config.items()
@@ -53,14 +48,28 @@ class INIParser(object):
         except NoOptionError as e:
             self.logger.error(e)
 
-    def read_file(self):
-        file_path = join(self.data_folder, 'varken.ini')
+    def read_file(self, inifile):
+        config = ConfigParser(interpolation=None)
+        ini = inifile
+        file_path = join(self.data_folder, ini)
         if exists(file_path):
+            self.logger.debug('Reading from %s', inifile)
             with open(file_path) as config_ini:
-                self.config.read_file(config_ini)
-            self.config_blacklist()
+                config.read_file(config_ini)
+            return config
         else:
-            self.logger.error('Config file missing (varken.ini) in %s', self.data_folder)
+            self.logger.error('File missing (%s) in %s', ini, self.data_folder)
+            exit(1)
+
+    def write_file(self, inifile):
+        ini = inifile
+        file_path = join(self.data_folder, ini)
+        if exists(file_path):
+            self.logger.debug('Writing to %s', inifile)
+            with open(file_path, 'w') as config_ini:
+                self.config.write(config_ini)
+        else:
+            self.logger.error('File missing (%s) in %s', ini, self.data_folder)
             exit(1)
 
     def url_check(self, url=None, include_port=True, section=None):
@@ -95,8 +104,31 @@ class INIParser(object):
             self.logger.debug('%s is a valid URL in module [%s].', url_check, module)
             return url_check
 
-    def parse_opts(self):
-        self.read_file()
+    def rectify_ini(self):
+        self.logger.debug('Rectifying varken.ini with varken.example.ini')
+        current_ini = self.config
+        example_ini = self.read_file('varken.example.ini')
+
+        for name, section in example_ini.items():
+            if name not in current_ini:
+                self.logger.debug('Section %s missing. Adding...', name)
+                current_ini[name] = {}
+            for key, value in section.items():
+                if not current_ini[name].get(key):
+                    self.logger.debug('%s is missing in %s. Adding defaults...', key, name)
+                    current_ini[name][key] = value
+
+        self.config = current_ini
+        self.write_file('varken.ini')
+        self.parse_opts()
+
+    def parse_opts(self, read_file=False):
+        for service in self.services:
+            setattr(self, f'{service}_servers', [])
+
+        if read_file:
+            self.config = self.read_file('varken.ini')
+            self.config_blacklist()
         # Parse InfluxDB options
         url = self.url_check(self.config.get('influxdb', 'url'), include_port=False, section='influxdb')
 
@@ -226,5 +258,6 @@ class INIParser(object):
                         getattr(self, f'{service}_servers').append(server)
 
                     except NoOptionError as e:
-                        setattr(self, f'{service}_enabled', False)
-                        self.logger.error('%s disabled. Error: %s', section, e)
+                        self.logger.error('Missing key in %s. Error: %s', section, e)
+                        self.rectify_ini()
+                        return
