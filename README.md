@@ -17,7 +17,7 @@ Requirements:
 <p align="center">
 Example Dashboard
 
-<img width="800" src="https://i.imgur.com/G5bnpjs.png">
+<img width="800" src="https://i.imgur.com/3hNZTkC.png">
 </p>
 
 Supported Modules:
@@ -107,8 +107,8 @@ named `varken`
 [Official Example Dashboards](https://grafana.com/dashboards?search=Varken%20%5BOfficial%5D)
 
 Grafana is used in our examples but not required, nor packaged as part of
-Varken. Panel examples now exist in both nightly and tagged releases hosted 
-on grafana.com (link above). 
+Varken. Panel examples now exist in both nightly and tagged releases hosted
+on grafana.com (link above).
 
 1. Use the link above, then click on your desired dashboard version
 2. Click `Copy ID to Clipboard`
