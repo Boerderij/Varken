@@ -38,15 +38,12 @@ class INIParser(object):
 
     def enable_check(self, server_type=None):
         t = server_type
-        try:
-            global_server_ids = self.config.get('global', t)
-            if global_server_ids.lower() in ['false', 'no', '0']:
-                self.logger.info('%s disabled.', t.upper())
-            else:
-                sids = clean_sid_check(global_server_ids, t)
-                return sids
-        except NoOptionError as e:
-            self.logger.error(e)
+        global_server_ids = self.config.get('global', t)
+        if global_server_ids.lower() in ['false', 'no', '0']:
+            self.logger.info('%s disabled.', t.upper())
+        else:
+            sids = clean_sid_check(global_server_ids, t)
+            return sids
 
     def read_file(self, inifile):
         config = ConfigParser(interpolation=None)
@@ -141,7 +138,12 @@ class INIParser(object):
 
         # Check for all enabled services
         for service in self.services:
-            setattr(self, f'{service}_enabled', self.enable_check(f'{service}_server_ids'))
+            try:
+                setattr(self, f'{service}_enabled', self.enable_check(f'{service}_server_ids'))
+            except NoOptionError as e:
+                self.logger.error('Missing global %s. Error: %s', f'{service}_server_ids', e)
+                self.rectify_ini()
+                return
             service_enabled = getattr(self, f'{service}_enabled')
 
             if service_enabled:
