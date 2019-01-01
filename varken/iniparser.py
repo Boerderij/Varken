@@ -1,3 +1,4 @@
+from shutil import copyfile
 from logging import getLogger
 from os.path import join, exists
 from re import match, compile, IGNORECASE
@@ -49,14 +50,23 @@ class INIParser(object):
         config = ConfigParser(interpolation=None)
         ini = inifile
         file_path = join(self.data_folder, ini)
-        if exists(file_path):
-            self.logger.debug('Reading from %s', inifile)
-            with open(file_path) as config_ini:
-                config.read_file(config_ini)
-            return config
-        else:
+
+        if not exists(file_path):
             self.logger.error('File missing (%s) in %s', ini, self.data_folder)
-            exit(1)
+            if inifile == 'varken.ini':
+                try:
+                    self.logger.debug('Creating varken.ini from varken.example.ini')
+                    copyfile(join(self.data_folder, 'varken.example.ini'), file_path)
+                except IOError as e:
+                    self.logger.error("Varken does not have permission to write to %s. Error: %s - Exiting.", e,
+                                      self.data_folder)
+                    exit(1)
+
+        self.logger.debug('Reading from %s', inifile)
+        with open(file_path) as config_ini:
+            config.read_file(config_ini)
+
+        return config
 
     def write_file(self, inifile):
         ini = inifile
