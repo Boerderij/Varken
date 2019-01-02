@@ -11,6 +11,7 @@ from json.decoder import JSONDecodeError
 from os.path import abspath, join, basename, isdir
 from urllib3.exceptions import InsecureRequestWarning
 from requests.exceptions import InvalidSchema, SSLError, ConnectionError
+from ipaddress import IPv4Address
 
 logger = getLogger()
 
@@ -81,6 +82,12 @@ def hashit(string):
     hashed = md5(encoded).hexdigest()
 
     return hashed
+
+
+def rfc1918_ip_check(ip):
+    rfc1918_ip = IPv4Address(ip).is_private
+
+    return rfc1918_ip
 
 
 def connection_handler(session, request, verify):

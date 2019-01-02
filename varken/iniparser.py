@@ -4,7 +4,7 @@ from os.path import join, exists
 from re import match, compile, IGNORECASE
 from configparser import ConfigParser, NoOptionError, NoSectionError
 
-from varken.helpers import clean_sid_check
+from varken.helpers import clean_sid_check, rfc1918_ip_check
 from varken.structures import SickChillServer
 from varken.varkenlogger import BlacklistFilter
 from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
@@ -216,6 +216,13 @@ class INIParser(object):
                             get_stats = self.config.getboolean(section, 'get_stats')
 
                             get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
+
+                            invalid_wan_ip = rfc1918_ip_check(fallback_ip)
+
+                            if invalid_wan_ip:
+                                self.logger.error('Invalid failback_ip [%s] set for %s-%s!', fallback_ip, service, server_id)
+                                exit(1)
+
 
                             server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
                                                     verify_ssl=verify_ssl, get_activity=get_activity,
