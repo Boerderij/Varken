@@ -223,7 +223,6 @@ class INIParser(object):
                                 self.logger.error('Invalid failback_ip [%s] set for %s-%s!', fallback_ip, service, server_id)
                                 exit(1)
 
-
                             server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
                                                     verify_ssl=verify_ssl, get_activity=get_activity,
                                                     fallback_ip=fallback_ip, get_stats=get_stats,
