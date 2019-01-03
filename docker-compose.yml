@@ -1,0 +1,51 @@
+version: '3'
+networks:
+  internal:
+    driver: bridge
+services:
+  influxdb:
+    container_name: influxdb
+    hostname: influxdb
+    user: 911
+    image: influxdb
+    networks:
+      - internal
+    volumes:
+      - /path/to/docker-influxdb/config-folder:/var/lib/influxdb
+      - /path/to/docker-influxdb/config-folder/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+    restart: unless-stopped
+    command: -config /etc/influxdb/influxdb.conf
+  varken:
+    container_name: varken
+    hostname: varken
+    image: boerderij/varken
+    networks:
+      - internal
+    volumes:
+      - /path/to/docker-varken/config-folder:/config
+    environment:
+      - PGID=911
+      - PUID=911
+      - TZ=America/Chicago
+    depends_on:
+      - influxdb
+    restart: unless-stopped
+  grafana:
+    container_name: grafana
+    hostname: grafana
+    user: 911
+    image: grafana/grafana
+    networks:
+      - internal
+    ports:
+      - 3000:3000
+    volumes: 
+      - /path/to/docker-grafana/config-folder:/config
+    environment:
+      - GF_PATHS_DATA=/config/data
+      - GF_PATHS_LOGS=/config/logs
+      - GF_PATHS_PLUGINS=/config/data/plugins
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
+    depends_on:
+      - influxdb
+    restart: unless-stopped
