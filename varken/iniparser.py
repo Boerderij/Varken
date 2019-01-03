@@ -33,6 +33,9 @@ class INIParser(object):
         # Added matching for domains that use /locations. ConnectionPool ignores the location in logs
         domains_only = [string.split('/')[0] for string in filtered_strings if '/' in string]
         self.filtered_strings.extend(domains_only)
+        # Added matching for domains that use :port. ConnectionPool splits the domain/ip from the port
+        without_port = [string.split(':')[0] for string in filtered_strings if ':' in string]
+        self.filtered_strings.extend(without_port)
 
         for handler in self.logger.handlers:
             handler.addFilter(BlacklistFilter(set(self.filtered_strings)))
