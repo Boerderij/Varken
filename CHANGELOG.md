@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.6-nightly](https://github.com/Boerderij/Varken/tree/v1.6-nightly) (2019-01-02)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.5...v1.6-nightly)
+
+**Implemented enhancements:**
+
+- Fix missing variables in varken.ini automatically [\#81](https://github.com/Boerderij/Varken/issues/81)
+- Create Wiki for FAQ and help docs [\#80](https://github.com/Boerderij/Varken/issues/80)
+
 ## [v1.5](https://github.com/Boerderij/Varken/tree/v1.5) (2018-12-30)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.4...v1.5)
 
