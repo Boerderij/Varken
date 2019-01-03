@@ -1,2 +1,2 @@
-VERSION = 1.6
-BRANCH = 'nightly'
+VERSION = 1.7
+BRANCH = 'pre-nightly'
