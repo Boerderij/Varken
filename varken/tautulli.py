@@ -1,3 +1,4 @@
+from os import _exit
 from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
@@ -45,13 +46,19 @@ class TautulliAPI(object):
                 getattr(session, 'ip_address_public')
             except AttributeError:
                 self.logger.error('Public IP attribute missing!!! Do you have an old version of Tautulli (v1)?')
-                exit(1)
+                _exit(1)
 
             try:
                 geodata = self.geoiphandler.lookup(session.ip_address_public)
             except (ValueError, AddressNotFoundError):
                 if self.server.fallback_ip:
-                    geodata = self.geoiphandler.lookup(self.server.fallback_ip)
+                    # Try the failback ip in the config file
+                    try:
+                        geodata = self.geoiphandler.lookup(self.server.fallback_ip)
+                    except AddressNotFoundError as e:
+                        self.logger.error('%s', e)
+                        _exit(1)
+
                 else:
                     my_ip = self.session.get('http://ip.42.pl/raw').text
                     geodata = self.geoiphandler.lookup(my_ip)

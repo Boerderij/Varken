@@ -77,7 +77,7 @@ if __name__ == "__main__":
     vl.logger.info('Data folder is "%s"', DATA_FOLDER)
 
     vl.logger.info(u"%s %s (%s%s)", platform.system(), platform.release(), platform.version(),
-                   f' - {PLATFORM_LINUX_DISTRO}' if PLATFORM_LINUX_DISTRO else '')
+                   ' - ' + PLATFORM_LINUX_DISTRO if PLATFORM_LINUX_DISTRO else '')
 
     vl.logger.info(u"Python %s", version)
 

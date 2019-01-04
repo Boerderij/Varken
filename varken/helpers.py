@@ -11,6 +11,7 @@ from json.decoder import JSONDecodeError
 from os.path import abspath, join, basename, isdir
 from urllib3.exceptions import InsecureRequestWarning
 from requests.exceptions import InvalidSchema, SSLError, ConnectionError
+from ipaddress import IPv4Address
 
 logger = getLogger()
 
@@ -28,7 +29,7 @@ class GeoIPHandler(object):
     def lookup(self, ipaddress):
         ip = ipaddress
         self.logger.debug('Getting lat/long for Tautulli stream using ip with last octet ending in %s',
-                          ip.split('.')[-1:])
+                          ip.split('.')[-1:][0])
         return self.reader.city(ip)
 
     def update(self):
@@ -81,6 +82,12 @@ def hashit(string):
     hashed = md5(encoded).hexdigest()
 
     return hashed
+
+
+def rfc1918_ip_check(ip):
+    rfc1918_ip = IPv4Address(ip).is_private
+
+    return rfc1918_ip
 
 
 def connection_handler(session, request, verify):
