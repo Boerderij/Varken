@@ -12,6 +12,8 @@ RUN \
     /config \
     /app
 
+WORKDIR /app
+
 CMD cp /app/data/varken.example.ini /config/varken.example.ini && python3 /app/Varken.py --data-folder /config
 
 VOLUME /config

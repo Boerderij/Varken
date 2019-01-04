@@ -1,9 +1,10 @@
+from shutil import copyfile
 from logging import getLogger
 from os.path import join, exists
 from re import match, compile, IGNORECASE
-from configparser import ConfigParser, NoOptionError
+from configparser import ConfigParser, NoOptionError, NoSectionError
 
-from varken.helpers import clean_sid_check
+from varken.helpers import clean_sid_check, rfc1918_ip_check
 from varken.structures import SickChillServer
 from varken.varkenlogger import BlacklistFilter
 from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
@@ -11,20 +12,19 @@ from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliSe
 
 class INIParser(object):
     def __init__(self, data_folder):
-        self.config = ConfigParser(interpolation=None)
+        self.config = None
         self.data_folder = data_folder
-
+        self.filtered_strings = None
         self.services = ['sonarr', 'radarr', 'ombi', 'tautulli',  'sickchill', 'ciscoasa']
-        for service in self.services:
-            setattr(self, f'{service}_servers', [])
 
         self.logger = getLogger()
-
         self.influx_server = InfluxServer()
 
-        self.parse_opts()
-
-        self.filtered_strings = None
+        try:
+            self.parse_opts(read_file=True)
+        except NoSectionError as e:
+            self.logger.error('Missing section in (varken.ini): %s', e)
+            self.rectify_ini()
 
     def config_blacklist(self):
         filtered_strings = [section.get(k) for key, section in self.config.items()
@@ -33,30 +33,53 @@ class INIParser(object):
         # Added matching for domains that use /locations. ConnectionPool ignores the location in logs
         domains_only = [string.split('/')[0] for string in filtered_strings if '/' in string]
         self.filtered_strings.extend(domains_only)
+        # Added matching for domains that use :port. ConnectionPool splits the domain/ip from the port
+        without_port = [string.split(':')[0] for string in filtered_strings if ':' in string]
+        self.filtered_strings.extend(without_port)
 
         for handler in self.logger.handlers:
             handler.addFilter(BlacklistFilter(set(self.filtered_strings)))
 
     def enable_check(self, server_type=None):
         t = server_type
-        try:
-            global_server_ids = self.config.get('global', t)
-            if global_server_ids.lower() in ['false', 'no', '0']:
-                self.logger.info('%s disabled.', t.upper())
-            else:
-                sids = clean_sid_check(global_server_ids, t)
-                return sids
-        except NoOptionError as e:
-            self.logger.error(e)
-
-    def read_file(self):
-        file_path = join(self.data_folder, 'varken.ini')
-        if exists(file_path):
-            with open(file_path) as config_ini:
-                self.config.read_file(config_ini)
-            self.config_blacklist()
+        global_server_ids = self.config.get('global', t)
+        if global_server_ids.lower() in ['false', 'no', '0']:
+            self.logger.info('%s disabled.', t.upper())
         else:
-            self.logger.error('Config file missing (varken.ini) in %s', self.data_folder)
+            sids = clean_sid_check(global_server_ids, t)
+            return sids
+
+    def read_file(self, inifile):
+        config = ConfigParser(interpolation=None)
+        ini = inifile
+        file_path = join(self.data_folder, ini)
+
+        if not exists(file_path):
+            self.logger.error('File missing (%s) in %s', ini, self.data_folder)
+            if inifile == 'varken.ini':
+                try:
+                    self.logger.debug('Creating varken.ini from varken.example.ini')
+                    copyfile(join(self.data_folder, 'varken.example.ini'), file_path)
+                except IOError as e:
+                    self.logger.error("Varken does not have permission to write to %s. Error: %s - Exiting.", e,
+                                      self.data_folder)
+                    exit(1)
+
+        self.logger.debug('Reading from %s', inifile)
+        with open(file_path) as config_ini:
+            config.read_file(config_ini)
+
+        return config
+
+    def write_file(self, inifile):
+        ini = inifile
+        file_path = join(self.data_folder, ini)
+        if exists(file_path):
+            self.logger.debug('Writing to %s', inifile)
+            with open(file_path, 'w') as config_ini:
+                self.config.write(config_ini)
+        else:
+            self.logger.error('File missing (%s) in %s', ini, self.data_folder)
             exit(1)
 
     def url_check(self, url=None, include_port=True, section=None):
@@ -91,8 +114,31 @@ class INIParser(object):
             self.logger.debug('%s is a valid URL in module [%s].', url_check, module)
             return url_check
 
-    def parse_opts(self):
-        self.read_file()
+    def rectify_ini(self):
+        self.logger.debug('Rectifying varken.ini with varken.example.ini')
+        current_ini = self.config
+        example_ini = self.read_file('varken.example.ini')
+
+        for name, section in example_ini.items():
+            if name not in current_ini:
+                self.logger.debug('Section %s missing. Adding...', name)
+                current_ini[name] = {}
+            for key, value in section.items():
+                if not current_ini[name].get(key):
+                    self.logger.debug('%s is missing in %s. Adding defaults...', key, name)
+                    current_ini[name][key] = value
+
+        self.config = current_ini
+        self.write_file('varken.ini')
+        self.parse_opts()
+
+    def parse_opts(self, read_file=False):
+        for service in self.services:
+            setattr(self, f'{service}_servers', [])
+
+        if read_file:
+            self.config = self.read_file('varken.ini')
+            self.config_blacklist()
         # Parse InfluxDB options
         url = self.url_check(self.config.get('influxdb', 'url'), include_port=False, section='influxdb')
 
@@ -105,7 +151,12 @@ class INIParser(object):
 
         # Check for all enabled services
         for service in self.services:
-            setattr(self, f'{service}_enabled', self.enable_check(f'{service}_server_ids'))
+            try:
+                setattr(self, f'{service}_enabled', self.enable_check(f'{service}_server_ids'))
+            except NoOptionError as e:
+                self.logger.error('Missing global %s. Error: %s', f'{service}_server_ids', e)
+                self.rectify_ini()
+                return
             service_enabled = getattr(self, f'{service}_enabled')
 
             if service_enabled:
@@ -169,6 +220,12 @@ class INIParser(object):
 
                             get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
 
+                            invalid_wan_ip = rfc1918_ip_check(fallback_ip)
+
+                            if invalid_wan_ip:
+                                self.logger.error('Invalid failback_ip [%s] set for %s-%s!', fallback_ip, service, server_id)
+                                exit(1)
+
                             server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
                                                     verify_ssl=verify_ssl, get_activity=get_activity,
                                                     fallback_ip=fallback_ip, get_stats=get_stats,
@@ -222,5 +279,6 @@ class INIParser(object):
                         getattr(self, f'{service}_servers').append(server)
 
                     except NoOptionError as e:
-                        setattr(self, f'{service}_enabled', False)
-                        self.logger.error('%s disabled. Error: %s', section, e)
+                        self.logger.error('Missing key in %s. Error: %s', section, e)
+                        self.rectify_ini()
+                        return
