@@ -1,12 +1,21 @@
 # Change Log
 
-## [v1.6-nightly](https://github.com/Boerderij/Varken/tree/v1.6-nightly) (2019-01-02)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.5...v1.6-nightly)
+## [v1.6](https://github.com/Boerderij/Varken/tree/v1.6) (2019-01-04)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.5...v1.6)
 
 **Implemented enhancements:**
 
+- \[Feature Request\] docker-compose stack install option [\#84](https://github.com/Boerderij/Varken/issues/84)
 - Fix missing variables in varken.ini automatically [\#81](https://github.com/Boerderij/Varken/issues/81)
 - Create Wiki for FAQ and help docs [\#80](https://github.com/Boerderij/Varken/issues/80)
+
+**Fixed bugs:**
+
+- \[BUG\] url:port does not filter [\#82](https://github.com/Boerderij/Varken/issues/82)
+
+**Merged pull requests:**
+
+- v1.6 Merge [\#75](https://github.com/Boerderij/Varken/pull/85) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v1.5](https://github.com/Boerderij/Varken/tree/v1.5) (2018-12-30)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.4...v1.5)
@@ -28,43 +37,28 @@
 - Add Ombi Issues [\#74](https://github.com/Boerderij/Varken/pull/74) ([anderssonoscar0](https://github.com/anderssonoscar0))
 
 ## [v1.4](https://github.com/Boerderij/Varken/tree/v1.4) (2018-12-19)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.3-nightly...v1.4)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.1...v1.4)
 
 **Implemented enhancements:**
 
 - \[Feature Request\] Add tautulli request for library stats [\#64](https://github.com/Boerderij/Varken/issues/64)
+- Create randomized 12-24 hour checks to update GeoLite DB after the first wednesday of the month [\#60](https://github.com/Boerderij/Varken/issues/60)
+- \[Feature Request\]: Pull list of requests \(instead of just counts\) [\#58](https://github.com/Boerderij/Varken/issues/58)
+- Feature Request  , Add Sickchill [\#48](https://github.com/Boerderij/Varken/issues/48)
 
 **Fixed bugs:**
 
 - \[BUG\] Ombi all requests missing half of "pending" option [\#63](https://github.com/Boerderij/Varken/issues/63)
 - \[BUG\] asa bug with checking for apikey [\#62](https://github.com/Boerderij/Varken/issues/62)
-
-**Merged pull requests:**
-
-- v1.4 Merge [\#65](https://github.com/Boerderij/Varken/pull/65) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
-
-## [v1.3-nightly](https://github.com/Boerderij/Varken/tree/v1.3-nightly) (2018-12-18)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.2-nightly...v1.3-nightly)
-
-**Implemented enhancements:**
-
-- Create randomized 12-24 hour checks to update GeoLite DB after the first wednesday of the month [\#60](https://github.com/Boerderij/Varken/issues/60)
-
-**Fixed bugs:**
-
 - \[BUG\] Add Catchall to ombi requests [\#59](https://github.com/Boerderij/Varken/issues/59)
 
 **Closed issues:**
 
 - Unify naming and cleanup duplication in iniparser [\#61](https://github.com/Boerderij/Varken/issues/61)
 
-## [v1.2-nightly](https://github.com/Boerderij/Varken/tree/v1.2-nightly) (2018-12-16)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.1...v1.2-nightly)
+**Merged pull requests:**
 
-**Implemented enhancements:**
-
-- \[Feature Request\]: Pull list of requests \(instead of just counts\) [\#58](https://github.com/Boerderij/Varken/issues/58)
-- Feature Request  , Add Sickchill [\#48](https://github.com/Boerderij/Varken/issues/48)
+- v1.4 Merge [\#65](https://github.com/Boerderij/Varken/pull/65) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v1.1](https://github.com/Boerderij/Varken/tree/v1.1) (2018-12-11)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.0...v1.1)
@@ -92,22 +86,12 @@
 - Update issue templates [\#55](https://github.com/Boerderij/Varken/pull/55) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v1.0](https://github.com/Boerderij/Varken/tree/v1.0) (2018-12-10)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.3-nightly...v1.0)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v1.0)
 
 **Implemented enhancements:**
 
 - Add cisco asa from legacy [\#44](https://github.com/Boerderij/Varken/issues/44)
 - Add server ID to ombi to differenciate [\#43](https://github.com/Boerderij/Varken/issues/43)
-
-**Merged pull requests:**
-
-- v1.0 Merge [\#45](https://github.com/Boerderij/Varken/pull/45) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
-
-## [v0.3-nightly](https://github.com/Boerderij/Varken/tree/v0.3-nightly) (2018-12-07)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.2-nightly...v0.3-nightly)
-
-**Implemented enhancements:**
-
 - Create Changelog for nightly release [\#39](https://github.com/Boerderij/Varken/issues/39)
 - Create proper logging [\#34](https://github.com/Boerderij/Varken/issues/34)
 
@@ -115,12 +99,6 @@
 
 - Remove "dashboard" folder and subfolders [\#42](https://github.com/Boerderij/Varken/issues/42)
 - Remove "Legacy" folder [\#41](https://github.com/Boerderij/Varken/issues/41)
-
-## [v0.2-nightly](https://github.com/Boerderij/Varken/tree/v0.2-nightly) (2018-12-06)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v0.1...v0.2-nightly)
-
-**Closed issues:**
-
 - Create the DB if it does not exist. [\#38](https://github.com/Boerderij/Varken/issues/38)
 - create systemd examples [\#37](https://github.com/Boerderij/Varken/issues/37)
 - Create a GeoIP db downloader and refresher [\#36](https://github.com/Boerderij/Varken/issues/36)
@@ -138,6 +116,7 @@
 
 **Merged pull requests:**
 
+- v1.0 Merge [\#45](https://github.com/Boerderij/Varken/pull/45) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 - varken to nightly [\#40](https://github.com/Boerderij/Varken/pull/40) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v0.1](https://github.com/Boerderij/Varken/tree/v0.1) (2018-10-20)
