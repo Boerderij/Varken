@@ -86,6 +86,17 @@ class CiscoASAFirewall(NamedTuple):
     verify_ssl: bool = False
 
 
+class UniFiServer(NamedTuple):
+    get_usg_stats_run_seconds: int = 30
+    id: int = None
+    password: str = 'ubnt'
+    site: str = None
+    url: str = 'unifi.domain.tld:8443'
+    username: str = 'ubnt'
+    usg_name: str = None
+    verify_ssl: bool = False
+
+
 # Shared
 class Queue(NamedTuple):
     downloadId: str = None

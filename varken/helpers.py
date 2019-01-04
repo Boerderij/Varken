@@ -90,7 +90,8 @@ def rfc1918_ip_check(ip):
     return rfc1918_ip
 
 
-def connection_handler(session, request, verify):
+def connection_handler(session, request, verify, as_is_reply=False):
+    air = as_is_reply
     s = session
     r = request
     v = verify
@@ -114,6 +115,8 @@ def connection_handler(session, request, verify):
             if get.headers['X-Auth-Token']:
                 return get.headers['X-Auth-Token']
 
+        if air:
+            return get
     except InvalidSchema:
         logger.error("You added http(s):// in the config file. Don't do that.")
 
@@ -122,6 +125,7 @@ def connection_handler(session, request, verify):
 
     except ConnectionError as e:
         logger.error('Cannot resolve the url/ip/port. Check connectivity. Error: %s', e)
+
 
     return return_json
 
