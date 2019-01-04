@@ -4,7 +4,6 @@ networks:
     driver: bridge
 services:
   influxdb:
-    container_name: influxdb
     hostname: influxdb
     user: auser
     image: influxdb
@@ -14,7 +13,6 @@ services:
       - /path/to/docker-influxdb/config-folder:/var/lib/influxdb
     restart: unless-stopped
   varken:
-    container_name: varken
     hostname: varken
     image: boerderij/varken
     networks:
@@ -29,7 +27,6 @@ services:
       - influxdb
     restart: unless-stopped
   grafana:
-    container_name: grafana
     hostname: grafana
     user: auser
     image: grafana/grafana
