@@ -52,7 +52,7 @@ class TautulliAPI(object):
                 geodata = self.geoiphandler.lookup(session.ip_address_public)
             except (ValueError, AddressNotFoundError):
                 if self.server.fallback_ip:
-                    # Try the failback ip in the config file
+                    # Try the fallback ip in the config file
                     try:
                         geodata = self.geoiphandler.lookup(self.server.fallback_ip)
                     except AddressNotFoundError as e:

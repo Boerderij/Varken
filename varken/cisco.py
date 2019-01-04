@@ -7,7 +7,6 @@ from varken.helpers import connection_handler
 
 class CiscoAPI(object):
     def __init__(self, firewall, dbmanager):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
         self.dbmanager = dbmanager
         self.firewall = firewall
         # Create session to reduce server web thread load, and globally define pageSize for all requests
@@ -32,7 +31,7 @@ class CiscoAPI(object):
         self.session.headers = {'X-Auth-Token': post}
 
     def get_bandwidth(self):
-        self.now = datetime.now(timezone.utc).astimezone().isoformat()
+        now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/monitoring/device/interfaces/' + self.firewall.outside_interface
 
         if not self.session.headers:
@@ -50,7 +49,7 @@ class CiscoAPI(object):
                 "tags": {
                     "interface": self.firewall.outside_interface
                 },
-                "time": self.now,
+                "time": now,
                 "fields": {
                     "upload_bitrate": get['outputBitRate'],
                     "download_bitrate": get['inputBitRate']
