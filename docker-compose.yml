@@ -6,15 +6,13 @@ services:
   influxdb:
     container_name: influxdb
     hostname: influxdb
-    user: 911
+    user: auser
     image: influxdb
     networks:
       - internal
     volumes:
       - /path/to/docker-influxdb/config-folder:/var/lib/influxdb
-      - /path/to/docker-influxdb/config-folder/influxdb.conf:/etc/influxdb/influxdb.conf:ro
     restart: unless-stopped
-    command: -config /etc/influxdb/influxdb.conf
   varken:
     container_name: varken
     hostname: varken
@@ -33,7 +31,7 @@ services:
   grafana:
     container_name: grafana
     hostname: grafana
-    user: 911
+    user: auser
     image: grafana/grafana
     networks:
       - internal
