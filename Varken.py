@@ -12,7 +12,6 @@ from logging import getLogger, StreamHandler, Formatter, DEBUG
 
 from varken.ombi import OmbiAPI
 from varken.unifi import UniFiAPI
-from varken.cisco import CiscoAPI
 from varken import VERSION, BRANCH
 from varken.sonarr import SonarrAPI
 from varken.radarr import RadarrAPI
@@ -131,11 +130,6 @@ if __name__ == "__main__":
             if server.get_missing:
                 schedule.every(server.get_missing_run_seconds).seconds.do(threaded, SICKCHILL.get_missing)
 
-    if CONFIG.ciscoasa_enabled:
-        for firewall in CONFIG.ciscoasa_servers:
-            ASA = CiscoAPI(firewall, DBMANAGER)
-            schedule.every(firewall.get_bandwidth_run_seconds).seconds.do(threaded, ASA.get_bandwidth)
-
     if CONFIG.unifi_enabled:
         for server in CONFIG.unifi_servers:
             UNIFI = UniFiAPI(server, DBMANAGER)
@@ -143,7 +137,7 @@ if __name__ == "__main__":
 
     # Run all on startup
     SERVICES_ENABLED = [CONFIG.ombi_enabled, CONFIG.radarr_enabled, CONFIG.tautulli_enabled, CONFIG.unifi_enabled,
-                        CONFIG.sonarr_enabled, CONFIG.ciscoasa_enabled, CONFIG.sickchill_enabled]
+                        CONFIG.sonarr_enabled, CONFIG.sickchill_enabled]
     if not [enabled for enabled in SERVICES_ENABLED if enabled]:
         vl.logger.error("All services disabled. Exiting")
         exit(1)

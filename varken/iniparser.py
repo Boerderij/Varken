@@ -7,7 +7,7 @@ from configparser import ConfigParser, NoOptionError, NoSectionError
 from varken.varkenlogger import BlacklistFilter
 from varken.structures import SickChillServer, UniFiServer
 from varken.helpers import clean_sid_check, rfc1918_ip_check
-from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
+from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer
 
 
 class INIParser(object):
@@ -15,7 +15,7 @@ class INIParser(object):
         self.config = None
         self.data_folder = data_folder
         self.filtered_strings = None
-        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli',  'sickchill', 'ciscoasa', 'unifi']
+        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli',  'sickchill', 'unifi']
 
         self.logger = getLogger()
         self.influx_server = InfluxServer()
@@ -248,20 +248,9 @@ class INIParser(object):
                                                      verify_ssl=verify_ssl, get_missing=get_missing,
                                                      get_missing_run_seconds=get_missing_run_seconds)
 
-                        if service in ['ciscoasa', 'unifi']:
+                        if service == 'unifi':
                             username = self.config.get(section, 'username')
                             password = self.config.get(section, 'password')
-
-                        if service == 'ciscoasa':
-                            outside_interface = self.config.get(section, 'outside_interface')
-                            get_bandwidth_run_seconds = self.config.getint(section, 'get_bandwidth_run_seconds')
-
-                            server = CiscoASAFirewall(id=server_id, url=scheme + url, verify_ssl=verify_ssl,
-                                                      username=username, password=password,
-                                                      outside_interface=outside_interface,
-                                                      get_bandwidth_run_seconds=get_bandwidth_run_seconds)
-
-                        if service == 'unifi':
                             site = self.config.get(section, 'site').lower()
                             usg_name = self.config.get(section, 'usg_name')
                             get_usg_stats_run_seconds = self.config.getint(section, 'get_usg_stats_run_seconds')

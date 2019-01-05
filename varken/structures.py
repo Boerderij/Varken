@@ -76,16 +76,6 @@ class SickChillServer(NamedTuple):
     verify_ssl: bool = False
 
 
-class CiscoASAFirewall(NamedTuple):
-    get_bandwidth_run_seconds: int = 30
-    id: int = None
-    outside_interface: str = None
-    password: str = 'cisco'
-    url: str = '192.168.1.1'
-    username: str = 'cisco'
-    verify_ssl: bool = False
-
-
 class UniFiServer(NamedTuple):
     get_usg_stats_run_seconds: int = 30
     id: int = None
