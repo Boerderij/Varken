@@ -169,6 +169,8 @@ class OmbiMovieRequest(NamedTuple):
     subscribed: bool = None
     theMovieDbId: int = None
     title: str = None
+    langCode: str = None
+    languageCode: str = None
 
 
 # Sonarr
