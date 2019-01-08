@@ -15,7 +15,7 @@ class INIParser(object):
         self.config = None
         self.data_folder = data_folder
         self.filtered_strings = None
-        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli',  'sickchill', 'unifi']
+        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli', 'sickchill', 'unifi']
 
         self.logger = getLogger()
         self.influx_server = InfluxServer()
