@@ -1,6 +1,7 @@
 from hashlib import md5
 from datetime import date
 from logging import getLogger
+from ipaddress import IPv4Address
 from calendar import monthcalendar
 from geoip2.database import Reader
 from tarfile import open as taropen
@@ -11,7 +12,6 @@ from json.decoder import JSONDecodeError
 from os.path import abspath, join, basename, isdir
 from urllib3.exceptions import InsecureRequestWarning
 from requests.exceptions import InvalidSchema, SSLError, ConnectionError
-from ipaddress import IPv4Address
 
 logger = getLogger()
 
@@ -110,10 +110,6 @@ def connection_handler(session, request, verify, as_is_reply=False):
                 return_json = get.json()
             except JSONDecodeError:
                 logger.error('No JSON response. Response is: %s', get.text)
-        # 204 No Content is for ASA only
-        elif get.status_code == 204:
-            if get.headers['X-Auth-Token']:
-                return get.headers['X-Auth-Token']
 
         if air:
             return get
@@ -125,7 +121,6 @@ def connection_handler(session, request, verify, as_is_reply=False):
 
     except ConnectionError as e:
         logger.error('Cannot resolve the url/ip/port. Check connectivity. Error: %s', e)
-
 
     return return_json
 
