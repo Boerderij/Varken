@@ -34,6 +34,11 @@ class TautulliAPI(object):
 
         get = g['response']['data']
 
+        # Remove erroneous key from sessions
+        for session in get['sessions']:
+            if session.get('_cache_time'):
+                del session['_cache_time']
+
         try:
             sessions = [TautulliStream(**session) for session in get['sessions']]
         except TypeError as e:
