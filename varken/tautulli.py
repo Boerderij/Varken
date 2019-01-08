@@ -17,6 +17,8 @@ class TautulliAPI(object):
         self.session.params = {'apikey': self.server.api_key}
         self.endpoint = '/api/v2'
         self.logger = getLogger()
+        self.my_ip = None
+
 
     def __repr__(self):
         return f"<tautulli-{self.server.id}>"
@@ -56,17 +58,22 @@ class TautulliAPI(object):
             try:
                 geodata = self.geoiphandler.lookup(session.ip_address_public)
             except (ValueError, AddressNotFoundError):
-                if self.server.fallback_ip:
+                self.logger.debug('Public IP missing for Tautulli session...')
+                if not self.my_ip:
                     # Try the fallback ip in the config file
                     try:
+                        self.logger.debug('Atempting to use the failback IP...')
                         geodata = self.geoiphandler.lookup(self.server.fallback_ip)
                     except AddressNotFoundError as e:
                         self.logger.error('%s', e)
-                        _exit(1)
+
+                        self.my_ip = self.session.get('http://ip.42.pl/raw').text
+                        self.logger.debug('Looked the public IP and set it to %s', self.my_ip)
+
+                        geodata = self.geoiphandler.lookup(self.my_ip)
 
                 else:
-                    my_ip = self.session.get('http://ip.42.pl/raw').text
-                    geodata = self.geoiphandler.lookup(my_ip)
+                    geodata = self.geoiphandler.lookup(self.my_ip)
 
             if not all([geodata.location.latitude, geodata.location.longitude]):
                 latitude = 37.234332396
