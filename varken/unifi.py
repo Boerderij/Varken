@@ -1,5 +1,5 @@
-from time import time
 from logging import getLogger
+from schedule import CancelJob
 from requests import Session, Request
 from datetime import datetime, timezone
 
@@ -38,7 +38,8 @@ class UniFiAPI(object):
         get = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not get:
-            return
+            self.logger.error("Canceling Job get_usg_stats for unifi-%s", self.server.id)
+            return f"unifi-{self.server.id}-get_usg_stats"
 
         devices = {device['name']: device for device in get['data']}
         if devices.get(self.server.usg_name):

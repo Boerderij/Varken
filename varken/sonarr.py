@@ -1,4 +1,5 @@
 from logging import getLogger
+from schedule import CancelJob
 from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
