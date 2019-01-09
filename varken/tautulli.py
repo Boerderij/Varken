@@ -1,4 +1,3 @@
-from os import _exit
 from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone
@@ -18,7 +17,6 @@ class TautulliAPI(object):
         self.endpoint = '/api/v2'
         self.logger = getLogger()
         self.my_ip = None
-
 
     def __repr__(self):
         return f"<tautulli-{self.server.id}>"
@@ -53,7 +51,7 @@ class TautulliAPI(object):
                 getattr(session, 'ip_address_public')
             except AttributeError:
                 self.logger.error('Public IP attribute missing!!! Do you have an old version of Tautulli (v1)?')
-                _exit(1)
+                exit(1)
 
             try:
                 geodata = self.geoiphandler.lookup(session.ip_address_public)
