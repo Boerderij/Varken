@@ -10,6 +10,7 @@ from os.path import isdir, abspath, dirname, join
 from argparse import ArgumentParser, RawTextHelpFormatter
 from logging import getLogger, StreamHandler, Formatter, DEBUG
 
+from varken import structures # Needed to check version of python
 from varken.ombi import OmbiAPI
 from varken.unifi import UniFiAPI
 from varken import VERSION, BRANCH
