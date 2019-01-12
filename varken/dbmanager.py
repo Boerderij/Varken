@@ -5,8 +5,9 @@ from influxdb import InfluxDBClient
 class DBManager(object):
     def __init__(self, server):
         self.server = server
-        self.influx = InfluxDBClient(self.server.url, self.server.port, self.server.username, self.server.password,
-                                     'varken')
+        self.influx = InfluxDBClient(host=self.server.url, port=self.server.port, username=self.server.username,
+                                     password=self.server.password, ssl=self.server.ssl, database='varken',
+                                     verify_ssl=self.server.verify_ssl)
         databases = [db['name'] for db in self.influx.get_list_database()]
         self.logger = getLogger()
 

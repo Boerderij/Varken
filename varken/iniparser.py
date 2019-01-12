@@ -4,10 +4,10 @@ from os.path import join, exists
 from re import match, compile, IGNORECASE
 from configparser import ConfigParser, NoOptionError, NoSectionError
 
-from varken.helpers import clean_sid_check, rfc1918_ip_check
-from varken.structures import SickChillServer
 from varken.varkenlogger import BlacklistFilter
-from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, CiscoASAFirewall
+from varken.structures import SickChillServer, UniFiServer
+from varken.helpers import clean_sid_check, rfc1918_ip_check
+from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer
 
 
 class INIParser(object):
@@ -15,7 +15,7 @@ class INIParser(object):
         self.config = None
         self.data_folder = data_folder
         self.filtered_strings = None
-        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli',  'sickchill', 'ciscoasa']
+        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli', 'sickchill', 'unifi']
 
         self.logger = getLogger()
         self.influx_server = InfluxServer()
@@ -141,13 +141,15 @@ class INIParser(object):
             self.config_blacklist()
         # Parse InfluxDB options
         url = self.url_check(self.config.get('influxdb', 'url'), include_port=False, section='influxdb')
-
         port = self.config.getint('influxdb', 'port')
+        ssl = self.config.getboolean('influxdb', 'ssl')
+        verify_ssl = self.config.getboolean('influxdb', 'verify_ssl')
 
         username = self.config.get('influxdb', 'username')
-
         password = self.config.get('influxdb', 'password')
-        self.influx_server = InfluxServer(url=url, port=port, username=username, password=password)
+
+        self.influx_server = InfluxServer(url=url, port=port, username=username, password=password, ssl=ssl,
+                                          verify_ssl=verify_ssl)
 
         # Check for all enabled services
         for service in self.services:
@@ -167,28 +169,25 @@ class INIParser(object):
                         url = self.url_check(self.config.get(section, 'url'), section=section)
 
                         apikey = None
-                        if service != 'ciscoasa':
+                        if service not in ['ciscoasa', 'unifi']:
                             apikey = self.config.get(section, 'apikey')
 
                         scheme = 'https://' if self.config.getboolean(section, 'ssl') else 'http://'
-
                         verify_ssl = self.config.getboolean(section, 'verify_ssl')
 
                         if scheme != 'https://':
                             verify_ssl = False
 
-                        if service == 'sonarr':
+                        if service in ['sonarr', 'radarr']:
                             queue = self.config.getboolean(section, 'queue')
+                            queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
 
+                        if service == 'sonarr':
                             missing_days = self.config.getint(section, 'missing_days')
-
                             future_days = self.config.getint(section, 'future_days')
 
                             missing_days_run_seconds = self.config.getint(section, 'missing_days_run_seconds')
-
                             future_days_run_seconds = self.config.getint(section, 'future_days_run_seconds')
-
-                            queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
 
                             server = SonarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
                                                   missing_days=missing_days, future_days=future_days,
@@ -197,12 +196,7 @@ class INIParser(object):
                                                   queue=queue, queue_run_seconds=queue_run_seconds)
 
                         if service == 'radarr':
-                            queue = self.config.getboolean(section, 'queue')
-
-                            queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
-
                             get_missing = self.config.getboolean(section, 'get_missing')
-
                             get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
 
                             server = RadarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
@@ -212,18 +206,17 @@ class INIParser(object):
                         if service == 'tautulli':
                             fallback_ip = self.config.get(section, 'fallback_ip')
 
+                            get_stats = self.config.getboolean(section, 'get_stats')
                             get_activity = self.config.getboolean(section, 'get_activity')
 
                             get_activity_run_seconds = self.config.getint(section, 'get_activity_run_seconds')
-
-                            get_stats = self.config.getboolean(section, 'get_stats')
-
                             get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
 
                             invalid_wan_ip = rfc1918_ip_check(fallback_ip)
 
                             if invalid_wan_ip:
-                                self.logger.error('Invalid failback_ip [%s] set for %s-%s!', fallback_ip, service, server_id)
+                                self.logger.error('Invalid fallback_ip [%s] set for %s-%s!', fallback_ip, service,
+                                                  server_id)
                                 exit(1)
 
                             server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
@@ -233,17 +226,13 @@ class INIParser(object):
                                                     get_stats_run_seconds=get_stats_run_seconds)
 
                         if service == 'ombi':
+                            issue_status_counts = self.config.getboolean(section, 'get_issue_status_counts')
                             request_type_counts = self.config.getboolean(section, 'get_request_type_counts')
-
-                            request_type_run_seconds = self.config.getint(section, 'request_type_run_seconds')
-
                             request_total_counts = self.config.getboolean(section, 'get_request_total_counts')
 
-                            request_total_run_seconds = self.config.getint(section, 'request_total_run_seconds')
-
-                            issue_status_counts = self.config.getboolean(section, 'get_issue_status_counts')
-
                             issue_status_run_seconds = self.config.getint(section, 'issue_status_run_seconds')
+                            request_type_run_seconds = self.config.getint(section, 'request_type_run_seconds')
+                            request_total_run_seconds = self.config.getint(section, 'request_total_run_seconds')
 
                             server = OmbiServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
                                                 request_type_counts=request_type_counts,
@@ -255,29 +244,24 @@ class INIParser(object):
 
                         if service == 'sickchill':
                             get_missing = self.config.getboolean(section, 'get_missing')
-
                             get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
 
                             server = SickChillServer(id=server_id, url=scheme + url, api_key=apikey,
                                                      verify_ssl=verify_ssl, get_missing=get_missing,
                                                      get_missing_run_seconds=get_missing_run_seconds)
 
-                        if service == 'ciscoasa':
+                        if service == 'unifi':
                             username = self.config.get(section, 'username')
-
                             password = self.config.get(section, 'password')
+                            site = self.config.get(section, 'site').lower()
+                            usg_name = self.config.get(section, 'usg_name')
+                            get_usg_stats_run_seconds = self.config.getint(section, 'get_usg_stats_run_seconds')
 
-                            outside_interface = self.config.get(section, 'outside_interface')
-
-                            get_bandwidth_run_seconds = self.config.getint(section, 'get_bandwidth_run_seconds')
-
-                            server = CiscoASAFirewall(id=server_id, url=scheme + url, verify_ssl=verify_ssl,
-                                                      username=username, password=password,
-                                                      outside_interface=outside_interface,
-                                                      get_bandwidth_run_seconds=get_bandwidth_run_seconds)
+                            server = UniFiServer(id=server_id, url=scheme + url, verify_ssl=verify_ssl, site=site,
+                                                 username=username, password=password, usg_name=usg_name,
+                                                 get_usg_stats_run_seconds=get_usg_stats_run_seconds)
 
                         getattr(self, f'{service}_servers').append(server)
-
                     except NoOptionError as e:
                         self.logger.error('Missing key in %s. Error: %s', section, e)
                         self.rectify_ini()

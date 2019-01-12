@@ -1,6 +1,6 @@
 FROM lsiobase/alpine.python3
 
-LABEL maintainer="dirtycajunrice"
+LABEL maintainers="dirtycajunrice,samwiseg0"
 
 ENV DEBUG="False"
 

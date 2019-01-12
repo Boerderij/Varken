@@ -5,7 +5,6 @@
 [![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
 [![Docker-Version](https://images.microbadger.com/badges/version/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
 [![Docker Pulls](https://img.shields.io/docker/pulls/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
-[![Docker Stars](https://img.shields.io/docker/stars/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
 
 Dutch for PIG. PIG is an Acronym for Plex/InfluxDB/Grafana
 
@@ -30,7 +29,7 @@ Supported Modules:
 * [Radarr](https://radarr.video/) - A fork of Sonarr to work with movies à la Couchpotato.
 * [Tautulli](https://tautulli.com/) - A Python based monitoring and tracking tool for Plex Media Server.
 * [Ombi](https://ombi.io/) - Want a Movie or TV Show on Plex or Emby? Use Ombi!
-* Cisco ASA
+* [Unifi](https://unifi-sdn.ubnt.com/) - The Global Leader in Managed Wi-Fi Systems
 
 Key features:
 * Multiple server support for all modules

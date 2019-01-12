@@ -1,5 +1,24 @@
 # Change Log
 
+## [v1.6.1](https://github.com/Boerderij/Varken/tree/v1.6.1) (2019-01-11)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6...v1.6.1)
+
+**Implemented enhancements:**
+
+- \[Feature Request\] Unifi Integration [\#79](https://github.com/Boerderij/Varken/issues/79)
+
+**Fixed bugs:**
+
+- \[BUG\] Unexpected keyword argument 'langCode' while creating OmbiMovieRequest structure [\#88](https://github.com/Boerderij/Varken/issues/88)
+
+**Closed issues:**
+
+- Remove Cisco ASA since Telegraf + SNMP can do the same [\#86](https://github.com/Boerderij/Varken/issues/86)
+
+**Merged pull requests:**
+
+- v1.6 Merge [\#90](https://github.com/Boerderij/Varken/pull/85) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
 ## [v1.6](https://github.com/Boerderij/Varken/tree/v1.6) (2019-01-04)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.5...v1.6)
 
@@ -15,7 +34,7 @@
 
 **Merged pull requests:**
 
-- v1.6 Merge [\#75](https://github.com/Boerderij/Varken/pull/85) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- v1.6 Merge [\#85](https://github.com/Boerderij/Varken/pull/85) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v1.5](https://github.com/Boerderij/Varken/tree/v1.5) (2018-12-30)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.4...v1.5)
