@@ -14,8 +14,10 @@ if version_info < (3, 6, 2):
 class InfluxServer(NamedTuple):
     password: str = 'root'
     port: int = 8086
+    ssl: bool = False
     url: str = 'localhost'
     username: str = 'root'
+    verify_ssl: bool = False
 
 
 class SonarrServer(NamedTuple):
