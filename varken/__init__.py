@@ -1,2 +1,2 @@
-VERSION = "1.6.2"
-BRANCH = 'master'
+VERSION = "1.6.3"
+BRANCH = 'pre-nightly'
