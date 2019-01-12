@@ -36,11 +36,11 @@ class GeoIPHandler(object):
         today = date.today()
 
         try:
-            dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
+            dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
         except FileNotFoundError:
             self.logger.error("Could not find GeoLite2 DB as: %s", self.dbfile)
             self.download()
-            dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
+            dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
 
         first_wednesday_day = [week[2:3][0] for week in monthcalendar(today.year, today.month) if week[2:3][0] != 0][0]
         first_wednesday_date = date(today.year, today.month, first_wednesday_day)
