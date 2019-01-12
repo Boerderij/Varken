@@ -141,13 +141,15 @@ class INIParser(object):
             self.config_blacklist()
         # Parse InfluxDB options
         url = self.url_check(self.config.get('influxdb', 'url'), include_port=False, section='influxdb')
-
         port = self.config.getint('influxdb', 'port')
+        ssl = self.config.getboolean('influxdb', 'ssl')
+        verify_ssl = self.config.getboolean('influxdb', 'verify_ssl')
 
         username = self.config.get('influxdb', 'username')
-
         password = self.config.get('influxdb', 'password')
-        self.influx_server = InfluxServer(url=url, port=port, username=username, password=password)
+
+        self.influx_server = InfluxServer(url=url, port=port, username=username, password=password, ssl=ssl,
+                                          verify_ssl=verify_ssl)
 
         # Check for all enabled services
         for service in self.services:
