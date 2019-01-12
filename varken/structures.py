@@ -14,8 +14,10 @@ if version_info < (3, 6, 2):
 class InfluxServer(NamedTuple):
     password: str = 'root'
     port: int = 8086
+    ssl: bool = False
     url: str = 'localhost'
     username: str = 'root'
+    verify_ssl: bool = False
 
 
 class SonarrServer(NamedTuple):
@@ -76,13 +78,14 @@ class SickChillServer(NamedTuple):
     verify_ssl: bool = False
 
 
-class CiscoASAFirewall(NamedTuple):
-    get_bandwidth_run_seconds: int = 30
+class UniFiServer(NamedTuple):
+    get_usg_stats_run_seconds: int = 30
     id: int = None
-    outside_interface: str = None
-    password: str = 'cisco'
-    url: str = '192.168.1.1'
-    username: str = 'cisco'
+    password: str = 'ubnt'
+    site: str = None
+    url: str = 'unifi.domain.tld:8443'
+    username: str = 'ubnt'
+    usg_name: str = None
     verify_ssl: bool = False
 
 
@@ -168,6 +171,8 @@ class OmbiMovieRequest(NamedTuple):
     subscribed: bool = None
     theMovieDbId: int = None
     title: str = None
+    langCode: str = None
+    languageCode: str = None
 
 
 # Sonarr

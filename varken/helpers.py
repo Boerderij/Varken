@@ -1,6 +1,7 @@
 from hashlib import md5
 from datetime import date
 from logging import getLogger
+from ipaddress import IPv4Address
 from calendar import monthcalendar
 from geoip2.database import Reader
 from tarfile import open as taropen
@@ -11,7 +12,6 @@ from json.decoder import JSONDecodeError
 from os.path import abspath, join, basename, isdir
 from urllib3.exceptions import InsecureRequestWarning
 from requests.exceptions import InvalidSchema, SSLError, ConnectionError
-from ipaddress import IPv4Address
 
 logger = getLogger()
 
@@ -36,11 +36,11 @@ class GeoIPHandler(object):
         today = date.today()
 
         try:
-            dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
+            dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
         except FileNotFoundError:
             self.logger.error("Could not find GeoLite2 DB as: %s", self.dbfile)
             self.download()
-            dbdate = date.fromtimestamp(stat(self.dbfile).st_ctime)
+            dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
 
         first_wednesday_day = [week[2:3][0] for week in monthcalendar(today.year, today.month) if week[2:3][0] != 0][0]
         first_wednesday_date = date(today.year, today.month, first_wednesday_day)
@@ -90,7 +90,8 @@ def rfc1918_ip_check(ip):
     return rfc1918_ip
 
 
-def connection_handler(session, request, verify):
+def connection_handler(session, request, verify, as_is_reply=False):
+    air = as_is_reply
     s = session
     r = request
     v = verify
@@ -109,11 +110,9 @@ def connection_handler(session, request, verify):
                 return_json = get.json()
             except JSONDecodeError:
                 logger.error('No JSON response. Response is: %s', get.text)
-        # 204 No Content is for ASA only
-        elif get.status_code == 204:
-            if get.headers['X-Auth-Token']:
-                return get.headers['X-Auth-Token']
 
+        if air:
+            return get
     except InvalidSchema:
         logger.error("You added http(s):// in the config file. Don't do that.")
 

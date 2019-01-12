@@ -40,6 +40,7 @@ services:
       - GF_PATHS_DATA=/config/data
       - GF_PATHS_LOGS=/config/logs
       - GF_PATHS_PLUGINS=/config/plugins
+      - GF_PATHS_CONFIG=/config/grafana.ini
       - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
     depends_on:
       - influxdb
