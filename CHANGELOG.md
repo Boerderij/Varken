@@ -1,6 +1,17 @@
 # Change Log
 
-## [v1.6.1](https://github.com/Boerderij/Varken/tree/v1.6.1) (2019-01-11)
+## [v1.6.2](https://github.com/Boerderij/Varken/tree/v1.6.2) (2019-01-12)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6.1...v1.6.2)
+
+**Fixed bugs:**
+
+- Rectify influxdb ini [\#91](https://github.com/Boerderij/Varken/issues/91)
+
+**Merged pull requests:**
+
+- v1.6.2 Merge [\#90](https://github.com/Boerderij/Varken/pull/92) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [v1.6.1](https://github.com/Boerderij/Varken/tree/v1.6.1) (2019-01-12)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6...v1.6.1)
 
 **Implemented enhancements:**
@@ -17,7 +28,7 @@
 
 **Merged pull requests:**
 
-- v1.6 Merge [\#90](https://github.com/Boerderij/Varken/pull/85) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- v1.6.1 Merge [\#90](https://github.com/Boerderij/Varken/pull/90) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v1.6](https://github.com/Boerderij/Varken/tree/v1.6) (2019-01-04)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.5...v1.6)
