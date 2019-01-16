@@ -10,4 +10,8 @@ addons:
 branches:
   only:
     - master
-script: bash deploy.sh
+deploy:
+  - provider: script
+    script: bash deploy.sh
+    on:
+      branch: master
