@@ -1,15 +1,13 @@
+sudo: true
+dist: xenial
+language: minimal
 services:
   - docker
-
-jobs:
-  include:
-    - stage: "Build and Push"
-      script:
-        - docker build -t boerderij/varken:$TRAVIS_BRANCH .
-        - docker images
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker push boerderij/varken:$TRAVIS_BRANCH
-
-env:
-  global:
-    - secure: c91+zQXN28Anr2q94vhJAzN36teKovgniNmUI0MaejYfwcShN8TVeojkxbP+AxZuvGh1AfvB26LQeuPqAAntoNxvtPg3PLxv93rRSkAf0jk9apm9biYDAJNAM3OSiqCGfzfNhtUHmPmybRy2UmRXpHc6ZU1GmOdX2yyXCC2S6wjJOGabRpCA2Lw1vNnQuSJMDZ78amybZNmqAkK+rxe9hH2TGwcSImW8dlW2Ryt8H4a2s9VW9rbebQF+PzY4pw+OlIarpVUXZzUyEq8PS2EmJTuhrNA+RtZWJ4yRZ33jK4UqZRJzfC4FniZzSqtV/P3YGgSFNzhM87y5VhNiauX6QmtIDfLUV6c86cWCy24O41SrAJQOi4CLszJVkYfyggVFoRFegNS2+njN+f2Bbbx3rHtmNds0cDSfFuK3XhtTe0EhNgHLXOCX4IyAGzYWO+afmbqm/8S+m/QjCT28+0GgxYSqD2qO3FuPRA7woWucrKl2xa/tYikkurkDif0yBHxPac8mB8KLPLrjGzHlBG6SYYpTlpjWJrddbYhm0EZVmMkkFHRHLcOK8AOHKQipQBHmP+wvTGouwaZ8Uv5+uDNZ76st4BZR1tfXCtZ6A0RLRspo0wJ5EKlrNr8OIQGdj1G4TJ0H029mycqkAQ5yFPlvF/wAZ0shVFb/uMejpQw+2ks=
+addons:
+  apt:
+    packages:
+      - docker-ce
+branches:
+  only:
+    - master
+script: bash deploy.sh
