@@ -1,5 +1,6 @@
 from logging import getLogger
 from influxdb import InfluxDBClient
+from requests.exceptions import ConnectionError
 from influxdb.exceptions import InfluxDBServerError
 
 
@@ -24,6 +25,6 @@ class DBManager(object):
         self.logger.debug('Writing Data to InfluxDB %s', d)
         try:
             self.influx.write_points(d)
-        except InfluxDBServerError as e:
-            self.logger.error('Error writing data to influxdb. Dropping this set of data. Check your database! Error: '
-                              '%s', e)
+        except (InfluxDBServerError, ConnectionError) as e:
+            self.logger.error('Error writing data to influxdb. Dropping this set of data. '
+                              'Check your database! Error: %s', e)
