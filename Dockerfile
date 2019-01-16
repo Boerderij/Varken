@@ -6,11 +6,7 @@ ENV DEBUG="False"
 
 COPY / /app
 
-RUN \
-    python3 -m pip install -r /app/requirements.txt && \
-    chown -R abc:abc \
-    /config \
-    /app
+RUN python3 -m pip install -r /app/requirements.txt
 
 WORKDIR /app
 

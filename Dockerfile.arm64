@@ -6,7 +6,7 @@ ENV DEBUG="False"
 
 COPY / /app
 
-COPY /tmp/qemu-arm-static /usr/bin/qemu-aarch64-static
+COPY /tmp/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
 RUN python3 -m pip install -r /app/requirements.txt
 
