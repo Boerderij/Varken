@@ -6,8 +6,6 @@ ENV DEBUG="False"
 
 COPY / /app
 
-COPY /tmp/qemu-arm-static /usr/bin/qemu-arm-static
-
 RUN \
     python3 -m pip install -r /app/requirements.txt && \
     chown -R abc:abc \
