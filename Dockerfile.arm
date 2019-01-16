@@ -1,4 +1,4 @@
-FROM amd64/python:3.7.2-alpine
+FROM arm32v6/python:3.7.2-alpine
 
 LABEL maintainers="dirtycajunrice,samwiseg0"
 
