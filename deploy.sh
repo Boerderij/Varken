@@ -19,13 +19,15 @@ echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USER" --password-stdin
 
 # Latest x64
 docker build -t "${NAMESPACE}:latest" . && \
-docker push "${NAMESPACE}:latest" && \
-# Versioned x64
-docker tag "${NAMESPACE}:latest" "${NAMESPACE}:${VERSION}" && \
-docker push "${NAMESPACE}:${VERSION}" && \
+docker push "${NAMESPACE}:latest"
 # x64 Arch
 docker tag "${NAMESPACE}:latest" "${NAMESPACE}:latest-amd64" && \
 docker push "${NAMESPACE}:latest-amd64"
+# Versioned x64
+docker tag "${NAMESPACE}:latest" "${NAMESPACE}:${VERSION}" && \
+docker push "${NAMESPACE}:${VERSION}"
+docker tag "${NAMESPACE}:latest" "${NAMESPACE}:${VERSION}-amd64" && \
+docker push "${NAMESPACE}:${VERSION}-amd64"
 
 # Prepare qemu for ARM builds
 docker run --rm --privileged multiarch/qemu-user-static:register --reset
