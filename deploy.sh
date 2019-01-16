@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION="$(grep -i version varken.__init__.py | cut -d' ' -f3 | tr -d \")"
+VERSION="$(grep -i version varken/__init__.py | cut -d' ' -f3 | tr -d \")"
 
 # Docker
 GITHUB_USER='dirtycajunrice'
