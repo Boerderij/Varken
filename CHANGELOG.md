@@ -1,5 +1,20 @@
 # Change Log
 
+## [v1.6.3](https://github.com/Boerderij/Varken/tree/v1.6.3) (2019-01-16)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6.2...v1.6.3)
+
+**Implemented enhancements:**
+
+- \[Feature Request\] ARM, ARMHF and ARM64 Docker Images [\#71](https://github.com/Boerderij/Varken/issues/71)
+
+**Fixed bugs:**
+
+- \[BUG\] Newer influxdb has timeouts and connection errors [\#93](https://github.com/Boerderij/Varken/issues/93)
+
+**Merged pull requests:**
+
+- v1.6.3 Merge [\#94](https://github.com/Boerderij/Varken/pull/92) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
 ## [v1.6.2](https://github.com/Boerderij/Varken/tree/v1.6.2) (2019-01-12)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6.1...v1.6.2)
 
@@ -9,7 +24,7 @@
 
 **Merged pull requests:**
 
-- v1.6.2 Merge [\#90](https://github.com/Boerderij/Varken/pull/92) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- v1.6.2 Merge [\#92](https://github.com/Boerderij/Varken/pull/92) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v1.6.1](https://github.com/Boerderij/Varken/tree/v1.6.1) (2019-01-12)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6...v1.6.1)
