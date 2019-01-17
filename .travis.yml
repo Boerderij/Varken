@@ -7,9 +7,6 @@ addons:
   apt:
     packages:
       - docker-ce
-branches:
-  only:
-    - master
 deploy:
   - provider: script
     script: bash deploy.sh
