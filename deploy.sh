@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
+# Travis-ci convenience environment vars used:
+# TRAVIS_BRANCH | branch name
+# $TRAVIS_REPO_SLUG | organization/project (GitHub Capitalization)
+# Travis-ci manual environment vars used:
+# GITHUB_USER | github username
+# GITHUB_TOKEN | $GITHUB_USER's token
+# DOCKER_USER | docker username
+# DOCKER_PASSWORD | $DOCKER_USER's password
+
 VERSION="$(grep -i version varken/__init__.py | cut -d' ' -f3 | tr -d \")"
 
-# Docker
-GITHUB_USER='dirtycajunrice'
-DOCKER_USER='dirtycajunrice'
-PROJECT='varken'
-NAMESPACE="boerderij/${PROJECT}"
+# Set branch to latest if master, else keep the same
+if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+    BRANCH="latest"
+else
+    BRANCH="$TRAVIS_BRANCH"
+fi
+
+# get the docker lowercase variant of the repo_name
+REPOSITORY="$(echo $TRAVIS_REPO_SLUG | tr '[:upper:]' '[:lower:]')"
 
 # Docker experimental config
 echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
@@ -15,42 +28,69 @@ echo '{"experimental":"enabled"}' | sudo tee ~/.docker/config.json
 sudo service docker restart
 
 # Auth
-echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USER" --password-stdin
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
-# Latest x64
-docker build -t "${NAMESPACE}:latest" . && \
-docker push "${NAMESPACE}:latest"
-# x64 Arch
-docker tag "${NAMESPACE}:latest" "${NAMESPACE}:latest-amd64" && \
-docker push "${NAMESPACE}:latest-amd64"
-# Versioned x64
-docker tag "${NAMESPACE}:latest" "${NAMESPACE}:${VERSION}" && \
-docker push "${NAMESPACE}:${VERSION}"
-docker tag "${NAMESPACE}:latest" "${NAMESPACE}:${VERSION}-amd64" && \
-docker push "${NAMESPACE}:${VERSION}-amd64"
-
-# Prepare qemu for ARM builds
+# Prepare QEMU for ARM builds
 docker run --rm --privileged multiarch/qemu-user-static:register --reset
 wget -P tmp/ "https://github.com/multiarch/qemu-user-static/releases/download/v3.1.0-2/qemu-aarch64-static"
 wget -P tmp/ "https://github.com/multiarch/qemu-user-static/releases/download/v3.1.0-2/qemu-arm-static"
 chmod +x tmp/qemu-aarch64-static tmp/qemu-arm-static
 
-# ARM images
+# Set tag based off of branch
+if [[ "$BRANCH" == "latest" ]]; then
+    TAG="$VERSION"
+else
+    TAG="$BRANCH"
+fi
+
+# AMDx64
+docker build -t "${REPOSITORY}:${TAG}-amd64" . && \
+docker push "${REPOSITORY}:${TAG}-amd64"
+
+# Create Initial Manifests
+docker manifest create "${REPOSITORY}:${TAG}" "${REPOSITORY}:${TAG}-amd64"
+if [[ "$BRANCH" == "latest" ]]; then
+    docker manifest create "${REPOSITORY}:${BRANCH}" "${REPOSITORY}:${TAG}-amd64"
+fi
+
+# ARM variants
 for i in $(ls *arm*); do
-  arch="$(echo ${i} | cut -d. -f2)"
-  # Latest
-  docker build -f "./Dockerfile.${arch}" -t "${NAMESPACE}:latest-${arch}" . && \
-  docker push "${NAMESPACE}:latest-${arch}" && \
-  # Versioned
-  docker tag "${NAMESPACE}:latest-${arch}" "${NAMESPACE}:${VERSION}-${arch}" && \
-  docker push "${NAMESPACE}:${VERSION}-${arch}"
+    ARCH="$(echo ${i} | cut -d. -f2)"
+    docker build -t "${REPOSITORY}:${TAG}-${ARCH}" . && \
+    docker push "${REPOSITORY}:${TAG}-${ARCH}"
+    # Add variant to manifest
+    docker manifest create -a "${REPOSITORY}:${TAG}" "${REPOSITORY}:${TAG}-${ARCH}"
+    if [[ "$BRANCH" == "latest" ]]; then
+        docker manifest create -a "${REPOSITORY}:${BRANCH}" "${REPOSITORY}:${TAG}-${ARCH}"
+    fi
+    if [[ "$ARCH" == "arm64" ]]; then
+        docker manifest annotate "${REPOSITORY}:${TAG}" "${REPOSITORY}:${TAG}-${ARCH}" --variant v8 --arch arm64
+        if [[ "$BRANCH" == "latest" ]]; then
+            docker manifest annotate "${REPOSITORY}:${BRANCH}" "${REPOSITORY}:${TAG}-${ARCH}" --variant v8 --arch arm64
+        fi
+    elif [[ "$ARCH" == "armhf" ]]; then
+        docker manifest annotate "${REPOSITORY}:${TAG}" "${REPOSITORY}:${TAG}-${ARCH}" --variant v7 --arch arm
+        if [[ "$BRANCH" == "latest" ]]; then
+            docker manifest annotate "${REPOSITORY}:${BRANCH}" "${REPOSITORY}:${TAG}-${ARCH}" --variant v7 --arch arm
+        fi
+    elif [[ "$ARCH" == "arm" ]]; then
+        docker manifest annotate "${REPOSITORY}:${TAG}" "${REPOSITORY}:${TAG}-${ARCH}" --variant v6 --arch arm
+        if [[ "$BRANCH" == "latest" ]]; then
+            docker manifest annotate "${REPOSITORY}:${BRANCH}" "${REPOSITORY}:${TAG}-${ARCH}" --variant v6 --arch arm
+        fi
+    fi
 done
 
-wget -O manifest-tool https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64 && \
-chmod +x manifest-tool && \
-python3 manifest_generator.py && \
-./manifest-tool --username "$DOCKER_USER" --password "$DOCKER_PASSWORD" push from-spec ".manifest.yaml"
+docker manifest inspect "${REPOSITORY}:${TAG}" && \
+docker manifest push "${REPOSITORY}:${TAG}"
+if [[ "$BRANCH" == "latest" ]]; then
+    docker manifest inspect "${REPOSITORY}:${BRANCH}" && \
+    docker manifest push "${REPOSITORY}:${BRANCH}"
+fi
+
 # Git tags
-git remote set-url origin "https://${GITHUB_USER}:${GITHUB_API_KEY}@github.com/${NAMESPACE}.git" && \
-git tag "${VERSION}" && \
-git push --tags
+if [[ "$BRANCH" == "latest" ]]; then
+    git remote set-url origin "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${REPOSITORY}.git" && \
+    git tag "${VERSION}" && \
+    git push --tags
+fi
