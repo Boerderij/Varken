@@ -56,7 +56,7 @@ fi
 # ARM variants
 for i in $(ls *arm*); do
     ARCH="$(echo ${i} | cut -d. -f2)"
-    docker build -t "${REPOSITORY}:${TAG}-${ARCH}" . && \
+    docker build -f "Dockerfile.${ARCH}" -t "${REPOSITORY}:${TAG}-${ARCH}" . && \
     docker push "${REPOSITORY}:${TAG}-${ARCH}"
     # Add variant to manifest
     docker manifest create -a "${REPOSITORY}:${TAG}" "${REPOSITORY}:${TAG}-${ARCH}"
