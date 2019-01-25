@@ -10,8 +10,10 @@ class DBManager(object):
         self.influx = InfluxDBClient(host=self.server.url, port=self.server.port, username=self.server.username,
                                      password=self.server.password, ssl=self.server.ssl, database='varken',
                                      verify_ssl=self.server.verify_ssl)
+        version = self.influx.request('ping', expected_response_code=204).headers['X-Influxdb-Version']
         databases = [db['name'] for db in self.influx.get_list_database()]
         self.logger = getLogger()
+        self.logger.info('Influxdb version: %s', version)
 
         if 'varken' not in databases:
             self.logger.info("Creating varken database")
