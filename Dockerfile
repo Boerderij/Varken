@@ -4,11 +4,15 @@ LABEL maintainers="dirtycajunrice,samwiseg0"
 
 ENV DEBUG="False"
 
-COPY / /app
+WORKDIR /app
+
+COPY /requirements.txt /Varken.py /app/
+
+COPY /varken /app/varken
+
+COPY /data /app/data
 
 RUN python3 -m pip install -r /app/requirements.txt
-
-WORKDIR /app
 
 CMD cp /app/data/varken.example.ini /config/varken.example.ini && python3 /app/Varken.py --data-folder /config
 
