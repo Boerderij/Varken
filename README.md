@@ -1,4 +1,7 @@
-# Varken
+<p align="center">
+<img width="800" src="https://bin.cajun.pro/images/varken_full_banner.png">
+</p>
+ 
 [![Build Status](https://travis-ci.org/Boerderij/Varken.svg?branch=master)](https://travis-ci.org/Boerderij/Varken)
 [![Discord](https://img.shields.io/badge/Discord-Varken-7289DA.svg?logo=discord&style=flat-square)](https://discord.gg/VjZ6qSM)
 [![BuyMeACoffee](https://img.shields.io/badge/BuyMeACoffee-Donate-ff813f.svg?logo=CoffeeScript&style=flat-square)](https://www.buymeacoffee.com/varken)
