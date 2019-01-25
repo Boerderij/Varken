@@ -17,7 +17,7 @@ frontend
 
 Requirements:
 * [Python 3.6.7+](https://www.python.org/downloads/release/python-367/)
-* Python3-pip
+* [Python3-pip](https://pip.pypa.io/en/stable/installing/)
 * [InfluxDB](https://www.influxdata.com/)
 
 <p align="center">
