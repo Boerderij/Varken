@@ -98,13 +98,13 @@ if __name__ == "__main__":
             SONARR = SonarrAPI(server, DBMANAGER)
             if server.queue:
                 at_time = schedule.every(server.queue_run_seconds).seconds
-                at_time.do(QUEUE.put, SONARR.get_queue).tag(f"sonarr-{server.id}-get_queue")
+                at_time.do(QUEUE.put, SONARR.get_queue).tag("sonarr-{}-get_queue".format(server.id))
             if server.missing_days > 0:
                 at_time = schedule.every(server.missing_days_run_seconds).seconds
-                at_time.do(QUEUE.put, SONARR.get_missing).tag(f"sonarr-{server.id}-get_missing")
+                at_time.do(QUEUE.put, SONARR.get_missing).tag("sonarr-{}-get_missing".format(server.id))
             if server.future_days > 0:
                 at_time = schedule.every(server.future_days_run_seconds).seconds
-                at_time.do(QUEUE.put, SONARR.get_future).tag(f"sonarr-{server.id}-get_future")
+                at_time.do(QUEUE.put, SONARR.get_future).tag("sonarr-{}-get_future".format(server.id))
 
     if CONFIG.tautulli_enabled:
         GEOIPHANDLER = GeoIPHandler(DATA_FOLDER)
@@ -113,46 +113,46 @@ if __name__ == "__main__":
             TAUTULLI = TautulliAPI(server, DBMANAGER, GEOIPHANDLER)
             if server.get_activity:
                 at_time = schedule.every(server.get_activity_run_seconds).seconds
-                at_time.do(QUEUE.put, TAUTULLI.get_activity).tag(f"tautulli-{server.id}-get_activity")
+                at_time.do(QUEUE.put, TAUTULLI.get_activity).tag("tautulli-{}-get_activity".format(server.id))
             if server.get_stats:
                 at_time = schedule.every(server.get_stats_run_seconds).seconds
-                at_time.do(QUEUE.put, TAUTULLI.get_stats).tag(f"tautulli-{server.id}-get_stats")
+                at_time.do(QUEUE.put, TAUTULLI.get_stats).tag("tautulli-{}-get_stats".format(server.id))
 
     if CONFIG.radarr_enabled:
         for server in CONFIG.radarr_servers:
             RADARR = RadarrAPI(server, DBMANAGER)
             if server.get_missing:
                 at_time = schedule.every(server.get_missing_run_seconds).seconds
-                at_time.do(QUEUE.put, RADARR.get_missing).tag(f"radarr-{server.id}-get_missing")
+                at_time.do(QUEUE.put, RADARR.get_missing).tag("radarr-{}-get_missing".format(server.id))
             if server.queue:
                 at_time = schedule.every(server.queue_run_seconds).seconds
-                at_time.do(QUEUE.put, RADARR.get_queue).tag(f"radarr-{server.id}-get_queue")
+                at_time.do(QUEUE.put, RADARR.get_queue).tag("radarr-{}-get_queue".format(server.id))
 
     if CONFIG.ombi_enabled:
         for server in CONFIG.ombi_servers:
             OMBI = OmbiAPI(server, DBMANAGER)
             if server.request_type_counts:
                 at_time = schedule.every(server.request_type_run_seconds).seconds
-                at_time.do(QUEUE.put, OMBI.get_request_counts).tag(f"ombi-{server.id}-get_request_counts")
+                at_time.do(QUEUE.put, OMBI.get_request_counts).tag("ombi-{}-get_request_counts".format(server.id))
             if server.request_total_counts:
                 at_time = schedule.every(server.request_total_run_seconds).seconds
-                at_time.do(QUEUE.put, OMBI.get_all_requests).tag(f"ombi-{server.id}-get_all_requests")
+                at_time.do(QUEUE.put, OMBI.get_all_requests).tag("ombi-{}-get_all_requests".format(server.id))
             if server.issue_status_counts:
                 at_time = schedule.every(server.issue_status_run_seconds).seconds
-                at_time.do(QUEUE.put, OMBI.get_issue_counts).tag(f"ombi-{server.id}-get_issue_counts")
+                at_time.do(QUEUE.put, OMBI.get_issue_counts).tag("ombi-{}-get_issue_counts".format(server.id))
 
     if CONFIG.sickchill_enabled:
         for server in CONFIG.sickchill_servers:
             SICKCHILL = SickChillAPI(server, DBMANAGER)
             if server.get_missing:
                 at_time = schedule.every(server.get_missing_run_seconds).seconds
-                at_time.do(QUEUE.put, SICKCHILL.get_missing).tag(f"sickchill-{server.id}-get_missing")
+                at_time.do(QUEUE.put, SICKCHILL.get_missing).tag("sickchill-{}-get_missing".format(server.id))
 
     if CONFIG.unifi_enabled:
         for server in CONFIG.unifi_servers:
             UNIFI = UniFiAPI(server, DBMANAGER)
             at_time = schedule.every(server.get_usg_stats_run_seconds).seconds
-            at_time.do(QUEUE.put, UNIFI.get_usg_stats).tag(f"unifi-{server.id}-get_usg_stats")
+            at_time.do(QUEUE.put, UNIFI.get_usg_stats).tag("unifi-{}-get_usg_stats".format(server.id))
 
     # Run all on startup
     SERVICES_ENABLED = [CONFIG.ombi_enabled, CONFIG.radarr_enabled, CONFIG.tautulli_enabled, CONFIG.unifi_enabled,

@@ -42,23 +42,27 @@ class SickChillAPI(object):
                 sxe = f'S{show.season:0>2}E{show.episode:0>2}'
                 hash_id = hashit(f'{self.server.id}{show.show_name}{sxe}')
                 missing_types = [(0, 'future'), (1, 'later'), (2, 'soon'), (3, 'today'), (4, 'missed')]
-                influx_payload.append(
-                    {
-                        "measurement": "SickChill",
-                        "tags": {
-                            "type": [item[0] for item in missing_types if key in item][0],
-                            "indexerid": show.indexerid,
-                            "server": self.server.id,
-                            "name": show.show_name,
-                            "epname": show.ep_name,
-                            "sxe": sxe,
-                            "airdate": show.airdate,
-                        },
-                        "time": now,
-                        "fields": {
-                            "hash": hash_id
+                try:
+                    influx_payload.append(
+                        {
+                            "measurement": "SickChill",
+                            "tags": {
+                                "type": [item[0] for item in missing_types if key in item][0],
+                                "indexerid": show.indexerid,
+                                "server": self.server.id,
+                                "name": show.show_name,
+                                "epname": show.ep_name,
+                                "sxe": sxe,
+                                "airdate": show.airdate,
+                            },
+                            "time": now,
+                            "fields": {
+                                "hash": hash_id
+                            }
                         }
-                    }
-                )
+                    )
+                except IndexError as e:
+                    self.logger.error('Error building payload for sickchill. Discarding. Error: %s', e)
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)

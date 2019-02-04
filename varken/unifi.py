@@ -47,29 +47,33 @@ class UniFiAPI(object):
             self.logger.error("Could not find a USG named %s from your UniFi Controller", self.server.usg_name)
             return
 
-        influx_payload = [
-            {
-                "measurement": "UniFi",
-                "tags": {
-                    "model": device['model'],
-                    "name": device['name']
-                },
-                "time": now,
-                "fields": {
-                    "bytes_current": device['wan1']['bytes-r'],
-                    "rx_bytes_total": device['wan1']['rx_bytes'],
-                    "rx_bytes_current": device['wan1']['rx_bytes-r'],
-                    "tx_bytes_total": device['wan1']['tx_bytes'],
-                    "tx_bytes_current": device['wan1']['tx_bytes-r'],
-                    "speedtest_latency": device['speedtest-status']['latency'],
-                    "speedtest_download": device['speedtest-status']['xput_download'],
-                    "speedtest_upload": device['speedtest-status']['xput_upload'],
-                    "cpu_loadavg_1": device['sys_stats']['loadavg_1'],
-                    "cpu_loadavg_5": device['sys_stats']['loadavg_5'],
-                    "cpu_loadavg_15": device['sys_stats']['loadavg_15'],
-                    "cpu_util": device['system-stats']['cpu'],
-                    "mem_util": device['system-stats']['mem'],
+        try:
+            influx_payload = [
+                {
+                    "measurement": "UniFi",
+                    "tags": {
+                        "model": device['model'],
+                        "name": device['name']
+                    },
+                    "time": now,
+                    "fields": {
+                        "bytes_current": device['wan1']['bytes-r'],
+                        "rx_bytes_total": device['wan1']['rx_bytes'],
+                        "rx_bytes_current": device['wan1']['rx_bytes-r'],
+                        "tx_bytes_total": device['wan1']['tx_bytes'],
+                        "tx_bytes_current": device['wan1']['tx_bytes-r'],
+                        # Commenting speedtest out until Unifi gets their shit together
+                        # "speedtest_latency": device['speedtest-status']['latency'],
+                        # "speedtest_download": device['speedtest-status']['xput_download'],
+                        # "speedtest_upload": device['speedtest-status']['xput_upload'],
+                        "cpu_loadavg_1": float(device['sys_stats']['loadavg_1']),
+                        "cpu_loadavg_5": float(device['sys_stats']['loadavg_5']),
+                        "cpu_loadavg_15": float(device['sys_stats']['loadavg_15']),
+                        "cpu_util": float(device['system-stats']['cpu']),
+                        "mem_util": float(device['system-stats']['mem']),
+                    }
                 }
-            }
-        ]
-        self.dbmanager.write_points(influx_payload)
+            ]
+            self.dbmanager.write_points(influx_payload)
+        except KeyError as e:
+            self.logger.error('Error building payload for unifi. Discarding. Error: %s', e)
