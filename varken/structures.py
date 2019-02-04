@@ -138,6 +138,7 @@ class OmbiTVRequest(NamedTuple):
     title: str = None
     totalSeasons: int = None
     tvDbId: int = None
+    requestedByAlias: str = None
 
 
 class OmbiMovieRequest(NamedTuple):
@@ -173,6 +174,7 @@ class OmbiMovieRequest(NamedTuple):
     title: str = None
     langCode: str = None
     languageCode: str = None
+    requestedByAlias: str = None
 
 
 # Sonarr

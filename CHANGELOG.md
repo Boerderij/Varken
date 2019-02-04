@@ -1,7 +1,20 @@
 # Change Log
 
-## [v1.6.3](https://github.com/Boerderij/Varken/tree/v1.6.3) (2019-01-16)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6.2...v1.6.3)
+## [v1.6.4](https://github.com/Boerderij/Varken/tree/v1.6.4) (2019-02-03)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.3...v1.6.4)
+
+**Fixed bugs:**
+
+- \[BUG\] fstring in Varken.py Doesnt allow py version check [\#102](https://github.com/Boerderij/Varken/issues/102)
+- \[BUG\] Unifi loadavg is str instead of float [\#101](https://github.com/Boerderij/Varken/issues/101)
+- \[BUG\] requestedByAlias to added to Ombi structures  [\#97](https://github.com/Boerderij/Varken/issues/97)
+
+**Merged pull requests:**
+
+- v1.6.4 Merge [\#100](https://github.com/Boerderij/Varken/pull/100) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.6.3](https://github.com/Boerderij/Varken/tree/1.6.3) (2019-01-16)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6.2...1.6.3)
 
 **Implemented enhancements:**
 
@@ -13,7 +26,9 @@
 
 **Merged pull requests:**
 
-- v1.6.3 Merge [\#94](https://github.com/Boerderij/Varken/pull/92) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- double typo [\#96](https://github.com/Boerderij/Varken/pull/96) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- tweaks [\#95](https://github.com/Boerderij/Varken/pull/95) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- v1.6.3 Merge [\#94](https://github.com/Boerderij/Varken/pull/94) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [v1.6.2](https://github.com/Boerderij/Varken/tree/v1.6.2) (2019-01-12)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6.1...v1.6.2)
@@ -68,7 +83,6 @@
 **Implemented enhancements:**
 
 - \[Feature Request\] Add issues from Ombi [\#70](https://github.com/Boerderij/Varken/issues/70)
-- \[Feature Request\] Allow DNS Hostnames [\#66](https://github.com/Boerderij/Varken/issues/66)
 - Replace static grafana configs with a Public Example [\#32](https://github.com/Boerderij/Varken/issues/32)
 
 **Fixed bugs:**
@@ -123,7 +137,6 @@
 **Closed issues:**
 
 - Initial startup requires admin access to InfluxDB [\#53](https://github.com/Boerderij/Varken/issues/53)
-- Ability to add custom tautulli port [\#49](https://github.com/Boerderij/Varken/issues/49)
 
 **Merged pull requests:**
 
@@ -151,12 +164,7 @@
 - use a config.ini instead of command-line flags [\#33](https://github.com/Boerderij/Varken/issues/33)
 - Migrate crontab to python schedule package [\#31](https://github.com/Boerderij/Varken/issues/31)
 - Consolidate missing and missing\_days in sonarr.py [\#30](https://github.com/Boerderij/Varken/issues/30)
-- Database Withou any scripts [\#29](https://github.com/Boerderij/Varken/issues/29)
-- Grafana dashboard json doesn't match format of readme screenshot? [\#28](https://github.com/Boerderij/Varken/issues/28)
 - Ombi something new \[Request\] [\#26](https://github.com/Boerderij/Varken/issues/26)
-- Users Online not populating [\#24](https://github.com/Boerderij/Varken/issues/24)
-- Missing dashboard [\#23](https://github.com/Boerderij/Varken/issues/23)
-- Is there a Docker Image available for these scripts? [\#22](https://github.com/Boerderij/Varken/issues/22)
 - Support for Linux without ASA [\#21](https://github.com/Boerderij/Varken/issues/21)
 
 **Merged pull requests:**
@@ -173,7 +181,6 @@
 
 **Closed issues:**
 
-- Tautulli.py not working. [\#18](https://github.com/Boerderij/Varken/issues/18)
 - Issues with scripts [\#12](https://github.com/Boerderij/Varken/issues/12)
 - issue with new tautulli.py [\#10](https://github.com/Boerderij/Varken/issues/10)
 - ombi.py fails when attempting to update influxdb [\#9](https://github.com/Boerderij/Varken/issues/9)
