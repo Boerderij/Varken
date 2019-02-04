@@ -66,11 +66,11 @@ class UniFiAPI(object):
                         # "speedtest_latency": device['speedtest-status']['latency'],
                         # "speedtest_download": device['speedtest-status']['xput_download'],
                         # "speedtest_upload": device['speedtest-status']['xput_upload'],
-                        "cpu_loadavg_1": device['sys_stats']['loadavg_1'],
-                        "cpu_loadavg_5": device['sys_stats']['loadavg_5'],
-                        "cpu_loadavg_15": device['sys_stats']['loadavg_15'],
-                        "cpu_util": device['system-stats']['cpu'],
-                        "mem_util": device['system-stats']['mem'],
+                        "cpu_loadavg_1": float(device['sys_stats']['loadavg_1']),
+                        "cpu_loadavg_5": float(device['sys_stats']['loadavg_5']),
+                        "cpu_loadavg_15": float(device['sys_stats']['loadavg_15']),
+                        "cpu_util": float(device['system-stats']['cpu']),
+                        "mem_util": float(device['system-stats']['mem']),
                     }
                 }
             ]
