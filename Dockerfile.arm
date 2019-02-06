@@ -6,8 +6,6 @@ ENV DEBUG="False"
 
 WORKDIR /app
 
-COPY /qemu-arm-static /usr/bin/qemu-arm-static
-
 COPY /requirements.txt /Varken.py /app/
 
 COPY /varken /app/varken
