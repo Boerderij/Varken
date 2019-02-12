@@ -2,6 +2,7 @@ from hashlib import md5
 from datetime import date
 from logging import getLogger
 from ipaddress import IPv4Address
+from urllib.error import HTTPError
 from calendar import monthcalendar
 from geoip2.database import Reader
 from tarfile import open as taropen
@@ -68,9 +69,15 @@ class GeoIPHandler(object):
     def download(self):
         tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))
         url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
+        downloaded = False
 
-        self.logger.info('Downloading GeoLite2 from %s', url)
-        urlretrieve(url, tar_dbfile)
+        while not downloaded:
+            self.logger.info('Downloading GeoLite2 from %s', url)
+            try:
+                urlretrieve(url, tar_dbfile)
+                downloaded = True
+            except HTTPError as e:
+                self.logger.error('Problem downloading new MaxMind DB... Trying again. Error: %s', e)
 
         self.logger.debug('Opening GeoLite2 tar file : %s', tar_dbfile)
 
