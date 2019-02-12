@@ -24,7 +24,14 @@ class GeoIPHandler(object):
         self.update()
 
         self.logger.info('Opening persistent connection to GeoLite2 DB...')
-        self.reader = Reader(self.dbfile)
+        self.reader = None
+        self.reader_manager(action='open')
+
+    def reader_manager(self, action=None):
+        if action == 'open':
+            self.reader = Reader(self.dbfile)
+        else:
+            self.reader.close()
 
     def lookup(self, ipaddress):
         ip = ipaddress
@@ -47,8 +54,10 @@ class GeoIPHandler(object):
 
         if dbdate < first_wednesday_date < today:
             self.logger.info("Newer GeoLite2 DB available, Updating...")
+            self.reader_manager(action='close')
             remove(self.dbfile)
             self.download()
+            self.reader_manager(action='open')
         else:
             td = first_wednesday_date - today
             if td.days < 0:
