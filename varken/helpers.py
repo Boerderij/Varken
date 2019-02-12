@@ -21,11 +21,11 @@ class GeoIPHandler(object):
         self.data_folder = data_folder
         self.dbfile = abspath(join(self.data_folder, 'GeoLite2-City.mmdb'))
         self.logger = getLogger()
+        self.reader = None
+        self.reader_manager(action='open')
         self.update()
 
         self.logger.info('Opening persistent connection to GeoLite2 DB...')
-        self.reader = None
-        self.reader_manager(action='open')
 
     def reader_manager(self, action=None):
         if action == 'open':
