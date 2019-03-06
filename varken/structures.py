@@ -455,3 +455,5 @@ class TautulliStream(NamedTuple):
     width: str = None
     writers: list = None
     year: str = None
+    secure: str = None
+    relayed: str = None
