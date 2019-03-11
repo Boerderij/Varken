@@ -10,7 +10,8 @@ from os.path import isdir, abspath, dirname, join
 from argparse import ArgumentParser, RawTextHelpFormatter
 from logging import getLogger, StreamHandler, Formatter, DEBUG
 
-from varken import structures # Needed to check version of python
+# Needed to check version of python
+from varken import structures  # noqa
 from varken.ombi import OmbiAPI
 from varken.unifi import UniFiAPI
 from varken import VERSION, BRANCH
@@ -31,7 +32,6 @@ def thread():
     while schedule.jobs:
         job = QUEUE.get()
         a = job()
-        print(a)
         if a is not None:
             schedule.clear(a)
         QUEUE.task_done()
