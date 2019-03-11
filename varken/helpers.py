@@ -4,7 +4,6 @@ from time import sleep
 from logging import getLogger
 from ipaddress import IPv4Address
 from urllib.error import HTTPError
-from calendar import monthcalendar
 from geoip2.database import Reader
 from tarfile import open as taropen
 from urllib3 import disable_warnings
