@@ -19,9 +19,6 @@
 
 - v1.6.5 Merge [\#115](https://github.com/Boerderij/Varken/pull/115) ([samwiseg0](https://github.com/samwiseg0))
 
-## [v1.6.4](https://github.com/Boerderij/Varken/tree/v1.6.4) (2019-02-04)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.4...v1.6.4)
-
 ## [1.6.4](https://github.com/Boerderij/Varken/tree/1.6.4) (2019-02-04)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.3...1.6.4)
 
