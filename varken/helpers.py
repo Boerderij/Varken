@@ -1,5 +1,6 @@
 from hashlib import md5
-from datetime import date
+from datetime import date, timedelta
+from time import sleep
 from logging import getLogger
 from ipaddress import IPv4Address
 from urllib.error import HTTPError
@@ -24,13 +25,21 @@ class GeoIPHandler(object):
         self.logger = getLogger()
         self.reader = None
         self.reader_manager(action='open')
-        self.update()
 
         self.logger.info('Opening persistent connection to GeoLite2 DB...')
 
     def reader_manager(self, action=None):
         if action == 'open':
-            self.reader = Reader(self.dbfile)
+            try:
+                self.reader = Reader(self.dbfile)
+            except FileNotFoundError:
+                self.logger.error("Could not find GeoLite2 DB! Downloading!")
+                result_status = self.download()
+                if result_status:
+                    self.logger.error("Could not download GeoLite2 DB!!!, You may need to manually install it.")
+                    exit(1)
+                else:
+                    self.reader = Reader(self.dbfile)
         else:
             self.reader.close()
 
@@ -45,31 +54,41 @@ class GeoIPHandler(object):
 
         try:
             dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
+            db_next_update = date.fromtimestamp(stat(self.dbfile).st_mtime) + timedelta(days=60)
+
         except FileNotFoundError:
             self.logger.error("Could not find GeoLite2 DB as: %s", self.dbfile)
             self.download()
             dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
+            db_next_update = date.fromtimestamp(stat(self.dbfile).st_mtime) + timedelta(days=60)
 
-        first_wednesday_day = [week[2:3][0] for week in monthcalendar(today.year, today.month) if week[2:3][0] != 0][0]
-        first_wednesday_date = date(today.year, today.month, first_wednesday_day)
 
-        if dbdate < first_wednesday_date < today:
+        if db_next_update < today:
             self.logger.info("Newer GeoLite2 DB available, Updating...")
+            self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
+                              dbdate, db_next_update, today)
             self.reader_manager(action='close')
-            remove(self.dbfile)
             self.download()
             self.reader_manager(action='open')
         else:
-            td = first_wednesday_date - today
+            td = dbdate - today
             if td.days < 0:
-                self.logger.debug('Geolite2 DB is only %s days old. Keeping current copy', abs(td.days))
+                self.logger.debug("Geolite2 DB is only %s days old. Keeping current copy. Next update after %s",
+                                  abs(td.days), db_next_update)
+                self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
+                                  dbdate, db_next_update, today)
             else:
-                self.logger.debug('Geolite2 DB will update in %s days', abs(td.days))
+                self.logger.debug("Geolite2 DB will update in %s days", abs(td.days))
+                self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
+                                  dbdate, db_next_update, today)
+
 
     def download(self):
         tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))
         url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
         downloaded = False
+
+        retry_counter = 0
 
         while not downloaded:
             self.logger.info('Downloading GeoLite2 from %s', url)
@@ -77,9 +96,20 @@ class GeoIPHandler(object):
                 urlretrieve(url, tar_dbfile)
                 downloaded = True
             except HTTPError as e:
-                self.logger.error('Problem downloading new MaxMind DB... Trying again. Error: %s', e)
+                self.logger.error("Problem downloading new GeoLite2 DB... Trying again. Error: %s", e)
+                sleep(2)
+                retry_counter = (retry_counter + 1)
 
-        self.logger.debug('Opening GeoLite2 tar file : %s', tar_dbfile)
+                if retry_counter >= 3:
+                    self.logger.error("Retried downloading the new GeoLite2 DB 3 times and failed... Aborting!")
+                    result_status = 1
+                    return result_status
+        try:
+            remove(self.dbfile)
+        except FileNotFoundError:
+            self.logger.warn("Cannot remove GeoLite2 DB as it does not exsist!")
+
+        self.logger.debug("Opening GeoLite2 tar file : %s", tar_dbfile)
 
         tar = taropen(tar_dbfile, 'r:gz')
 
