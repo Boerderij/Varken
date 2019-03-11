@@ -1,8 +1,8 @@
 <p align="center">
 <img width="800" src="https://bin.cajun.pro/images/varken_full_banner.png">
 </p>
- 
-[![Build Status](https://jenkins.cajun.pro/buildStatus/icon?job=Varken/master)](https://jenkins.cajun.pro/job/Varken/develop)
+
+[![Build Status](https://jenkins.cajun.pro/buildStatus/icon?job=Varken/master)](https://jenkins.cajun.pro/job/Varken/job/master/)
 [![Discord](https://img.shields.io/discord/518970285773422592.svg?colorB=7289DA&label=Discord&logo=Discord&logoColor=7289DA&style=flat-square)](https://discord.gg/VjZ6qSM)
 [![BuyMeACoffee](https://img.shields.io/badge/BuyMeACoffee-Donate-ff813f.svg?logo=CoffeeScript&style=flat-square)](https://www.buymeacoffee.com/varken)
 [![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
