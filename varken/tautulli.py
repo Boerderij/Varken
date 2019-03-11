@@ -140,6 +140,8 @@ class TautulliAPI(object):
                         "longitude": longitude,
                         "player_state": player_state,
                         "device_type": session.platform,
+                        "relayed": session.relayed,
+                        "secure": session.secure,
                         "server": self.server.id
                     },
                     "time": now,
