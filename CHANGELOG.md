@@ -1,7 +1,26 @@
 # Change Log
 
-## [v1.6.4](https://github.com/Boerderij/Varken/tree/v1.6.4) (2019-02-03)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.3...v1.6.4)
+## [v1.6.5](https://github.com/Boerderij/Varken/tree/v1.6.5) (2019-03-11)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/v1.6.4...v1.6.5)
+
+**Implemented enhancements:**
+
+- \[Feature Request\] Add new "relayed" and "secure" to Tautulli data pushed to influx [\#114](https://github.com/Boerderij/Varken/issues/114)
+- \[BUG\] Changes to Tautulli breaks Varken `TypeError` `Secure` `relayed` [\#111](https://github.com/Boerderij/Varken/issues/111)
+
+**Fixed bugs:**
+
+- \[BUG\] Handle GeoIP Downloads better [\#113](https://github.com/Boerderij/Varken/issues/113)
+- \[BUG\] - "None" outputted to stdout many times with no benefit? [\#105](https://github.com/Boerderij/Varken/issues/105)
+- \[BUG\] windows file open error [\#104](https://github.com/Boerderij/Varken/issues/104)
+- \[BUG\] Not catching DB url resolve [\#103](https://github.com/Boerderij/Varken/issues/103)
+
+**Merged pull requests:**
+
+- v1.6.5 Merge [\#115](https://github.com/Boerderij/Varken/pull/115) ([samwiseg0](https://github.com/samwiseg0))
+
+## [1.6.4](https://github.com/Boerderij/Varken/tree/1.6.4) (2019-02-04)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.3...1.6.4)
 
 **Fixed bugs:**
 
