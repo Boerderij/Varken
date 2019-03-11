@@ -62,7 +62,6 @@ class GeoIPHandler(object):
             dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
             db_next_update = date.fromtimestamp(stat(self.dbfile).st_mtime) + timedelta(days=60)
 
-
         if db_next_update < today:
             self.logger.info("Newer GeoLite2 DB available, Updating...")
             self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
@@ -81,7 +80,6 @@ class GeoIPHandler(object):
                 self.logger.debug("Geolite2 DB will update in %s days", abs(td.days))
                 self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
                                   dbdate, db_next_update, today)
-
 
     def download(self):
         tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))
