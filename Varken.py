@@ -32,7 +32,6 @@ def thread():
     while schedule.jobs:
         job = QUEUE.get()
         a = job()
-        print(a)
         if a is not None:
             schedule.clear(a)
         QUEUE.task_done()
