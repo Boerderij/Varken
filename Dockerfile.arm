@@ -12,7 +12,8 @@ COPY /varken /app/varken
 
 COPY /data /app/data
 
-RUN python3 -m pip install -r /app/requirements.txt
+RUN apk add --no-cache tzdata && \
+    python3 -m pip install -r /app/requirements.txt
 
 CMD cp /app/data/varken.example.ini /config/varken.example.ini && python3 /app/Varken.py --data-folder /config
 
