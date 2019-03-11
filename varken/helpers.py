@@ -69,16 +69,10 @@ class GeoIPHandler(object):
             self.download()
             self.reader_manager(action='open')
         else:
-            td = dbdate - today
-            if td.days < 0:
-                self.logger.debug("Geolite2 DB is only %s days old. Keeping current copy. Next update after %s",
-                                  abs(td.days), db_next_update)
-                self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
-                                  dbdate, db_next_update, today)
-            else:
-                self.logger.debug("Geolite2 DB will update in %s days", abs(td.days))
-                self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
-                                  dbdate, db_next_update, today)
+            db_days_update = db_next_update - today
+            self.logger.debug("Geolite2 DB will update in %s days", abs(db_days_update.days))
+            self.logger.debug("GeoLite2 DB date %s, DB updates after: %s, Today: %s",
+                              dbdate, db_next_update, today)
 
     def download(self):
         tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))
@@ -117,7 +111,11 @@ class GeoIPHandler(object):
                 tar.extract(files, self.data_folder)
                 self.logger.debug('%s has been extracted to %s', files, self.data_folder)
         tar.close()
-        remove(tar_dbfile)
+        try:
+            remove(tar_dbfile)
+            self.logger.debug('Removed the GeoLite2 DB TAR file.')
+        except FileNotFoundError:
+            self.logger.warn("Cannot remove GeoLite2 DB TAR file as it does not exsist!")
 
 
 def hashit(string):
