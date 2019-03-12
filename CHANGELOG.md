@@ -9,6 +9,8 @@
 - \[BUG\] Unifi job does not try again after failure [\#107](https://github.com/Boerderij/Varken/issues/107)
 - \[BUG\] Catch ChunkError [\#106](https://github.com/Boerderij/Varken/issues/106)
 
+**Merged pull requests:**
+
 - v1.6.6 Merge [\#116](https://github.com/Boerderij/Varken/pull/116) ([samwiseg0](https://github.com/samwiseg0))
 
 ## [1.6.5](https://github.com/Boerderij/Varken/tree/1.6.5) (2019-03-11)
