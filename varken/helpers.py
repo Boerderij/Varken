@@ -12,7 +12,7 @@ from urllib.request import urlretrieve
 from json.decoder import JSONDecodeError
 from os.path import abspath, join, basename, isdir
 from urllib3.exceptions import InsecureRequestWarning
-from requests.exceptions import InvalidSchema, SSLError, ConnectionError
+from requests.exceptions import InvalidSchema, SSLError, ConnectionError, ChunkedEncodingError
 
 logger = getLogger()
 
@@ -98,7 +98,7 @@ class GeoIPHandler(object):
         try:
             remove(self.dbfile)
         except FileNotFoundError:
-            self.logger.warn("Cannot remove GeoLite2 DB as it does not exsist!")
+            self.logger.warning("Cannot remove GeoLite2 DB as it does not exist!")
 
         self.logger.debug("Opening GeoLite2 tar file : %s", tar_dbfile)
 
@@ -115,7 +115,7 @@ class GeoIPHandler(object):
             remove(tar_dbfile)
             self.logger.debug('Removed the GeoLite2 DB TAR file.')
         except FileNotFoundError:
-            self.logger.warn("Cannot remove GeoLite2 DB TAR file as it does not exsist!")
+            self.logger.warning("Cannot remove GeoLite2 DB TAR file as it does not exist!")
 
 
 def hashit(string):
@@ -156,17 +156,16 @@ def connection_handler(session, request, verify, as_is_reply=False):
                 return_json = get.json()
             except JSONDecodeError:
                 logger.error('No JSON response. Response is: %s', get.text)
-
         if air:
             return get
     except InvalidSchema:
         logger.error("You added http(s):// in the config file. Don't do that.")
-
     except SSLError as e:
         logger.error('Either your host is unreachable or you have an SSL issue. : %s', e)
-
     except ConnectionError as e:
         logger.error('Cannot resolve the url/ip/port. Check connectivity. Error: %s', e)
+    except ChunkedEncodingError as e:
+        logger.error('Broken connection during request... oops? Error: %s', e)
 
     return return_json
 
