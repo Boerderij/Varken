@@ -24,7 +24,7 @@ class UniFiAPI(object):
         req = self.session.prepare_request(Request('POST', self.server.url + endpoint, json=pre_cookies))
         post = connection_handler(self.session, req, self.server.verify_ssl, as_is_reply=True)
 
-        if not post.cookies.get('unifises'):
+        if not post or not post.cookies.get('unifises'):
             return
 
         cookies = {'unifises': post.cookies.get('unifises')}

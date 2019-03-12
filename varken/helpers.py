@@ -143,7 +143,12 @@ def connection_handler(session, request, verify, as_is_reply=False):
     try:
         get = s.send(r, verify=v)
         if get.status_code == 401:
-            logger.info('Your api key is incorrect for %s', r.url)
+            if 'NoSiteContext' in str(get.content):
+                logger.info('Your Site is incorrect for %s', r.url)
+            elif 'LoginRequired' in str(get.content):
+                logger.info('Your login credentials are incorrect for %s', r.url)
+            else:
+                logger.info('Your api key is incorrect for %s', r.url)
         elif get.status_code == 404:
             logger.info('This url doesnt even resolve: %s', r.url)
         elif get.status_code == 200:
