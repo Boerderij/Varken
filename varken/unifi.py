@@ -24,7 +24,7 @@ class UniFiAPI(object):
         req = self.session.prepare_request(Request('POST', self.server.url + endpoint, json=pre_cookies))
         post = connection_handler(self.session, req, self.server.verify_ssl, as_is_reply=True)
 
-        if not post.cookies.get('unifises'):
+        if not post or not post.cookies.get('unifises'):
             return
 
         cookies = {'unifises': post.cookies.get('unifises')}
@@ -37,8 +37,8 @@ class UniFiAPI(object):
         get = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not get:
-            self.logger.error("Canceling Job get_usg_stats for unifi-%s", self.server.id)
-            return f"unifi-{self.server.id}-get_usg_stats"
+            self.logger.error("Disregarding Job get_usg_stats for unifi-%s", self.server.id)
+            return
 
         devices = {device['name']: device for device in get['data']}
         if devices.get(self.server.usg_name):
