@@ -143,7 +143,13 @@ class SonarrAPI(object):
             return
 
         for show in download_queue:
-            sxe = f"S{show.episode['seasonNumber']:0>2}E{show.episode['episodeNumber']:0>2}"
+            try:
+                sxe = f"S{show.episode['seasonNumber']:0>2}E{show.episode['episodeNumber']:0>2}"
+            except TypeError as e:
+                self.logger.error('TypeError has occurred : %s while processing the sonarr queue. \
+                                  Remove invalid queue entries.', e)
+                continue
+
             if show.protocol.upper() == 'USENET':
                 protocol_id = 1
             else:
