@@ -80,6 +80,11 @@ class TautulliAPI(object):
                 latitude = geodata.location.latitude
                 longitude = geodata.location.longitude
 
+            if not geodata.city.name:
+                location = '👽'
+            else:
+                location = geodata.city.name
+
             decision = session.transcode_decision
             if decision == 'copy':
                 decision = 'direct stream'
@@ -134,7 +139,7 @@ class TautulliAPI(object):
                         "quality_profile": session.quality_profile,
                         "progress_percent": session.progress_percent,
                         "region_code": geodata.subdivisions.most_specific.iso_code,
-                        "location": geodata.city.name,
+                        "location": location,
                         "full_location": f'{geodata.subdivisions.most_specific.name} - {geodata.city.name}',
                         "latitude": latitude,
                         "longitude": longitude,
