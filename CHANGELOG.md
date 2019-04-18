@@ -1,7 +1,19 @@
 # Change Log
 
-## [v1.6.6](https://github.com/Boerderij/Varken/tree/v1.6.6) (2019-03-11)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.5...v1.6.6)
+## [v1.6.7](https://github.com/Boerderij/Varken/tree/v1.6.7) (2019-04-18)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.6...v1.6.7)
+
+**Implemented enhancements:**
+
+- \[BUG\] Ombi null childRequest output [\#119](https://github.com/Boerderij/Varken/issues/119)
+- \[ENHANCEMENT\] Invalid entries in Sonarr's queue leaves varken unable to process the rest of the queue [\#117](https://github.com/Boerderij/Varken/issues/117)
+
+**Merged pull requests:**
+
+- v1.6.7 Merge [\#120](https://github.com/Boerderij/Varken/pull/120) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.6.6](https://github.com/Boerderij/Varken/tree/1.6.6) (2019-03-12)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.5...1.6.6)
 
 **Fixed bugs:**
 

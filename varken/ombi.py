@@ -102,13 +102,13 @@ class OmbiAPI(object):
             hash_id = hashit(f'{show.id}{show.tvDbId}{show.title}')
 
             # Denied = 0, Approved = 1, Completed = 2, Pending = 3
-            if show.childRequests[0]['denied']:
+            if show.childRequests[0].get('denied'):
                 status = 0
 
-            elif show.childRequests[0]['approved'] and show.childRequests[0]['available']:
+            elif show.childRequests[0].get('approved') and show.childRequests[0].get('available'):
                 status = 2
 
-            elif show.childRequests[0]['approved']:
+            elif show.childRequests[0].get('approved'):
                 status = 1
 
             else:
