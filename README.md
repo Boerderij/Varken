@@ -43,6 +43,11 @@ Key features:
 ## Installation Guides
 Varken Installation guides can be found in the [wiki](https://github.com/Boerderij/Varken/wiki/Installation).
 
+## Support
+Please read [Asking for Support](https://github.com/Boerderij/Varken/wiki/Asking-for-Support) before seeking support. 
+
+[Click here for quick access to discord support](http://cyborg.decreator.dev/channels/518970285773422592/530424560504537105/). No app or account needed!
+    
 ### InfluxDB
 [InfluxDB Installation Documentation](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/)
 
