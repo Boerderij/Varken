@@ -4,7 +4,7 @@
 
 [![Build Status](https://jenkins.cajun.pro/buildStatus/icon?job=Varken/master)](https://jenkins.cajun.pro/job/Varken/job/master/)
 [![Discord](https://img.shields.io/discord/518970285773422592.svg?colorB=7289DA&label=Discord&logo=Discord&logoColor=7289DA&style=flat-square)](https://discord.gg/VjZ6qSM)
-[![BuyMeACoffee](https://img.shields.io/badge/BuyMeACoffee-Donate-ff813f.svg?logo=CoffeeScript&style=flat-square)](https://www.buymeacoffee.com/varken)
+[![ko-fi](https://img.shields.io/badge/Buy%20Us%20A%20Coffee-Donate-ff813f.svg?logo=CoffeeScript&style=flat-square)](https://ko-fi.com/varken)
 [![Docker-Layers](https://images.microbadger.com/badges/image/boerderij/varken.svg)](https://microbadger.com/images/boerderij/varken)
 [![Release](https://img.shields.io/github/release/boerderij/varken.svg?style=flat-square)](https://microbadger.com/images/boerderij/varken)
 [![Docker Pulls](https://img.shields.io/docker/pulls/boerderij/varken.svg)](https://hub.docker.com/r/boerderij/varken/)
