@@ -90,10 +90,14 @@ class SonarrAPI(object):
         if not get:
             return
 
-        try:
-            tv_shows = [SonarrTVShow(**show) for show in get]
-        except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure', e)
+        tv_shows = []
+        for show in get:
+            try:
+                show_tuple = SonarrTVShow(**show)
+                tv_shows.append(show_tuple)
+            except TypeError as e:
+                self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure for show', e)
+        if not tv_shows:
             return
 
         for show in tv_shows:
@@ -140,10 +144,14 @@ class SonarrAPI(object):
         if not get:
             return
 
-        try:
-            download_queue = [Queue(**show) for show in get]
-        except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating Queue structure', e)
+        download_queue = []
+        for show in get:
+            try:
+                show_tuple = Queue(**show)
+                download_queue.append(show_tuple)
+            except TypeError as e:
+                self.logger.error('TypeError has occurred : %s while creating Queue structure', e)
+        if not download_queue:
             return
 
         for show in download_queue:
