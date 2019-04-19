@@ -40,7 +40,8 @@ class UniFiAPI(object):
             self.logger.error("Disregarding Job get_usg_stats for unifi-%s", self.server.id)
             return
 
-        devices = {device['name']: device for device in get['data']}
+        devices = {device['name']: device for device in get['data'] if device.get('name')}
+
         if devices.get(self.server.usg_name):
             device = devices[self.server.usg_name]
         else:
