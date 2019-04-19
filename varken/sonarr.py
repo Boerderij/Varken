@@ -38,12 +38,10 @@ class SonarrAPI(object):
         tv_shows = []
         for show in get:
             try:
-                show_tuple = SonarrTVShow(**show)
-                tv_shows.append(show_tuple)
+                tv_shows.append(SonarrTVShow(**show))
             except TypeError as e:
-                self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure for show', e)
-        if not tv_shows:
-            return
+                self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure for show. Data '
+                                  'attempted is: %s', e, show)
 
         # Add show to missing list if file does not exist
         for show in tv_shows:
@@ -93,12 +91,10 @@ class SonarrAPI(object):
         tv_shows = []
         for show in get:
             try:
-                show_tuple = SonarrTVShow(**show)
-                tv_shows.append(show_tuple)
+                tv_shows.append(SonarrTVShow(**show))
             except TypeError as e:
-                self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure for show', e)
-        if not tv_shows:
-            return
+                self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure for show. Data '
+                                  'attempted is: %s', e, show)
 
         for show in tv_shows:
             sxe = f'S{show.seasonNumber:0>2}E{show.episodeNumber:0>2}'
@@ -147,10 +143,10 @@ class SonarrAPI(object):
         download_queue = []
         for show in get:
             try:
-                show_tuple = Queue(**show)
-                download_queue.append(show_tuple)
+                download_queue.append(Queue(**show))
             except TypeError as e:
-                self.logger.error('TypeError has occurred : %s while creating Queue structure', e)
+                self.logger.error('TypeError has occurred : %s while creating Queue structure. Data attempted is: '
+                                  '%s', e, show)
         if not download_queue:
             return
 
@@ -159,7 +155,7 @@ class SonarrAPI(object):
                 sxe = f"S{show.episode['seasonNumber']:0>2}E{show.episode['episodeNumber']:0>2}"
             except TypeError as e:
                 self.logger.error('TypeError has occurred : %s while processing the sonarr queue. \
-                                  Remove invalid queue entries.', e)
+                                  Remove invalid queue entry. Data attempted is: %s', e, show)
                 continue
 
             if show.protocol.upper() == 'USENET':
