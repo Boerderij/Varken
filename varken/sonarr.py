@@ -35,10 +35,14 @@ class SonarrAPI(object):
             return
 
         # Iteratively create a list of SonarrTVShow Objects from response json
-        try:
-            tv_shows = [SonarrTVShow(**show) for show in get]
-        except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure', e)
+        tv_shows = []
+        for show in get:
+            try:
+                show_tuple = SonarrTVShow(**show)
+                tv_shows.append(show_tuple)
+            except TypeError as e:
+                self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure for show', e)
+        if not tv_shows:
             return
 
         # Add show to missing list if file does not exist
