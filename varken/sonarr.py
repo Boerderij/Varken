@@ -188,4 +188,7 @@ class SonarrAPI(object):
                     }
                 }
             )
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.debug("No data to send to influx for sonarr instance, discarding.")

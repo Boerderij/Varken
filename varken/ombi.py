@@ -144,7 +144,10 @@ class OmbiAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.debug("Empty dataset for ombi module. Discarding...")
 
     def get_request_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
