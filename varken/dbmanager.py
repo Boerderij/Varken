@@ -1,3 +1,4 @@
+from sys import exit
 from logging import getLogger
 from influxdb import InfluxDBClient
 from requests.exceptions import ConnectionError
@@ -10,10 +11,15 @@ class DBManager(object):
         self.influx = InfluxDBClient(host=self.server.url, port=self.server.port, username=self.server.username,
                                      password=self.server.password, ssl=self.server.ssl, database='varken',
                                      verify_ssl=self.server.verify_ssl)
-        version = self.influx.request('ping', expected_response_code=204).headers['X-Influxdb-Version']
-        databases = [db['name'] for db in self.influx.get_list_database()]
         self.logger = getLogger()
-        self.logger.info('Influxdb version: %s', version)
+        try:
+            version = self.influx.request('ping', expected_response_code=204).headers['X-Influxdb-Version']
+            self.logger.info('Influxdb version: %s', version)
+        except ConnectionError:
+            self.logger.critical("Error testing connection to InfluxDB. Please check your url/hostname")
+            exit()
+
+        databases = [db['name'] for db in self.influx.get_list_database()]
 
         if 'varken' not in databases:
             self.logger.info("Creating varken database")
