@@ -1,7 +1,18 @@
 # Change Log
 
-## [v1.6.7](https://github.com/Boerderij/Varken/tree/v1.6.7) (2019-04-18)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.6...v1.6.7)
+## [v1.6.8](https://github.com/Boerderij/Varken/tree/v1.6.8) (2019-04-18)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.7...v1.6.8)
+
+**Implemented enhancements:**
+
+- \[Enhancement\] Only drop the invalid episodes from sonarr [\#121](https://github.com/Boerderij/Varken/issues/121)
+
+**Merged pull requests:**
+
+- v1.6.8 Merge [\#122](https://github.com/Boerderij/Varken/pull/122) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.6.7](https://github.com/Boerderij/Varken/tree/1.6.7) (2019-04-18)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.6...1.6.7)
 
 **Implemented enhancements:**
 
