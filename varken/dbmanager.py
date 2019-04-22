@@ -8,6 +8,9 @@ from influxdb.exceptions import InfluxDBServerError
 class DBManager(object):
     def __init__(self, server):
         self.server = server
+        if self.server.url == "influxdb.domain.tld":
+            self.logger.critical("You have not configured your varken.ini. Please read Wiki page for configuration")
+            exit()
         self.influx = InfluxDBClient(host=self.server.url, port=self.server.port, username=self.server.username,
                                      password=self.server.password, ssl=self.server.ssl, database='varken',
                                      verify_ssl=self.server.verify_ssl)
