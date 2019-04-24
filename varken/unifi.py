@@ -14,6 +14,7 @@ class UniFiAPI(object):
         self.logger = getLogger()
 
         self.get_cookie()
+        self.get_site()
 
     def __repr__(self):
         return f"<unifi-{self.server.id}>"
@@ -25,10 +26,26 @@ class UniFiAPI(object):
         post = connection_handler(self.session, req, self.server.verify_ssl, as_is_reply=True)
 
         if not post or not post.cookies.get('unifises'):
+            self.logger.error(f"Could not retrieve session cookie from UniFi Controller")
             return
 
         cookies = {'unifises': post.cookies.get('unifises')}
         self.session.cookies.update(cookies)
+
+    def get_site(self):
+        endpoint = '/api/self/sites'
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            self.logger.error(f"Could not get list of sites from UniFi Controller")
+            return
+        site = [site['name'] for site in get['data'] if site['name'].lower() == self.server.site.lower()
+                or site['desc'].lower() == self.server.site.lower()]
+        if site:
+            self.server.site = site[0]
+        else:
+            self.logger.error(f"Could not map site {self.server.site} to a site id/alias")
 
     def get_usg_stats(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
