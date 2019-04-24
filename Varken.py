@@ -32,7 +32,12 @@ PLATFORM_LINUX_DISTRO = ' '.join(x for x in linux_distribution() if x)
 def thread():
     while schedule.jobs:
         job = QUEUE.get()
-        a = job()
+        if isinstance(job, tuple):
+            query = job[1]
+            job = job[0]
+            a = job(query=query)
+        else:
+            a = job()
         if a is not None:
             schedule.clear(a)
         QUEUE.task_done()
@@ -147,7 +152,8 @@ if __name__ == "__main__":
                     "lidarr-{}-get_missing".format(server.id))
             if server.future_days > 0:
                 at_time = schedule.every(server.future_days_run_seconds).seconds
-                at_time.do(QUEUE.put, LIDARR.get_calendar, query="Future").tag("lidarr-{}-get_future".format(server.id))
+                at_time.do(QUEUE.put, (LIDARR.get_calendar, "Future")).tag("lidarr-{}-get_future".format(
+                    server.id))
 
     if CONFIG.ombi_enabled:
         for server in CONFIG.ombi_servers:
