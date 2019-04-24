@@ -33,8 +33,8 @@ def thread():
     while schedule.jobs:
         job = QUEUE.get()
         if isinstance(job, tuple):
-            query = job[1]
             job = job[0]
+            query = job[1]
             a = job(query=query)
         else:
             a = job()
@@ -145,10 +145,10 @@ if __name__ == "__main__":
             LIDARR = LidarrAPI(server, DBMANAGER)
             if server.queue:
                 at_time = schedule.every(server.queue_run_seconds).seconds
-                at_time.do(QUEUE.put, LIDARR.get_queue).tag("lidarr-{}-get_queue".format(server.id))
+                at_time.do(QUEUE.put, LIDARR.get_queue, None).tag("lidarr-{}-get_queue".format(server.id))
             if server.missing_days > 0:
                 at_time = schedule.every(server.missing_days_run_seconds).seconds
-                at_time.do(QUEUE.put, LIDARR.get_calendar, query="Missing").tag(
+                at_time.do(QUEUE.put, (LIDARR.get_calendar, "Missing")).tag(
                     "lidarr-{}-get_missing".format(server.id))
             if server.future_days > 0:
                 at_time = schedule.every(server.future_days_run_seconds).seconds
@@ -183,7 +183,7 @@ if __name__ == "__main__":
 
     # Run all on startup
     SERVICES_ENABLED = [CONFIG.ombi_enabled, CONFIG.radarr_enabled, CONFIG.tautulli_enabled, CONFIG.unifi_enabled,
-                        CONFIG.sonarr_enabled, CONFIG.sickchill_enabled]
+                        CONFIG.sonarr_enabled, CONFIG.sickchill_enabled, CONFIG.lidarr_enabled]
     if not [enabled for enabled in SERVICES_ENABLED if enabled]:
         vl.logger.error("All services disabled. Exiting")
         exit(1)
