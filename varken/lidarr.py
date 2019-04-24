@@ -48,10 +48,12 @@ class LidarrAPI(object):
 
         # Add Album to missing list if album is not complete
         for album in albums:
-            if album.statistics['percentOfTracks'] != 100:
-                influx_albums.append((album.title, album.releaseDate, album.artist['artistName'], album.id,
-                                      album.statistics['percentOfTracks'],
-                                      f"{album.statistics['trackFileCount']}/{album.statistics['TrackCount']}"))
+            percent_of_tracks = album.statistics.get('percentOfTracks', 0)
+            if percent_of_tracks != 100:
+                influx_albums.append(
+                    (album.title, album.releaseDate, album.artist['artistName'], album.id,percent_of_tracks,
+                     f"{album.statistics.get('trackFileCount', 0)}/{album.statistics.get('trackCount', 0)}")
+                )
 
         for title, release_date, artist_name, album_id, percent_complete, complete_count in influx_albums:
             hash_id = hashit(f'{self.server.id}{title}{album_id}')

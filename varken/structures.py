@@ -501,5 +501,5 @@ class LidarrAlbum(NamedTuple):
     artist: dict = None
     images: list = None
     links: list = None
-    statistics: dict = None
+    statistics: dict = {}
     id: int = None
