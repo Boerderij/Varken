@@ -29,12 +29,8 @@ from varken.varkenlogger import VarkenLogger
 PLATFORM_LINUX_DISTRO = ' '.join(x for x in linux_distribution() if x)
 
 
-def thread(job):
-    worker = Thread(target=job)
-    if isinstance(job, tuple):
-        job, query = job[0], job[1]
-        worker = Thread(target=job, kwargs={'query': query})
-
+def thread(job, **kwargs):
+    worker = Thread(target=job, kwargs=dict(**kwargs))
     worker.start()
 
 
@@ -108,10 +104,10 @@ if __name__ == "__main__":
                 at_time.do(thread, SONARR.get_queue).tag("sonarr-{}-get_queue".format(server.id))
             if server.missing_days > 0:
                 at_time = schedule.every(server.missing_days_run_seconds).seconds
-                at_time.do(thread, SONARR.get_missing).tag("sonarr-{}-get_missing".format(server.id))
+                at_time.do(thread, SONARR.get_calendar, query="Missing").tag("sonarr-{}-get_missing".format(server.id))
             if server.future_days > 0:
                 at_time = schedule.every(server.future_days_run_seconds).seconds
-                at_time.do(thread, SONARR.get_future).tag("sonarr-{}-get_future".format(server.id))
+                at_time.do(thread, SONARR.get_calendar, query="Future").tag("sonarr-{}-get_future".format(server.id))
 
     if CONFIG.tautulli_enabled:
         GEOIPHANDLER = GeoIPHandler(DATA_FOLDER)
@@ -143,11 +139,11 @@ if __name__ == "__main__":
                 at_time.do(thread, LIDARR.get_queue).tag("lidarr-{}-get_queue".format(server.id))
             if server.missing_days > 0:
                 at_time = schedule.every(server.missing_days_run_seconds).seconds
-                at_time.do(thread, (LIDARR.get_calendar, "Missing")).tag(
+                at_time.do(thread, LIDARR.get_calendar, query="Missing").tag(
                     "lidarr-{}-get_missing".format(server.id))
             if server.future_days > 0:
                 at_time = schedule.every(server.future_days_run_seconds).seconds
-                at_time.do(thread, (LIDARR.get_calendar, "Future")).tag("lidarr-{}-get_future".format(
+                at_time.do(thread, LIDARR.get_calendar, query="Future").tag("lidarr-{}-get_future".format(
                     server.id))
 
     if CONFIG.ombi_enabled:
