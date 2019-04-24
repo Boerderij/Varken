@@ -457,3 +457,49 @@ class TautulliStream(NamedTuple):
     year: str = None
     secure: str = None
     relayed: int = None
+
+
+# Lidarr
+class LidarrQueue(NamedTuple):
+    artistId: int = None
+    albumId: int = None
+    language: dict = None
+    quality: dict = None
+    size: float = None
+    title: str = None
+    timeleft: str = None
+    sizeleft: float = None
+    status: str = None
+    trackedDownloadStatus: str = None
+    statusMessages: list = None
+    downloadId: str = None
+    protocol: str = None
+    downloadClient: str = None
+    indexer: str = None
+    downloadForced: bool = None
+    id: int = None
+
+
+class LidarrAlbum(NamedTuple):
+    title: str = None
+    disambiguation: str = None
+    overview: str = None
+    artistId: int = None
+    foreignAlbumId: str = None
+    monitored: bool = None
+    anyReleaseOk: bool = None
+    profileId: int = None
+    duration: int = None
+    albumType: str = None
+    secondaryTypes: list = None
+    mediumCount: int = None
+    ratings: dict = None
+    releaseDate: str = None
+    releases: list = None
+    genres: list = None
+    media: list = None
+    artist: dict = None
+    images: list = None
+    links: list = None
+    statistics: dict = None
+    id: int = None
