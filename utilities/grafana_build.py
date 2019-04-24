@@ -27,11 +27,12 @@ session = Session()
 auth = (username, password)
 url_base = f"{grafana_url.rstrip('/')}/api"
 
+varken_datasource = []
 try:
     datasources = session.get(url_base + '/datasources', auth=auth, verify=verify).json()
     varken_datasource = [source for source in datasources if source['database'] == 'varken']
     if varken_datasource:
-        exit(f'varken datasource already exists with the name "{varken_datasource[0]["name"]}"')
+        print(f'varken datasource already exists with the name "{varken_datasource[0]["name"]}"')
 except JSONDecodeError:
     exit(f"Could not talk to grafana at {grafana_url}. Check URL/Username/Password")
 
@@ -43,8 +44,9 @@ datasource_data = {
     "basicAuth": False,
     "database": 'varken'
 }
-post = session.post(url_base + '/datasources', auth=auth, verify=verify, json=datasource_data).json()
-print(f'Created Varken-Script datasource (id:{post["datasource"]["id"]})')
+if not varken_datasource:
+    post = session.post(url_base + '/datasources', auth=auth, verify=verify, json=datasource_data).json()
+    print(f'Created Varken-Script datasource (id:{post["datasource"]["id"]})')
 
 our_dashboard = session.get(url_base + '/gnet/dashboards/9585', auth=auth, verify=verify).json()['json']
 dashboard_data = {
