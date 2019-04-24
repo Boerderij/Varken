@@ -19,68 +19,19 @@ class SonarrAPI(object):
     def __repr__(self):
         return f"<sonarr-{self.server.id}>"
 
-    def get_missing(self):
-        endpoint = '/api/calendar'
-        today = str(date.today())
-        last_days = str(date.today() + timedelta(days=-self.server.missing_days))
-        now = datetime.now(timezone.utc).astimezone().isoformat()
-        params = {'start': last_days, 'end': today}
-        influx_payload = []
-        missing = []
-
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
-        get = connection_handler(self.session, req, self.server.verify_ssl)
-
-        if not get:
-            return
-
-        # Iteratively create a list of SonarrTVShow Objects from response json
-        tv_shows = []
-        for show in get:
-            try:
-                tv_shows.append(SonarrTVShow(**show))
-            except TypeError as e:
-                self.logger.error('TypeError has occurred : %s while creating SonarrTVShow structure for show. Data '
-                                  'attempted is: %s', e, show)
-
-        # Add show to missing list if file does not exist
-        for show in tv_shows:
-            if not show.hasFile:
-                sxe = f'S{show.seasonNumber:0>2}E{show.episodeNumber:0>2}'
-                missing.append((show.series['title'], sxe, show.airDateUtc, show.title, show.id))
-
-        for series_title, sxe, air_date_utc, episode_title, sonarr_id in missing:
-            hash_id = hashit(f'{self.server.id}{series_title}{sxe}')
-            influx_payload.append(
-                {
-                    "measurement": "Sonarr",
-                    "tags": {
-                        "type": "Missing",
-                        "sonarrId": sonarr_id,
-                        "server": self.server.id,
-                        "name": series_title,
-                        "epname": episode_title,
-                        "sxe": sxe,
-                        "airsUTC": air_date_utc
-                    },
-                    "time": now,
-                    "fields": {
-                        "hash": hash_id
-
-                    }
-                }
-            )
-
-        self.dbmanager.write_points(influx_payload)
-
-    def get_future(self):
+    def get_calendar(self, query="Missing"):
         endpoint = '/api/calendar/'
         today = str(date.today())
-        now = datetime.now(timezone.utc).astimezone().isoformat()
+        last_days = str(date.today() - timedelta(days=self.server.missing_days))
         future = str(date.today() + timedelta(days=self.server.future_days))
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        if query == "Missing":
+            params = {'start': last_days, 'end': today}
+        else:
+            params = {'start': today, 'end': future}
         influx_payload = []
         air_days = []
-        params = {'start': today, 'end': future}
+        missing = []
 
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
         get = connection_handler(self.session, req, self.server.verify_ssl)
@@ -102,15 +53,19 @@ class SonarrAPI(object):
                 downloaded = 1
             else:
                 downloaded = 0
-            air_days.append((show.series['title'], downloaded, sxe, show.title, show.airDateUtc, show.id))
+            if query == "Missing":
+                if not downloaded:
+                    missing.append((show.series['title'], downloaded, sxe, show.airDateUtc, show.title, show.id))
+            else:
+                air_days.append((show.series['title'], downloaded, sxe, show.title, show.airDateUtc, show.id))
 
-        for series_title, dl_status, sxe, episode_title, air_date_utc, sonarr_id in air_days:
+        for series_title, dl_status, sxe, episode_title, air_date_utc, sonarr_id in (air_days or missing):
             hash_id = hashit(f'{self.server.id}{series_title}{sxe}')
             influx_payload.append(
                 {
                     "measurement": "Sonarr",
                     "tags": {
-                        "type": "Future",
+                        "type": query,
                         "sonarrId": sonarr_id,
                         "server": self.server.id,
                         "name": series_title,
