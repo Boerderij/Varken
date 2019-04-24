@@ -125,5 +125,5 @@ dashboard_data = {
         }
     ]
 }
-make_dashboard = session.post(url_base + '/dashboards/import', data=dashboard_data, auth=auth, verify=verify)
+make_dashboard = session.post(url_base + '/dashboards/import', json=dashboard_data, auth=auth, verify=verify)
 print('Created dashboard "Varken-Script"')
