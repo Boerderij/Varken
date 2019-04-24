@@ -44,6 +44,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-d", "--data-folder", help='Define an alternate data folder location')
     parser.add_argument("-D", "--debug", action='store_true', help='Use to enable DEBUG logging')
+    parser.add_argument("-ND", "--no_debug", action='store_true', help='Use to disable DEBUG logging')
 
     opts = parser.parse_args()
 
@@ -72,9 +73,14 @@ if __name__ == "__main__":
     enable_opts = ['True', 'true', 'yes']
     debug_opts = ['debug', 'Debug', 'DEBUG']
 
-    if not opts.debug:
+    opts.debug = True
+
+    if getenv('DEBUG') is not None:
         opts.debug = True if any([getenv(string, False) for true in enable_opts
                                   for string in debug_opts if getenv(string, False) == true]) else False
+
+    elif opts.no_debug:
+        opts.debug = False
 
     # Initiate the logger
     vl = VarkenLogger(data_folder=DATA_FOLDER, debug=opts.debug)
