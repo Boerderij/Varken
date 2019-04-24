@@ -43,7 +43,7 @@ if __name__ == "__main__":
                             formatter_class=RawTextHelpFormatter)
 
     parser.add_argument("-d", "--data-folder", help='Define an alternate data folder location')
-    parser.add_argument("-D", "--debug", action='store_true', help='Use to enable DEBUG logging')
+    parser.add_argument("-D", "--debug", action='store_true', help='Use to enable DEBUG logging. (Depreciated)')
     parser.add_argument("-ND", "--no_debug", action='store_true', help='Use to disable DEBUG logging')
 
     opts = parser.parse_args()
