@@ -15,7 +15,7 @@ class INIParser(object):
         self.config = None
         self.data_folder = data_folder
         self.filtered_strings = None
-        self.services = ['sonarr', 'radarr', 'ombi', 'tautulli', 'sickchill', 'unifi']
+        self.services = ['sonarr', 'radarr', 'lidarr', 'ombi', 'tautulli', 'sickchill', 'unifi']
 
         self.logger = getLogger()
         self.influx_server = InfluxServer()
@@ -174,7 +174,7 @@ class INIParser(object):
                         url = self.url_check(self.config.get(section, 'url'), section=section)
 
                         apikey = None
-                        if service not in ['ciscoasa', 'unifi']:
+                        if service != 'unifi':
                             apikey = self.config.get(section, 'apikey')
 
                         scheme = 'https://' if self.config.getboolean(section, 'ssl') else 'http://'
@@ -183,11 +183,11 @@ class INIParser(object):
                         if scheme != 'https://':
                             verify_ssl = False
 
-                        if service in ['sonarr', 'radarr']:
+                        if service in ['sonarr', 'radarr', 'lidarr']:
                             queue = self.config.getboolean(section, 'queue')
                             queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
 
-                        if service == 'sonarr':
+                        if service in ['sonarr', 'lidarr']:
                             missing_days = self.config.getint(section, 'missing_days')
                             future_days = self.config.getint(section, 'future_days')
 
