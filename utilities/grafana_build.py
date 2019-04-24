@@ -3,8 +3,6 @@ from sys import exit
 from requests import Session
 from json.decoder import JSONDecodeError
 
-session = Session()
-
 docker = True  # True if using a docker container, False if not
 host_ip = '127.0.0.1'  # Only relevant if docker = False
 username = 'admin'  # Grafana username
@@ -25,6 +23,7 @@ sickchill_url = 'https://yourdomain.com/sickchill'
 
 
 # Do not edit past this line #
+session = Session()
 auth = (username, password)
 url_base = f"{grafana_url.rstrip('/')}/api"
 
