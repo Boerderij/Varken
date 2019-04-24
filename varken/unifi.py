@@ -9,6 +9,7 @@ class UniFiAPI(object):
     def __init__(self, server, dbmanager):
         self.dbmanager = dbmanager
         self.server = server
+        self.site = self.server.site
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.logger = getLogger()
@@ -43,13 +44,13 @@ class UniFiAPI(object):
         site = [site['name'] for site in get['data'] if site['name'].lower() == self.server.site.lower()
                 or site['desc'].lower() == self.server.site.lower()]
         if site:
-            self.server.site = site[0]
+            self.site = site[0]
         else:
             self.logger.error(f"Could not map site {self.server.site} to a site id/alias")
 
     def get_usg_stats(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
-        endpoint = f'/api/s/{self.server.site}/stat/device'
+        endpoint = f'/api/s/{self.site}/stat/device'
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
         get = connection_handler(self.session, req, self.server.verify_ssl)
 
