@@ -12,7 +12,7 @@ class UniFiAPI(object):
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.logger = getLogger()
-
+        self.get_retry = True
         self.get_cookie()
         self.get_site()
 
@@ -54,8 +54,18 @@ class UniFiAPI(object):
         get = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not get:
-            self.logger.error("Disregarding Job get_usg_stats for unifi-%s", self.server.id)
+            if self.get_retry:
+                self.get_retry = False
+                self.logger.error("Attempting to reauthenticate for unifi-%s", self.server.id)
+                self.get_cookie()
+                self.get_usg_stats()
+            else:
+                self.get_retry = True
+                self.logger.error("Disregarding Job get_usg_stats for unifi-%s", self.server.id)
             return
+
+        if not self.get_retry:
+            self.get_retry = True
 
         devices = {device['name']: device for device in get['data'] if device.get('name')}
 
@@ -80,10 +90,6 @@ class UniFiAPI(object):
                         "rx_bytes_current": device['wan1']['rx_bytes-r'],
                         "tx_bytes_total": device['wan1']['tx_bytes'],
                         "tx_bytes_current": device['wan1']['tx_bytes-r'],
-                        # Commenting speedtest out until Unifi gets their shit together
-                        # "speedtest_latency": device['speedtest-status']['latency'],
-                        # "speedtest_download": device['speedtest-status']['xput_download'],
-                        # "speedtest_upload": device['speedtest-status']['xput_upload'],
                         "cpu_loadavg_1": float(device['sys_stats']['loadavg_1']),
                         "cpu_loadavg_5": float(device['sys_stats']['loadavg_5']),
                         "cpu_loadavg_15": float(device['sys_stats']['loadavg_15']),

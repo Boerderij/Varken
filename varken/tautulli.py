@@ -208,6 +208,10 @@ class TautulliAPI(object):
             if library['section_type'] == 'show':
                 data['fields']['seasons'] = int(library['parent_count'])
                 data['fields']['episodes'] = int(library['child_count'])
+
+            elif library['section_type'] == 'artist':
+                data['fields']['albums'] = int(library['parent_count'])
+                data['fields']['tracks'] = int(library['child_count'])
             influx_payload.append(data)
 
         self.dbmanager.write_points(influx_payload)
