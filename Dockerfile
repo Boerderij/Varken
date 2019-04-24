@@ -12,7 +12,7 @@ COPY /varken /app/varken
 
 COPY /data /app/data
 
-COPY /utilities /config/utilities
+COPY /utilities /app/data/utilities
 
 RUN apk add --no-cache tzdata && \
     python3 -m pip install -r /app/requirements.txt
