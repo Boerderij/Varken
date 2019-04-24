@@ -17,6 +17,7 @@ from varken.unifi import UniFiAPI
 from varken import VERSION, BRANCH
 from varken.sonarr import SonarrAPI
 from varken.radarr import RadarrAPI
+from varken.lidarr import LidarrAPI
 from varken.iniparser import INIParser
 from varken.dbmanager import DBManager
 from varken.helpers import GeoIPHandler
@@ -133,6 +134,20 @@ if __name__ == "__main__":
             if server.queue:
                 at_time = schedule.every(server.queue_run_seconds).seconds
                 at_time.do(QUEUE.put, RADARR.get_queue).tag("radarr-{}-get_queue".format(server.id))
+
+    if CONFIG.lidarr_enabled:
+        for server in CONFIG.lidarr_servers:
+            LIDARR = LidarrAPI(server, DBMANAGER)
+            if server.queue:
+                at_time = schedule.every(server.queue_run_seconds).seconds
+                at_time.do(QUEUE.put, LIDARR.get_queue).tag("lidarr-{}-get_queue".format(server.id))
+            if server.missing_days > 0:
+                at_time = schedule.every(server.missing_days_run_seconds).seconds
+                at_time.do(QUEUE.put, LIDARR.get_calendar, query="Missing").tag(
+                    "lidarr-{}-get_missing".format(server.id))
+            if server.future_days > 0:
+                at_time = schedule.every(server.future_days_run_seconds).seconds
+                at_time.do(QUEUE.put, LIDARR.get_calendar, query="Future").tag("lidarr-{}-get_future".format(server.id))
 
     if CONFIG.ombi_enabled:
         for server in CONFIG.ombi_servers:
