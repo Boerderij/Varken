@@ -33,8 +33,7 @@ def thread():
     while schedule.jobs:
         job = QUEUE.get()
         if isinstance(job, tuple):
-            job = job[0]
-            query = job[1]
+            job, query = job[0], job[1]
             a = job(query=query)
         else:
             a = job()
