@@ -15,12 +15,14 @@ movies_library = 'Movies'
 fourk_movies_library = 'Movies 4K'
 tv_shows_library = 'TV Shows'
 fourk_tv_shows_library = 'TV Shows 4K'
+music_library = 'Music'
+usg_name = 'Gateway'
 ombi_url = 'https://yourdomain.com/ombi'
 tautulli_url = 'https://yourdomain.com/tautulli'
 sonarr_url = 'https://yourdomain.com/sonarr'
 radarr_url = 'https://yourdomain.com/radarr'
 sickchill_url = 'https://yourdomain.com/sickchill'
-
+lidarr_url = 'https://yourdomain.com/lidarr'
 
 # Do not edit past this line #
 session = Session()
