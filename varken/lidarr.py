@@ -51,7 +51,7 @@ class LidarrAPI(object):
             percent_of_tracks = album.statistics.get('percentOfTracks', 0)
             if percent_of_tracks != 100:
                 influx_albums.append(
-                    (album.title, album.releaseDate, album.artist['artistName'], album.id,percent_of_tracks,
+                    (album.title, album.releaseDate, album.artist['artistName'], album.id, percent_of_tracks,
                      f"{album.statistics.get('trackFileCount', 0)}/{album.statistics.get('trackCount', 0)}")
                 )
 
