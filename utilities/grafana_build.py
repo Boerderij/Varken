@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# To use:
+# docker exec -it varken cp /app/data/utilities/grafana_build.py /config/grafana_build.py
+# nano /opt/dockerconfigs/varken/grafana_build.py   # Edit vars. This assumes you have your persistent data there
+# docker exec -it varken python3 /config/grafana_build.py
 from sys import exit
 from requests import Session
 from json.decoder import JSONDecodeError
