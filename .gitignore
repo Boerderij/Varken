@@ -12,3 +12,4 @@ data/varken.ini
 varken-venv/
 venv/
 logs/
+__pycache__
