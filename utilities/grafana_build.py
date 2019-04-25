@@ -30,25 +30,27 @@ auth = (username, password)
 url_base = f"{grafana_url.rstrip('/')}/api"
 
 varken_datasource = []
+datasource_name = "Varken-Script"
 try:
     datasources = session.get(url_base + '/datasources', auth=auth, verify=verify).json()
     varken_datasource = [source for source in datasources if source['database'] == 'varken']
     if varken_datasource:
         print(f'varken datasource already exists with the name "{varken_datasource[0]["name"]}"')
+        datasource_name = varken_datasource[0]["name"]
 except JSONDecodeError:
     exit(f"Could not talk to grafana at {grafana_url}. Check URL/Username/Password")
 
-datasource_data = {
-    "name": "Varken-Script",
-    "type": "influxdb",
-    "url": f"http://{'influxdb' if docker else host_ip}:8086",
-    "access": "proxy",
-    "basicAuth": False,
-    "database": 'varken'
-}
 if not varken_datasource:
+    datasource_data = {
+        "name": datasource_name,
+        "type": "influxdb",
+        "url": f"http://{'influxdb' if docker else host_ip}:8086",
+        "access": "proxy",
+        "basicAuth": False,
+        "database": 'varken'
+    }
     post = session.post(url_base + '/datasources', auth=auth, verify=verify, json=datasource_data).json()
-    print(f'Created Varken-Script datasource (id:{post["datasource"]["id"]})')
+    print(f'Created {datasource_name} datasource (id:{post["datasource"]["id"]})')
 
 our_dashboard = session.get(url_base + '/gnet/dashboards/9585', auth=auth, verify=verify).json()['json']
 dashboard_data = {
@@ -62,7 +64,7 @@ dashboard_data = {
             "type": "datasource",
             "pluginId": "influxdb",
             "pluginName": "InfluxDB",
-            "value": "Varken-Script"
+            "value": datasource_name
         },
         {
             "name": "VAR_MOVIESLIBRARY",
@@ -90,6 +92,20 @@ dashboard_data = {
             "type": "constant",
             "label": "TV 4K Library Name",
             "value": fourk_tv_shows_library,
+            "description": ""
+        },
+        {
+            "name": "VAR_MUSICLIBRARY",
+            "type": "constant",
+            "label": "Music Library Name",
+            "value": music_library,
+            "description": ""
+        },
+        {
+            "name": "VAR_USGNAME",
+            "type": "constant",
+            "label": "Unifi USG Name",
+            "value": usg_name,
             "description": ""
         },
         {
@@ -126,8 +142,19 @@ dashboard_data = {
             "label": "Sickchill URL",
             "value": sickchill_url,
             "description": ""
+        },
+        {
+          "name": "VAR_LIDARRURL",
+          "type": "constant",
+          "label": "lidarr URL",
+          "value": lidarr_url,
+          "description": ""
         }
     ]
 }
-make_dashboard = session.post(url_base + '/dashboards/import', json=dashboard_data, auth=auth, verify=verify)
-print('Created dashboard "Varken-Script"')
+try:
+    make_dashboard = session.post(url_base + '/dashboards/import', json=dashboard_data, auth=auth, verify=verify)
+    if make_dashboard.status_code == 200 and make_dashboard.json().get('imported'):
+        print(f'Created dashboard "{our_dashboard["title"]}"')
+except:
+    print('Shit...')
