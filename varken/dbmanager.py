@@ -33,7 +33,7 @@ class DBManager(object):
         # Fix name bug by adding retention policy retroactively
         if 'varken 30d-1h' not in retention_policies:
             self.logger.info("Creating varken retention policy (30d-1h)")
-            self.influx.create_retention_policy(name='varken 30d-1h', duration='30d', replication='1', 
+            self.influx.create_retention_policy(name='varken 30d-1h', duration='30d', replication='1',
                                                 database='varken', default=True, shard_duration='1h')
 
     def write_points(self, data):
