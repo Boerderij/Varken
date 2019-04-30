@@ -235,7 +235,7 @@ class TautulliAPI(object):
             if not history_item['id']:
                 self.logger.debug('Skipping entry with no ID. (%s)', history_item['full_title'])
                 continue
-            if date.fromtimestamp(history_item['started'] < start_date):
+            if date.fromtimestamp(history_item['started']) < start_date:
                 continue
             params['row_id'] = history_item['id']
             req = self.session.prepare_request(Request('GET', self.server.url + self.endpoint, params=params))
