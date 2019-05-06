@@ -58,6 +58,4 @@ do not include database creation, please ensure you create an influx database
 named `varken`
 
 ### Grafana
-[Grafana Installation Documentation](https://wiki.cajun.pro/books/varken/page/grafana) 
-
-Official dashboard installation instructions can be found in the [wiki](https://wiki.cajun.pro/books/varken/page/grafana)
+[Grafana Installation/Dashboard Documentation](https://wiki.cajun.pro/books/varken/page/grafana) 
