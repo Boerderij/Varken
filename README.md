@@ -1,5 +1,5 @@
 <p align="center">
-<img width="800" src="https://bin.cajun.pro/images/varken_full_banner.png">
+<img width="800" src="https://bin.cajun.pro/images/varken_full_banner.png" alt="Logo Banner">
 </p>
 
 [![Build Status](https://jenkins.cajun.pro/buildStatus/icon?job=Varken/master)](https://jenkins.cajun.pro/job/Varken/job/master/)
@@ -23,7 +23,7 @@ Requirements:
 <p align="center">
 Example Dashboard
 
-<img width="800" src="https://i.imgur.com/3hNZTkC.png">
+<img width="800" src="https://i.imgur.com/3hNZTkC.png" alt="dashboard">
 </p>
 
 Supported Modules:
@@ -58,5 +58,6 @@ do not include database creation, please ensure you create an influx database
 named `varken`
 
 ### Grafana
-[Grafana Installation Documentation](https://wiki.cajun.pro/books/varken/page/grafana)  
+[Grafana Installation Documentation](https://wiki.cajun.pro/books/varken/page/grafana) 
+
 Official dashboard installation instructions can be found in the [wiki](https://wiki.cajun.pro/books/varken/page/grafana)
