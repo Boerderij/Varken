@@ -1,7 +1,24 @@
 # Change Log
 
-## [v1.6.8](https://github.com/Boerderij/Varken/tree/v1.6.8) (2019-04-18)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.7...v1.6.8)
+## [v1.7.0](https://github.com/Boerderij/Varken/tree/v1.7.0) (2019-05-05)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.8...v1.7.0)
+
+**Implemented enhancements:**
+
+- \[ENHANCEMENT\] Add album and track totals to artist library from Tautulli [\#127](https://github.com/Boerderij/Varken/issues/127)
+- \[Feature Request\] No way to show music album / track count [\#125](https://github.com/Boerderij/Varken/issues/125)
+
+**Fixed bugs:**
+
+- \[BUG\] Invalid retention policy name causing retention policy creation failure [\#129](https://github.com/Boerderij/Varken/issues/129)
+- \[BUG\] Unifi errors on unnamed devices [\#126](https://github.com/Boerderij/Varken/issues/126)
+
+**Merged pull requests:**
+
+- v1.7.0 Merge [\#131](https://github.com/Boerderij/Varken/pull/131) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.6.8](https://github.com/Boerderij/Varken/tree/1.6.8) (2019-04-19)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.7...1.6.8)
 
 **Implemented enhancements:**
 
