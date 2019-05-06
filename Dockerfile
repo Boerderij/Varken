@@ -2,7 +2,7 @@ FROM amd64/python:3.7.2-alpine
 
 LABEL maintainers="dirtycajunrice,samwiseg0"
 
-ENV DEBUG="False"
+ENV DEBUG="True"
 
 WORKDIR /app
 
@@ -11,6 +11,8 @@ COPY /requirements.txt /Varken.py /app/
 COPY /varken /app/varken
 
 COPY /data /app/data
+
+COPY /utilities /app/data/utilities
 
 RUN apk add --no-cache tzdata && \
     python3 -m pip install -r /app/requirements.txt

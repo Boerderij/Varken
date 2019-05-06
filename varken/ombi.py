@@ -25,27 +25,38 @@ class OmbiAPI(object):
 
         tv_req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint))
         movie_req = self.session.prepare_request(Request('GET', self.server.url + movie_endpoint))
-        get_tv = connection_handler(self.session, tv_req, self.server.verify_ssl)
-        get_movie = connection_handler(self.session, movie_req, self.server.verify_ssl)
+        get_tv = connection_handler(self.session, tv_req, self.server.verify_ssl) or []
+        get_movie = connection_handler(self.session, movie_req, self.server.verify_ssl) or []
 
         if not any([get_tv, get_movie]):
             self.logger.error('No json replies. Discarding job')
             return
 
-        movie_request_count = len(get_movie)
-        tv_request_count = len(get_tv)
+        if get_movie:
+            movie_request_count = len(get_movie)
+        else:
+            movie_request_count = 0
 
-        try:
-            tv_show_requests = [OmbiTVRequest(**show) for show in get_tv]
-        except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating OmbiTVRequest structure', e)
-            return
+        if get_tv:
+            tv_request_count = len(get_tv)
+        else:
+            tv_request_count = 0
 
-        try:
-            movie_requests = [OmbiMovieRequest(**movie) for movie in get_movie]
-        except TypeError as e:
-            self.logger.error('TypeError has occurred : %s while creating OmbiMovieRequest structure', e)
-            return
+        tv_show_requests = []
+        for show in get_tv:
+            try:
+                tv_show_requests.append(OmbiTVRequest(**show))
+            except TypeError as e:
+                self.logger.error('TypeError has occurred : %s while creating OmbiTVRequest structure for show. '
+                                  'data attempted is: %s', e, show)
+
+        movie_requests = []
+        for movie in get_movie:
+            try:
+                movie_requests.append(OmbiMovieRequest(**movie))
+            except TypeError as e:
+                self.logger.error('TypeError has occurred : %s while creating OmbiMovieRequest structure for movie. '
+                                  'data attempted is: %s', e, movie)
 
         influx_payload = [
             {
@@ -133,7 +144,10 @@ class OmbiAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.debug("Empty dataset for ombi module. Discarding...")
 
     def get_request_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()

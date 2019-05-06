@@ -5,6 +5,7 @@ networks:
 services:
   influxdb:
     hostname: influxdb
+    container_name: influxdb
     image: influxdb
     networks:
       - internal
@@ -13,6 +14,7 @@ services:
     restart: unless-stopped
   varken:
     hostname: varken
+    container_name: varken
     image: boerderij/varken
     networks:
       - internal
@@ -27,6 +29,7 @@ services:
     restart: unless-stopped
   grafana:
     hostname: grafana
+    container_name: grafana
     image: grafana/grafana
     networks:
       - internal
@@ -41,4 +44,5 @@ services:
       - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
     depends_on:
       - influxdb
+      - varken
     restart: unless-stopped
