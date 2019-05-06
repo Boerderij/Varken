@@ -41,15 +41,15 @@ Key features:
 
 
 ## Installation Guides
-Varken Installation guides can be found in the [wiki](https://github.com/Boerderij/Varken/wiki/Installation).
+Varken Installation guides can be found in the [wiki](https://wiki.cajun.pro/books/varken/chapter/installation).
 
 ## Support
-Please read [Asking for Support](https://github.com/Boerderij/Varken/wiki/Asking-for-Support) before seeking support. 
+Please read [Asking for Support](https://wiki.cajun.pro/books/varken/chapter/asking-for-support) before seeking support. 
 
 [Click here for quick access to discord support](http://cyborg.decreator.dev/channels/518970285773422592/530424560504537105/). No app or account needed!
     
 ### InfluxDB
-[InfluxDB Installation Documentation](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/)
+[InfluxDB Installation Documentation](https://wiki.cajun.pro/books/varken/page/influxdb-d1f)
 
 Influxdb is required but not packaged as part of Varken. Varken will create
 its database on its own. If you choose to give varken user permissions that
@@ -57,5 +57,5 @@ do not include database creation, please ensure you create an influx database
 named `varken`
 
 ### Grafana
-[Grafana Installation Documentation](http://docs.grafana.org/installation/)  
-Official dashboard installation instructions can be found in the [wiki](https://github.com/Boerderij/Varken/wiki/Installation#grafana)
+[Grafana Installation Documentation](https://wiki.cajun.pro/books/varken/page/grafana)  
+Official dashboard installation instructions can be found in the [wiki](https://wiki.cajun.pro/books/varken/page/grafana)
