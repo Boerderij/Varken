@@ -5,10 +5,11 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-__pycache__
 GeoLite2-City.mmdb
 GeoLite2-City.tar.gz
 data/varken.ini
 .idea/
 varken-venv/
+venv/
 logs/
+__pycache__

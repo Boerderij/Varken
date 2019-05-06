@@ -9,11 +9,13 @@ class UniFiAPI(object):
     def __init__(self, server, dbmanager):
         self.dbmanager = dbmanager
         self.server = server
+        self.site = self.server.site
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
         self.logger = getLogger()
-
+        self.get_retry = True
         self.get_cookie()
+        self.get_site()
 
     def __repr__(self):
         return f"<unifi-{self.server.id}>"
@@ -25,22 +27,49 @@ class UniFiAPI(object):
         post = connection_handler(self.session, req, self.server.verify_ssl, as_is_reply=True)
 
         if not post or not post.cookies.get('unifises'):
+            self.logger.error(f"Could not retrieve session cookie from UniFi Controller")
             return
 
         cookies = {'unifises': post.cookies.get('unifises')}
         self.session.cookies.update(cookies)
 
-    def get_usg_stats(self):
-        now = datetime.now(timezone.utc).astimezone().isoformat()
-        endpoint = f'/api/s/{self.server.site}/stat/device'
+    def get_site(self):
+        endpoint = '/api/self/sites'
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
         get = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not get:
-            self.logger.error("Disregarding Job get_usg_stats for unifi-%s", self.server.id)
+            self.logger.error(f"Could not get list of sites from UniFi Controller")
+            return
+        site = [site['name'] for site in get['data'] if site['name'].lower() == self.server.site.lower()
+                or site['desc'].lower() == self.server.site.lower()]
+        if site:
+            self.site = site[0]
+        else:
+            self.logger.error(f"Could not map site {self.server.site} to a site id/alias")
+
+    def get_usg_stats(self):
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        endpoint = f'/api/s/{self.site}/stat/device'
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get = connection_handler(self.session, req, self.server.verify_ssl)
+
+        if not get:
+            if self.get_retry:
+                self.get_retry = False
+                self.logger.error("Attempting to reauthenticate for unifi-%s", self.server.id)
+                self.get_cookie()
+                self.get_usg_stats()
+            else:
+                self.get_retry = True
+                self.logger.error("Disregarding Job get_usg_stats for unifi-%s", self.server.id)
             return
 
-        devices = {device['name']: device for device in get['data']}
+        if not self.get_retry:
+            self.get_retry = True
+
+        devices = {device['name']: device for device in get['data'] if device.get('name')}
+
         if devices.get(self.server.usg_name):
             device = devices[self.server.usg_name]
         else:
@@ -62,10 +91,6 @@ class UniFiAPI(object):
                         "rx_bytes_current": device['wan1']['rx_bytes-r'],
                         "tx_bytes_total": device['wan1']['tx_bytes'],
                         "tx_bytes_current": device['wan1']['tx_bytes-r'],
-                        # Commenting speedtest out until Unifi gets their shit together
-                        # "speedtest_latency": device['speedtest-status']['latency'],
-                        # "speedtest_download": device['speedtest-status']['xput_download'],
-                        # "speedtest_upload": device['speedtest-status']['xput_upload'],
                         "cpu_loadavg_1": float(device['sys_stats']['loadavg_1']),
                         "cpu_loadavg_5": float(device['sys_stats']['loadavg_5']),
                         "cpu_loadavg_15": float(device['sys_stats']['loadavg_15']),

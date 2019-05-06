@@ -17,6 +17,7 @@ from varken.unifi import UniFiAPI
 from varken import VERSION, BRANCH
 from varken.sonarr import SonarrAPI
 from varken.radarr import RadarrAPI
+from varken.lidarr import LidarrAPI
 from varken.iniparser import INIParser
 from varken.dbmanager import DBManager
 from varken.helpers import GeoIPHandler
@@ -28,13 +29,9 @@ from varken.varkenlogger import VarkenLogger
 PLATFORM_LINUX_DISTRO = ' '.join(x for x in linux_distribution() if x)
 
 
-def thread():
-    while schedule.jobs:
-        job = QUEUE.get()
-        a = job()
-        if a is not None:
-            schedule.clear(a)
-        QUEUE.task_done()
+def thread(job, **kwargs):
+    worker = Thread(target=job, kwargs=dict(**kwargs))
+    worker.start()
 
 
 if __name__ == "__main__":
@@ -43,7 +40,8 @@ if __name__ == "__main__":
                             formatter_class=RawTextHelpFormatter)
 
     parser.add_argument("-d", "--data-folder", help='Define an alternate data folder location')
-    parser.add_argument("-D", "--debug", action='store_true', help='Use to enable DEBUG logging')
+    parser.add_argument("-D", "--debug", action='store_true', help='Use to enable DEBUG logging. (Depreciated)')
+    parser.add_argument("-ND", "--no_debug", action='store_true', help='Use to disable DEBUG logging')
 
     opts = parser.parse_args()
 
@@ -72,9 +70,14 @@ if __name__ == "__main__":
     enable_opts = ['True', 'true', 'yes']
     debug_opts = ['debug', 'Debug', 'DEBUG']
 
-    if not opts.debug:
+    opts.debug = True
+
+    if getenv('DEBUG') is not None:
         opts.debug = True if any([getenv(string, False) for true in enable_opts
                                   for string in debug_opts if getenv(string, False) == true]) else False
+
+    elif opts.no_debug:
+        opts.debug = False
 
     # Initiate the logger
     vl = VarkenLogger(data_folder=DATA_FOLDER, debug=opts.debug)
@@ -98,71 +101,83 @@ if __name__ == "__main__":
             SONARR = SonarrAPI(server, DBMANAGER)
             if server.queue:
                 at_time = schedule.every(server.queue_run_seconds).seconds
-                at_time.do(QUEUE.put, SONARR.get_queue).tag("sonarr-{}-get_queue".format(server.id))
+                at_time.do(thread, SONARR.get_queue).tag("sonarr-{}-get_queue".format(server.id))
             if server.missing_days > 0:
                 at_time = schedule.every(server.missing_days_run_seconds).seconds
-                at_time.do(QUEUE.put, SONARR.get_missing).tag("sonarr-{}-get_missing".format(server.id))
+                at_time.do(thread, SONARR.get_calendar, query="Missing").tag("sonarr-{}-get_missing".format(server.id))
             if server.future_days > 0:
                 at_time = schedule.every(server.future_days_run_seconds).seconds
-                at_time.do(QUEUE.put, SONARR.get_future).tag("sonarr-{}-get_future".format(server.id))
+                at_time.do(thread, SONARR.get_calendar, query="Future").tag("sonarr-{}-get_future".format(server.id))
 
     if CONFIG.tautulli_enabled:
         GEOIPHANDLER = GeoIPHandler(DATA_FOLDER)
-        schedule.every(12).to(24).hours.do(QUEUE.put, GEOIPHANDLER.update)
+        schedule.every(12).to(24).hours.do(thread, GEOIPHANDLER.update)
         for server in CONFIG.tautulli_servers:
             TAUTULLI = TautulliAPI(server, DBMANAGER, GEOIPHANDLER)
             if server.get_activity:
                 at_time = schedule.every(server.get_activity_run_seconds).seconds
-                at_time.do(QUEUE.put, TAUTULLI.get_activity).tag("tautulli-{}-get_activity".format(server.id))
+                at_time.do(thread, TAUTULLI.get_activity).tag("tautulli-{}-get_activity".format(server.id))
             if server.get_stats:
                 at_time = schedule.every(server.get_stats_run_seconds).seconds
-                at_time.do(QUEUE.put, TAUTULLI.get_stats).tag("tautulli-{}-get_stats".format(server.id))
+                at_time.do(thread, TAUTULLI.get_stats).tag("tautulli-{}-get_stats".format(server.id))
 
     if CONFIG.radarr_enabled:
         for server in CONFIG.radarr_servers:
             RADARR = RadarrAPI(server, DBMANAGER)
             if server.get_missing:
                 at_time = schedule.every(server.get_missing_run_seconds).seconds
-                at_time.do(QUEUE.put, RADARR.get_missing).tag("radarr-{}-get_missing".format(server.id))
+                at_time.do(thread, RADARR.get_missing).tag("radarr-{}-get_missing".format(server.id))
             if server.queue:
                 at_time = schedule.every(server.queue_run_seconds).seconds
-                at_time.do(QUEUE.put, RADARR.get_queue).tag("radarr-{}-get_queue".format(server.id))
+                at_time.do(thread, RADARR.get_queue).tag("radarr-{}-get_queue".format(server.id))
+
+    if CONFIG.lidarr_enabled:
+        for server in CONFIG.lidarr_servers:
+            LIDARR = LidarrAPI(server, DBMANAGER)
+            if server.queue:
+                at_time = schedule.every(server.queue_run_seconds).seconds
+                at_time.do(thread, LIDARR.get_queue).tag("lidarr-{}-get_queue".format(server.id))
+            if server.missing_days > 0:
+                at_time = schedule.every(server.missing_days_run_seconds).seconds
+                at_time.do(thread, LIDARR.get_calendar, query="Missing").tag(
+                    "lidarr-{}-get_missing".format(server.id))
+            if server.future_days > 0:
+                at_time = schedule.every(server.future_days_run_seconds).seconds
+                at_time.do(thread, LIDARR.get_calendar, query="Future").tag("lidarr-{}-get_future".format(
+                    server.id))
 
     if CONFIG.ombi_enabled:
         for server in CONFIG.ombi_servers:
             OMBI = OmbiAPI(server, DBMANAGER)
             if server.request_type_counts:
                 at_time = schedule.every(server.request_type_run_seconds).seconds
-                at_time.do(QUEUE.put, OMBI.get_request_counts).tag("ombi-{}-get_request_counts".format(server.id))
+                at_time.do(thread, OMBI.get_request_counts).tag("ombi-{}-get_request_counts".format(server.id))
             if server.request_total_counts:
                 at_time = schedule.every(server.request_total_run_seconds).seconds
-                at_time.do(QUEUE.put, OMBI.get_all_requests).tag("ombi-{}-get_all_requests".format(server.id))
+                at_time.do(thread, OMBI.get_all_requests).tag("ombi-{}-get_all_requests".format(server.id))
             if server.issue_status_counts:
                 at_time = schedule.every(server.issue_status_run_seconds).seconds
-                at_time.do(QUEUE.put, OMBI.get_issue_counts).tag("ombi-{}-get_issue_counts".format(server.id))
+                at_time.do(thread, OMBI.get_issue_counts).tag("ombi-{}-get_issue_counts".format(server.id))
 
     if CONFIG.sickchill_enabled:
         for server in CONFIG.sickchill_servers:
             SICKCHILL = SickChillAPI(server, DBMANAGER)
             if server.get_missing:
                 at_time = schedule.every(server.get_missing_run_seconds).seconds
-                at_time.do(QUEUE.put, SICKCHILL.get_missing).tag("sickchill-{}-get_missing".format(server.id))
+                at_time.do(thread, SICKCHILL.get_missing).tag("sickchill-{}-get_missing".format(server.id))
 
     if CONFIG.unifi_enabled:
         for server in CONFIG.unifi_servers:
             UNIFI = UniFiAPI(server, DBMANAGER)
             at_time = schedule.every(server.get_usg_stats_run_seconds).seconds
-            at_time.do(QUEUE.put, UNIFI.get_usg_stats).tag("unifi-{}-get_usg_stats".format(server.id))
+            at_time.do(thread, UNIFI.get_usg_stats).tag("unifi-{}-get_usg_stats".format(server.id))
 
     # Run all on startup
     SERVICES_ENABLED = [CONFIG.ombi_enabled, CONFIG.radarr_enabled, CONFIG.tautulli_enabled, CONFIG.unifi_enabled,
-                        CONFIG.sonarr_enabled, CONFIG.sickchill_enabled]
+                        CONFIG.sonarr_enabled, CONFIG.sickchill_enabled, CONFIG.lidarr_enabled]
     if not [enabled for enabled in SERVICES_ENABLED if enabled]:
         vl.logger.error("All services disabled. Exiting")
         exit(1)
-
-    WORKER = Thread(target=thread)
-    WORKER.start()
 
     schedule.run_all()
 
