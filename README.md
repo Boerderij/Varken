@@ -33,6 +33,7 @@ Supported Modules:
 * [Tautulli](https://tautulli.com/) - A Python based monitoring and tracking tool for Plex Media Server.
 * [Ombi](https://ombi.io/) - Want a Movie or TV Show on Plex or Emby? Use Ombi!
 * [Unifi](https://unifi-sdn.ubnt.com/) - The Global Leader in Managed Wi-Fi Systems
+* [Lidarr](https://lidarr.audio/) - Looks and smells like Sonarr but made for music.
 
 Key features:
 * Multiple server support for all modules
