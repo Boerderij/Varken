@@ -1,5 +1,5 @@
 <p align="center">
-<img width="800" src="https://raw.githubusercontent.com/Boerderij/Varken/develop/assets/varken_full_banner.jpg" alt="Logo Banner">
+<img width="800" src="https://raw.githubusercontent.com/Boerderij/Varken/master/assets/varken_full_banner.jpg" alt="Logo Banner">
 </p>
 
 [![Build Status](https://jenkins.cajun.pro/buildStatus/icon?job=Varken/master)](https://jenkins.cajun.pro/job/Varken/job/master/)
