@@ -1,7 +1,18 @@
 # Change Log
 
-## [v1.7.0](https://github.com/Boerderij/Varken/tree/v1.7.0) (2019-05-05)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.8...v1.7.0)
+## [v1.7.1](https://github.com/Boerderij/Varken/tree/v1.7.1) (2019-06-03)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.0...v1.7.1)
+
+**Fixed bugs:**
+
+- \[BUG\] Sonarr Missing episodes column ordering is incorrect [\#133](https://github.com/Boerderij/Varken/pull/133) ([nicolerenee](https://github.com/nicolerenee))
+
+**Merged pull requests:**
+
+- v1.7.1 Merge [\#134](https://github.com/Boerderij/Varken/pull/134) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.7.0](https://github.com/Boerderij/Varken/tree/1.7.0) (2019-05-06)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.6.8...1.7.0)
 
 **Implemented enhancements:**
 
