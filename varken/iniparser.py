@@ -1,4 +1,5 @@
 from shutil import copyfile
+from os import environ as env
 from logging import getLogger
 from os.path import join, exists
 from re import match, compile, IGNORECASE
@@ -6,7 +7,7 @@ from configparser import ConfigParser, NoOptionError, NoSectionError
 
 from varken.varkenlogger import BlacklistFilter
 from varken.structures import SickChillServer, UniFiServer
-from varken.helpers import clean_sid_check, rfc1918_ip_check
+from varken.helpers import clean_sid_check, rfc1918_ip_check, boolcheck
 from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer
 
 
@@ -42,8 +43,8 @@ class INIParser(object):
 
     def enable_check(self, server_type=None):
         t = server_type
-        global_server_ids = self.config.get('global', t)
-        if global_server_ids.lower() in ['false', 'no', '0']:
+        global_server_ids = env.get(f'VRKN_GLOBAL_{t.upper()}', self.config.get('global', t))
+        if global_server_ids.lower() in ['false', 'no']:
             self.logger.info('%s disabled.', t.upper())
         else:
             sids = clean_sid_check(global_server_ids, t)
@@ -141,13 +142,14 @@ class INIParser(object):
             self.config_blacklist()
         # Parse InfluxDB options
         try:
-            url = self.url_check(self.config.get('influxdb', 'url'), include_port=False, section='influxdb')
-            port = self.config.getint('influxdb', 'port')
-            ssl = self.config.getboolean('influxdb', 'ssl')
-            verify_ssl = self.config.getboolean('influxdb', 'verify_ssl')
+            url = self.url_check(env.get('VRKN_INFLUXDB_URL', self.config.get('influxdb', 'url')),
+                                 include_port=False, section='influxdb')
+            port = int(env.get('VRKN_INFLUXDB_PORT', self.config.getint('influxdb', 'port')))
+            ssl = boolcheck(env.get('VRKN_INFLUXDB_SSL', self.config.get('influxdb', 'ssl')))
+            verify_ssl = boolcheck(env.get('VRKN_INFLUXDB_VERIFY_SSL', self.config.get('influxdb', 'verify_ssl')))
 
-            username = self.config.get('influxdb', 'username')
-            password = self.config.get('influxdb', 'password')
+            username = env.get('VRKN_INFLUXDB_USERNAME', self.config.get('influxdb', 'username'))
+            password = env.get('VRKN_INFLUXDB_PASSWORD', self.config.get('influxdb', 'password'))
         except NoOptionError as e:
             self.logger.error('Missing key in %s. Error: %s', "influxdb", e)
             self.rectify_ini()
@@ -170,29 +172,40 @@ class INIParser(object):
                 for server_id in service_enabled:
                     server = None
                     section = f"{service}-{server_id}"
+                    envsection = f"{service}_{server_id}".upper()
                     try:
-                        url = self.url_check(self.config.get(section, 'url'), section=section)
+                        url = self.url_check(env.get(f'VRKN_{envsection}_URL', self.config.get(section, 'url')),
+                                             section=section)
 
                         apikey = None
                         if service != 'unifi':
-                            apikey = self.config.get(section, 'apikey')
-
-                        scheme = 'https://' if self.config.getboolean(section, 'ssl') else 'http://'
-                        verify_ssl = self.config.getboolean(section, 'verify_ssl')
+                            apikey = env.get(f'VRKN_{envsection}_APIKEY', self.config.get(section, 'apikey'))
+                        ssl_scheme = boolcheck(env.get(f'VRKN_{envsection}_SSL', self.config.get(section, 'ssl')))
+                        scheme = 'https://' if ssl_scheme else 'http://'
+                        verify_ssl = boolcheck(env.get(f'VRKN_{envsection}_VERIFY_SSL',
+                                                       self.config.get(section, 'verify_ssl')))
 
                         if scheme != 'https://':
                             verify_ssl = False
 
                         if service in ['sonarr', 'radarr', 'lidarr']:
-                            queue = self.config.getboolean(section, 'queue')
-                            queue_run_seconds = self.config.getint(section, 'queue_run_seconds')
+                            queue = boolcheck(env.get(f'VRKN_{envsection}_QUEUE',
+                                                      self.config.get(section, 'queue')))
+                            queue_run_seconds = int(env.get(f'VRKN_{envsection}_QUEUE_RUN_SECONDS',
+                                                    self.config.getint(section, 'queue_run_seconds')))
 
                         if service in ['sonarr', 'lidarr']:
-                            missing_days = self.config.getint(section, 'missing_days')
-                            future_days = self.config.getint(section, 'future_days')
+                            missing_days = int(env.get(f'VRKN_{envsection}_MISSING_DAYS',
+                                                       self.config.getint(section, 'missing_days')))
+                            future_days = int(env.get(f'VRKN_{envsection}_FUTURE_DAYS',
+                                                      self.config.getint(section, 'future_days')))
 
-                            missing_days_run_seconds = self.config.getint(section, 'missing_days_run_seconds')
-                            future_days_run_seconds = self.config.getint(section, 'future_days_run_seconds')
+                            missing_days_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_MISSING_DAYS_RUN_SECONDS',
+                                self.config.getint(section, 'missing_days_run_seconds')))
+                            future_days_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_FUTURE_DAYS_RUN_SECONDS',
+                                self.config.getint(section, 'future_days_run_seconds')))
 
                             server = SonarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
                                                   missing_days=missing_days, future_days=future_days,
@@ -201,21 +214,31 @@ class INIParser(object):
                                                   queue=queue, queue_run_seconds=queue_run_seconds)
 
                         if service == 'radarr':
-                            get_missing = self.config.getboolean(section, 'get_missing')
-                            get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
+                            get_missing = boolcheck(env.get(f'VRKN_{envsection}_GET_MISSING',
+                                                            self.config.get(section, 'get_missing')))
+                            get_missing_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_GET_MISSING_RUN_SECONDS',
+                                self.config.getint(section, 'get_missing_run_seconds')))
 
                             server = RadarrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
                                                   queue_run_seconds=queue_run_seconds, get_missing=get_missing,
                                                   queue=queue, get_missing_run_seconds=get_missing_run_seconds)
 
                         if service == 'tautulli':
-                            fallback_ip = self.config.get(section, 'fallback_ip')
+                            fallback_ip = env.get(f'VRKN_{envsection}_FALLBACK_IP',
+                                                  self.config.get(section, 'fallback_ip'))
 
-                            get_stats = self.config.getboolean(section, 'get_stats')
-                            get_activity = self.config.getboolean(section, 'get_activity')
+                            get_stats = boolcheck(env.get(f'VRKN_{envsection}_GET_STATS',
+                                                          self.config.get(section, 'get_stats')))
+                            get_activity = boolcheck(env.get(f'VRKN_{envsection}_GET_ACTIVITY',
+                                                             self.config.get(section, 'get_activity')))
 
-                            get_activity_run_seconds = self.config.getint(section, 'get_activity_run_seconds')
-                            get_stats_run_seconds = self.config.getint(section, 'get_stats_run_seconds')
+                            get_activity_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_GET_ACTIVITY_RUN_SECONDS',
+                                self.config.getint(section, 'get_activity_run_seconds')))
+                            get_stats_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_GET_STATS_RUN_SECONDS',
+                                self.config.getint(section, 'get_stats_run_seconds')))
 
                             invalid_wan_ip = rfc1918_ip_check(fallback_ip)
 
@@ -231,13 +254,25 @@ class INIParser(object):
                                                     get_stats_run_seconds=get_stats_run_seconds)
 
                         if service == 'ombi':
-                            issue_status_counts = self.config.getboolean(section, 'get_issue_status_counts')
-                            request_type_counts = self.config.getboolean(section, 'get_request_type_counts')
-                            request_total_counts = self.config.getboolean(section, 'get_request_total_counts')
+                            issue_status_counts = boolcheck(env.get(
+                                f'VRKN_{envsection}_GET_ISSUE_STATUS_COUNTS',
+                                self.config.get(section, 'get_issue_status_counts')))
+                            request_type_counts = boolcheck(env.get(
+                                f'VRKN_{envsection}_GET_REQUEST_TYPE_COUNTS',
+                                self.config.get(section, 'get_request_type_counts')))
+                            request_total_counts = boolcheck(env.get(
+                                f'VRKN_{envsection}_GET_REQUEST_TOTAL_COUNTS',
+                                self.config.get(section, 'get_request_total_counts')))
 
-                            issue_status_run_seconds = self.config.getint(section, 'issue_status_run_seconds')
-                            request_type_run_seconds = self.config.getint(section, 'request_type_run_seconds')
-                            request_total_run_seconds = self.config.getint(section, 'request_total_run_seconds')
+                            issue_status_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_ISSUE_STATUS_RUN_SECONDS',
+                                self.config.getint(section, 'issue_status_run_seconds')))
+                            request_type_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_REQUEST_TYPE_RUN_SECONDS',
+                                self.config.getint(section, 'request_type_run_seconds')))
+                            request_total_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_REQUEST_TOTAL_RUN_SECONDS',
+                                self.config.getint(section, 'request_total_run_seconds')))
 
                             server = OmbiServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
                                                 request_type_counts=request_type_counts,
@@ -248,19 +283,24 @@ class INIParser(object):
                                                 issue_status_run_seconds=issue_status_run_seconds)
 
                         if service == 'sickchill':
-                            get_missing = self.config.getboolean(section, 'get_missing')
-                            get_missing_run_seconds = self.config.getint(section, 'get_missing_run_seconds')
+                            get_missing = boolcheck(env.get(f'VRKN_{envsection}_GET_MISSING',
+                                                            self.config.get(section, 'get_missing')))
+                            get_missing_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_GET_MISSING_RUN_SECONDS',
+                                self.config.getint(section, 'get_missing_run_seconds')))
 
                             server = SickChillServer(id=server_id, url=scheme + url, api_key=apikey,
                                                      verify_ssl=verify_ssl, get_missing=get_missing,
                                                      get_missing_run_seconds=get_missing_run_seconds)
 
                         if service == 'unifi':
-                            username = self.config.get(section, 'username')
-                            password = self.config.get(section, 'password')
-                            site = self.config.get(section, 'site').lower()
-                            usg_name = self.config.get(section, 'usg_name')
-                            get_usg_stats_run_seconds = self.config.getint(section, 'get_usg_stats_run_seconds')
+                            username = env.get(f'VRKN_{envsection}_USERNAME', self.config.get(section, 'username'))
+                            password = env.get(f'VRKN_{envsection}_PASSWORD', self.config.get(section, 'password'))
+                            site = env.get(f'VRKN_{envsection}_SITE', self.config.get(section, 'site')).lower()
+                            usg_name = env.get(f'VRKN_{envsection}_USG_NAME', self.config.get(section, 'usg_name'))
+                            get_usg_stats_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_GET_USG_STATS_RUN_SECONDS',
+                                self.config.getint(section, 'get_usg_stats_run_seconds')))
 
                             server = UniFiServer(id=server_id, url=scheme + url, verify_ssl=verify_ssl, site=site,
                                                  username=username, password=password, usg_name=usg_name,
@@ -271,3 +311,5 @@ class INIParser(object):
                         self.logger.error('Missing key in %s. Error: %s', section, e)
                         self.rectify_ini()
                         return
+                    except ValueError as e:
+                        self.logger.error("Invalid configuration value in %s. Error: %s", section, e)
