@@ -196,3 +196,10 @@ def clean_sid_check(server_id_list, server_type=None):
     else:
         logger.error('No valid %s', t.upper())
         return False
+
+
+def boolcheck(var):
+    if var.lower() in ['true', 'yes']:
+        return True
+    else:
+        return False
