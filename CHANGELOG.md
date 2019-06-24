@@ -13,7 +13,7 @@
 
 **Merged pull requests:**
 
-- v1.7.2 Merge [\#134](https://github.com/Boerderij/Varken/pull/134) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- v1.7.2 Merge [\#144](https://github.com/Boerderij/Varken/pull/144) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
 
 ## [1.7.1](https://github.com/Boerderij/Varken/tree/1.7.1) (2019-06-04)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.0...1.7.1)
