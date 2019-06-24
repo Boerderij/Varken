@@ -1,7 +1,22 @@
 # Change Log
 
-## [v1.7.1](https://github.com/Boerderij/Varken/tree/v1.7.1) (2019-06-03)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.0...v1.7.1)
+## [v1.7.2](https://github.com/Boerderij/Varken/tree/v1.7.2) (2019-06-23)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.1...v1.7.2)
+
+**Implemented enhancements:**
+
+- Allow configuration via environment variables [\#137](https://github.com/Boerderij/Varken/issues/137)
+
+**Fixed bugs:**
+
+- \[BUG\] logger invoked before initialization in dbmanager [\#138](https://github.com/Boerderij/Varken/issues/138)
+
+**Merged pull requests:**
+
+- v1.7.2 Merge [\#144](https://github.com/Boerderij/Varken/pull/144) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.7.1](https://github.com/Boerderij/Varken/tree/1.7.1) (2019-06-04)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.0...1.7.1)
 
 **Fixed bugs:**
 
@@ -273,7 +288,7 @@
 **Merged pull requests:**
 
 - v0.1 [\#20](https://github.com/Boerderij/Varken/pull/20) ([samwiseg0](https://github.com/samwiseg0))
-- Added selfplug [\#19](https://github.com/Boerderij/Varken/pull/19) ([si0972](https://github.com/si0972))
+- Added selfplug [\#19](https://github.com/Boerderij/Varken/pull/19) ([Roxedus](https://github.com/Roxedus))
 - Major rework of the scripts [\#14](https://github.com/Boerderij/Varken/pull/14) ([samwiseg0](https://github.com/samwiseg0))
 - fix worldmap after change to maxmind local db [\#11](https://github.com/Boerderij/Varken/pull/11) ([madbuda](https://github.com/madbuda))
 - Update sonarr.py [\#7](https://github.com/Boerderij/Varken/pull/7) ([ghost](https://github.com/ghost))

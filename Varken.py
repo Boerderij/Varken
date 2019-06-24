@@ -4,6 +4,7 @@ from time import sleep
 from queue import Queue
 from sys import version
 from threading import Thread
+from os import environ as env
 from os import access, R_OK, getenv
 from distro import linux_distribution
 from os.path import isdir, abspath, dirname, join
@@ -45,8 +46,6 @@ if __name__ == "__main__":
 
     opts = parser.parse_args()
 
-    DATA_FOLDER = abspath(join(dirname(__file__), 'data'))
-
     templogger = getLogger('temp')
     templogger.setLevel(DEBUG)
     tempch = StreamHandler()
@@ -54,17 +53,15 @@ if __name__ == "__main__":
     tempch.setFormatter(tempformatter)
     templogger.addHandler(tempch)
 
-    if opts.data_folder:
-        ARG_FOLDER = opts.data_folder
+    DATA_FOLDER = env.get('DATA_FOLDER', vars(opts).get('data_folder') or abspath(join(dirname(__file__), 'data')))
 
-        if isdir(ARG_FOLDER):
-            DATA_FOLDER = ARG_FOLDER
-            if not access(DATA_FOLDER, R_OK):
-                templogger.error("Read permission error for %s", DATA_FOLDER)
-                exit(1)
-        else:
-            templogger.error("%s does not exist", ARG_FOLDER)
+    if isdir(DATA_FOLDER):
+        if not access(DATA_FOLDER, R_OK):
+            templogger.error("Read permission error for %s", DATA_FOLDER)
             exit(1)
+    else:
+        templogger.error("%s does not exist", DATA_FOLDER)
+        exit(1)
 
     # Set Debug to True if DEBUG env is set
     enable_opts = ['True', 'true', 'yes']
