@@ -1,0 +1,20 @@
+stages:
+  - test
+  - deploy
+  - release
+
+variables:
+  DOCKER_REPO: "boerderij/varken"
+  GIT_REPO: 'Boerderij/Varken'
+  VERSION_FILE: "varken/__init__.py"
+  FLAKE_FILES: "Varken.py varken/*.py"
+  TAG: ""
+  GIT_TOKEN: credentials('github-jenkins-token')
+
+flake8-test:
+  image: python:3.7.3-alpine
+  stage: test
+  script:
+    - pip install flake8
+    - flake8 --max-line-length 120 $FLAKE_FILES
+    - grep -i version $VERSION_FILE | cut -d" " -f3 | tr -d \\"
