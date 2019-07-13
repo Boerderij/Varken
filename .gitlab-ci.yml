@@ -18,3 +18,4 @@ flake8-test:
     - pip install flake8
     - flake8 --max-line-length 120 $FLAKE_FILES
     - grep -i version $VERSION_FILE | cut -d" " -f3 | tr -d \\"
+    - echo $CI_PROJECT_PATH $CI_PROJECT_PATH_SLUG
