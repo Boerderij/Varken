@@ -1,7 +1,23 @@
 # Change Log
 
-## [v1.7.2](https://github.com/Boerderij/Varken/tree/v1.7.2) (2019-06-23)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.1...v1.7.2)
+## [v1.7.3](https://github.com/Boerderij/Varken/tree/v1.7.3) (2019-08-09)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.2...v1.7.3)
+
+**Implemented enhancements:**
+
+- \#141 Take monitored status into account for Missing Available Movies check [\#145](https://github.com/Boerderij/Varken/pull/145) ([mikeporterdev](https://github.com/mikeporterdev))
+
+**Fixed bugs:**
+
+- \[BUG\] Varken Crashes when ini is read only [\#146](https://github.com/Boerderij/Varken/issues/146)
+- \[BUG\] Missing Available Movies/TV Shows does not take Monitored status into account [\#141](https://github.com/Boerderij/Varken/issues/141)
+
+**Merged pull requests:**
+
+- v1.7.3 Merge [\#149](https://github.com/Boerderij/Varken/pull/149) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.7.2](https://github.com/Boerderij/Varken/tree/1.7.2) (2019-06-24)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.1...1.7.2)
 
 **Implemented enhancements:**
 

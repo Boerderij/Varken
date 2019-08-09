@@ -1,3 +1,4 @@
+from os import W_OK, access
 from shutil import copyfile
 from os import environ as env
 from logging import getLogger
@@ -77,6 +78,9 @@ class INIParser(object):
         file_path = join(self.data_folder, ini)
         if exists(file_path):
             self.logger.debug('Writing to %s', inifile)
+            if not access(file_path, W_OK):
+                self.logger.error("Config file is incomplete and read-only. Exiting.")
+                exit(1)
             with open(file_path, 'w') as config_ini:
                 self.config.write(config_ini)
         else:

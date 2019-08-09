@@ -54,7 +54,7 @@ class SonarrAPI(object):
             else:
                 downloaded = 0
             if query == "Missing":
-                if not downloaded:
+                if show.monitored and not downloaded:
                     missing.append((show.series['title'], downloaded, sxe, show.title, show.airDateUtc, show.id))
             else:
                 air_days.append((show.series['title'], downloaded, sxe, show.title, show.airDateUtc, show.id))
