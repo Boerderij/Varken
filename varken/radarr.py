@@ -37,7 +37,7 @@ class RadarrAPI(object):
             return
 
         for movie in movies:
-            if not movie.downloaded:
+            if movie.monitored and not movie.downloaded:
                 if movie.isAvailable:
                     ma = 0
                 else:
