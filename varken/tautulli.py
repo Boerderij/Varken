@@ -101,6 +101,8 @@ class TautulliAPI(object):
                 quality = session.container.upper()
             elif quality in ('SD', 'sd', '4k'):
                 quality = session.stream_video_resolution.upper()
+            elif session.stream_video_full_resolution:
+                quality = session.stream_video_full_resolution
             else:
                 quality = session.stream_video_resolution + 'p'
 
