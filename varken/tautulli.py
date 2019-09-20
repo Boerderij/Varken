@@ -313,11 +313,6 @@ class TautulliAPI(object):
             else:
                 quality = session.stream_video_resolution + 'p'
 
-            # Platform Version Overrides
-            product_version = session.product_version
-            if session.platform in ('Roku', 'osx', 'windows'):
-                product_version = session.product_version.split('-')[0]
-
             # Platform Overrides
             platform_name = session.platform
             if platform_name in 'osx':
