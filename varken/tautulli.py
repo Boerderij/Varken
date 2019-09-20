@@ -114,9 +114,17 @@ class TautulliAPI(object):
             elif player_state == 'buffering':
                 player_state = 3
 
+            # Platform Version Overrides
             product_version = session.product_version
-            if session.platform == 'Roku':
+            if session.platform in ('Roku', 'osx', 'windows'):
                 product_version = session.product_version.split('-')[0]
+
+            # Platform Overrides
+            platform_name = session.platform
+            if platform_name in 'osx':
+                platform_name = 'Plex Mac OS'
+            if platform_name in 'windows':
+                platform_name = 'Plex Windows'
 
             hash_id = hashit(f'{session.session_id}{session.session_key}{session.username}{session.full_title}')
             influx_payload.append(
@@ -128,7 +136,7 @@ class TautulliAPI(object):
                         "friendly_name": session.friendly_name,
                         "username": session.username,
                         "title": session.full_title,
-                        "platform": session.platform,
+                        "platform": platform_name,
                         "product_version": product_version,
                         "quality": quality,
                         "video_decision": video_decision.title(),
@@ -147,7 +155,7 @@ class TautulliAPI(object):
                         "latitude": latitude,
                         "longitude": longitude,
                         "player_state": player_state,
-                        "device_type": session.platform,
+                        "device_type": platform_name,
                         "relayed": session.relayed,
                         "secure": session.secure,
                         "server": self.server.id
@@ -300,8 +308,22 @@ class TautulliAPI(object):
                 quality = session.container.upper()
             elif quality in ('SD', 'sd', '4k'):
                 quality = session.stream_video_resolution.upper()
+            elif session.stream_video_full_resolution:
+                quality = session.stream_video_full_resolution
             else:
                 quality = session.stream_video_resolution + 'p'
+
+            # Platform Version Overrides
+            product_version = session.product_version
+            if session.platform in ('Roku', 'osx', 'windows'):
+                product_version = session.product_version.split('-')[0]
+
+            # Platform Overrides
+            platform_name = session.platform
+            if platform_name in 'osx':
+                platform_name = 'Plex Mac OS'
+            if platform_name in 'windows':
+                platform_name = 'Plex Windows'
 
             player_state = 100
 
@@ -315,7 +337,7 @@ class TautulliAPI(object):
                         "friendly_name": session.friendly_name,
                         "username": session.user,
                         "title": session.full_title,
-                        "platform": session.platform,
+                        "platform": platform_name,
                         "quality": quality,
                         "video_decision": video_decision.title(),
                         "transcode_decision": decision.title(),
@@ -332,7 +354,7 @@ class TautulliAPI(object):
                         "latitude": latitude,
                         "longitude": longitude,
                         "player_state": player_state,
-                        "device_type": session.platform,
+                        "device_type": platform_name,
                         "relayed": session.relayed,
                         "secure": session.secure,
                         "server": self.server.id
