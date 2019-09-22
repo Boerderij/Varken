@@ -122,9 +122,9 @@ class TautulliAPI(object):
             # Platform Overrides
             platform_name = session.platform
             if platform_name in 'osx':
-                platform_name = 'Plex Mac OS'
+                platform_name = 'MacOS'
             if platform_name in 'windows':
-                platform_name = 'Plex Windows'
+                platform_name = 'Windows'
 
             hash_id = hashit(f'{session.session_id}{session.session_key}{session.username}{session.full_title}')
             influx_payload.append(
