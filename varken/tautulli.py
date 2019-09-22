@@ -122,7 +122,7 @@ class TautulliAPI(object):
             # Platform Overrides
             platform_name = session.platform
             if platform_name in 'osx':
-                platform_name = 'MacOS'
+                platform_name = 'macOS'
             if platform_name in 'windows':
                 platform_name = 'Windows'
 
