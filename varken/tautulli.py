@@ -34,12 +34,6 @@ class TautulliAPI(object):
             return
 
         get = g['response']['data']
-
-        # Remove erroneous key from sessions
-        for session in get['sessions']:
-            if session.get('_cache_time'):
-                del session['_cache_time']
-
         fields = itemgetter_with_default(**TautulliStream._field_defaults)
         
         try:
