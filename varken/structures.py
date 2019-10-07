@@ -306,6 +306,7 @@ class TautulliStream(NamedTuple):
     friendly_name: str = None
     full_title: str = None
     genres: list = None
+    grandparent_guid: str = None
     grandparent_rating_key: str = None
     grandparent_thumb: str = None
     grandparent_title: str = None
@@ -337,6 +338,7 @@ class TautulliStream(NamedTuple):
     optimized_version_title: str = None
     original_title: str = None
     originally_available_at: str = None
+    parent_guid: str = None
     parent_media_index: str = None
     parent_rating_key: str = None
     parent_thumb: str = None
