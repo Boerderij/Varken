@@ -40,10 +40,10 @@ class TautulliAPI(object):
             if session.get('_cache_time'):
                 del session['_cache_time']
 
-        fields = itemgetter_with_default(*TautulliStream._field_defaults)
+        fields = itemgetter_with_default(**TautulliStream._field_defaults)
         
         try:
-            sessions = [TautulliStream(**fields(session)) for session in get['sessions']]
+            sessions = [TautulliStream(*fields(session)) for session in get['sessions']]
         except TypeError as e:
             self.logger.error('TypeError has occurred : %s while creating TautulliStream structure', e)
             return

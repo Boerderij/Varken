@@ -204,5 +204,5 @@ def boolcheck(var):
     else:
         return False
 
-def itemgetter_with_default(defaults):
-    return lambda obj: {k: obj.get(k, v) for k, v in defaults.items()}
+def itemgetter_with_default(**defaults):
+    return lambda obj: tuple(obj.get(k, v) for k, v in defaults.items())
