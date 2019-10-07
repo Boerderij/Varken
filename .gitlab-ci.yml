@@ -119,7 +119,7 @@ latest:
       "$CI_PROJECT_PATH":"$TAG-arm"
     - docker manifest push -p "$CI_PROJECT_PATH":latest
 
-.github:
+github:
   <<: *common_release
   stage: release
   script:
