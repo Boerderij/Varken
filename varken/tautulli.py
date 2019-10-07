@@ -1,12 +1,11 @@
 from logging import getLogger
-from operator import itemgetter
 from requests import Session, Request
 from geoip2.errors import AddressNotFoundError
 from datetime import datetime, timezone, date, timedelta
 from influxdb.exceptions import InfluxDBClientError
 
 from varken.structures import TautulliStream
-from varken.helpers import hashit, connection_handler
+from varken.helpers import hashit, connection_handler, itemgetter_with_default
 
 
 class TautulliAPI(object):
@@ -41,10 +40,10 @@ class TautulliAPI(object):
             if session.get('_cache_time'):
                 del session['_cache_time']
 
-        fields = itemgetter(*TautulliStream._fields)
+        fields = itemgetter_with_default(*TautulliStream._field_defaults)
         
         try:
-            sessions = [TautulliStream(*fields(session)) for session in get['sessions']]
+            sessions = [TautulliStream(**fields(session)) for session in get['sessions']]
         except TypeError as e:
             self.logger.error('TypeError has occurred : %s while creating TautulliStream structure', e)
             return
