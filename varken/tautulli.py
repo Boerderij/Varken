@@ -35,7 +35,7 @@ class TautulliAPI(object):
 
         get = g['response']['data']
         fields = itemgetter_with_default(**TautulliStream._field_defaults)
-        
+
         try:
             sessions = [TautulliStream(*fields(session)) for session in get['sessions']]
         except TypeError as e:
