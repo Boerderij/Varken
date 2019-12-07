@@ -306,6 +306,7 @@ class TautulliStream(NamedTuple):
     friendly_name: str = None
     full_title: str = None
     genres: list = None
+    grandparent_guid: str = None
     grandparent_rating_key: str = None
     grandparent_thumb: str = None
     grandparent_title: str = None
@@ -337,6 +338,7 @@ class TautulliStream(NamedTuple):
     optimized_version_title: str = None
     original_title: str = None
     originally_available_at: str = None
+    parent_guid: str = None
     parent_media_index: str = None
     parent_rating_key: str = None
     parent_thumb: str = None
@@ -398,11 +400,13 @@ class TautulliStream(NamedTuple):
     stream_video_codec_level: str = None
     stream_video_decision: str = None
     stream_video_framerate: str = None
+    stream_video_full_resolution: str = None
     stream_video_height: str = None
     stream_video_language: str = None
     stream_video_language_code: str = None
     stream_video_ref_frames: str = None
     stream_video_resolution: str = None
+    stream_video_scan_type: str = None
     stream_video_width: str = None
     studio: str = None
     sub_type: str = None
@@ -456,12 +460,14 @@ class TautulliStream(NamedTuple):
     video_decision: str = None
     video_frame_rate: str = None
     video_framerate: str = None
+    video_full_resolution: str = None
     video_height: str = None
     video_language: str = None
     video_language_code: str = None
     video_profile: str = None
     video_ref_frames: str = None
     video_resolution: str = None
+    video_scan_type: str = None
     video_width: str = None
     view_offset: str = None
     watched_status: int = None

@@ -1,7 +1,19 @@
 # Change Log
 
-## [v1.7.3](https://github.com/Boerderij/Varken/tree/v1.7.3) (2019-08-09)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.2...v1.7.3)
+## [v1.7.4](https://github.com/Boerderij/Varken/tree/v1.7.4) (2019-10-07)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.3...v1.7.4)
+
+**Implemented enhancements:**
+
+- \[Enhancement\] Update Tautulli structures to include grandparent\_guid and parent\_guid [\#154](https://github.com/Boerderij/Varken/issues/154)
+- \[Enhancement\] Update Tautulli structures to reflect recent changes [\#153](https://github.com/Boerderij/Varken/issues/153)
+
+**Merged pull requests:**
+
+- v1.7.4 Merge [\#155](https://github.com/Boerderij/Varken/pull/155) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+
+## [1.7.3](https://github.com/Boerderij/Varken/tree/1.7.3) (2019-08-09)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.2...1.7.3)
 
 **Implemented enhancements:**
 
