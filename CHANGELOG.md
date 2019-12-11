@@ -1,7 +1,16 @@
 # Change Log
 
-## [v1.7.4](https://github.com/Boerderij/Varken/tree/v1.7.4) (2019-10-07)
-[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.3...v1.7.4)
+## [v1.7.5](https://github.com/Boerderij/Varken/tree/v1.7.5) (2019-12-11)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.4...v1.7.5)
+
+**Merged pull requests:**
+
+- v1.7.5 Merge [\#162](https://github.com/Boerderij/Varken/pull/162) ([DirtyCajunRice](https://github.com/DirtyCajunRice))
+- Add helper itemgetter function for TautulliStream fields [\#157](https://github.com/Boerderij/Varken/pull/157) ([JonnyWong16](https://github.com/JonnyWong16))
+- Fix to only use NamedTuple fields from TautulliStream [\#156](https://github.com/Boerderij/Varken/pull/156) ([JonnyWong16](https://github.com/JonnyWong16))
+
+## [1.7.4](https://github.com/Boerderij/Varken/tree/1.7.4) (2019-10-07)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.3...1.7.4)
 
 **Implemented enhancements:**
 
@@ -23,6 +32,10 @@
 
 - \[BUG\] Varken Crashes when ini is read only [\#146](https://github.com/Boerderij/Varken/issues/146)
 - \[BUG\] Missing Available Movies/TV Shows does not take Monitored status into account [\#141](https://github.com/Boerderij/Varken/issues/141)
+
+**Closed issues:**
+
+- \[Feature Request\] Medusa Support [\#148](https://github.com/Boerderij/Varken/issues/148)
 
 **Merged pull requests:**
 

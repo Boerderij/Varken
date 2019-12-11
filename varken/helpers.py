@@ -203,3 +203,7 @@ def boolcheck(var):
         return True
     else:
         return False
+
+
+def itemgetter_with_default(**defaults):
+    return lambda obj: tuple(obj.get(k, v) for k, v in defaults.items())
