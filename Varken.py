@@ -107,7 +107,7 @@ if __name__ == "__main__":
                 at_time.do(thread, SONARR.get_calendar, query="Future").tag("sonarr-{}-get_future".format(server.id))
 
     if CONFIG.tautulli_enabled:
-        GEOIPHANDLER = GeoIPHandler(DATA_FOLDER)
+        GEOIPHANDLER = GeoIPHandler(DATA_FOLDER, CONFIG.tautulli_servers[0].maxmind_license_key)
         schedule.every(12).to(24).hours.do(thread, GEOIPHANDLER.update)
         for server in CONFIG.tautulli_servers:
             TAUTULLI = TautulliAPI(server, DBMANAGER, GEOIPHANDLER)
