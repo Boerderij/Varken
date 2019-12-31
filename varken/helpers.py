@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from time import sleep
 from logging import getLogger
 from ipaddress import IPv4Address
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from geoip2.database import Reader
 from tarfile import open as taropen
 from urllib3 import disable_warnings
@@ -88,6 +88,10 @@ class GeoIPHandler(object):
             try:
                 urlretrieve(maxmind_url, tar_dbfile)
                 downloaded = True
+            except URLError as e:
+                self.logger.error("Problem downloading new MaxMind DB: %s", e)
+                result_status = 1
+                return result_status
             except HTTPError as e:
                 if e.code == 401:
                     self.logger.error("Your MaxMind license key is incorect! Check your config: %s", e)
