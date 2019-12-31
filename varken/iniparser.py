@@ -251,11 +251,15 @@ class INIParser(object):
                                                   server_id)
                                 exit(1)
 
+                            maxmind_license_key = env.get('MAXMIND_LICENSE_KEY',
+                                                          self.config.get('global', 'maxmind_license_key'))
+
                             server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
                                                     verify_ssl=verify_ssl, get_activity=get_activity,
                                                     fallback_ip=fallback_ip, get_stats=get_stats,
                                                     get_activity_run_seconds=get_activity_run_seconds,
-                                                    get_stats_run_seconds=get_stats_run_seconds)
+                                                    get_stats_run_seconds=get_stats_run_seconds,
+                                                    maxmind_license_key=maxmind_license_key)
 
                         if service == 'ombi':
                             issue_status_counts = boolcheck(env.get(
