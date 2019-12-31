@@ -67,6 +67,7 @@ class TautulliServer(NamedTuple):
     id: int = None
     url: str = None
     verify_ssl: bool = None
+    maxmind_license_key: str = None
 
 
 class SickChillServer(NamedTuple):
