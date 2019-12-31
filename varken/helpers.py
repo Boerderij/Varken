@@ -76,7 +76,8 @@ class GeoIPHandler(object):
 
     def download(self):
         tar_dbfile = abspath(join(self.data_folder, 'GeoLite2-City.tar.gz'))
-        url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz'
+        maxmind_url = 'https://download.maxmind.com/app/geoip_download?edition_id={db}&suffix={suffix}&license_key={key}'.format(
+            db='GeoLite2-City', suffix='tar.gz', key=self.maxmind_license_key)
         downloaded = False
 
         retry_counter = 0
