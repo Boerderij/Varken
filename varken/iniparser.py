@@ -207,6 +207,7 @@ class INIParser(object):
                             missing_days_run_seconds = int(env.get(
                                 f'VRKN_{envsection}_MISSING_DAYS_RUN_SECONDS',
                                 self.config.getint(section, 'missing_days_run_seconds')))
+
                             future_days_run_seconds = int(env.get(
                                 f'VRKN_{envsection}_FUTURE_DAYS_RUN_SECONDS',
                                 self.config.getint(section, 'future_days_run_seconds')))
@@ -234,12 +235,14 @@ class INIParser(object):
 
                             get_stats = boolcheck(env.get(f'VRKN_{envsection}_GET_STATS',
                                                           self.config.get(section, 'get_stats')))
+
                             get_activity = boolcheck(env.get(f'VRKN_{envsection}_GET_ACTIVITY',
                                                              self.config.get(section, 'get_activity')))
 
                             get_activity_run_seconds = int(env.get(
                                 f'VRKN_{envsection}_GET_ACTIVITY_RUN_SECONDS',
                                 self.config.getint(section, 'get_activity_run_seconds')))
+
                             get_stats_run_seconds = int(env.get(
                                 f'VRKN_{envsection}_GET_STATS_RUN_SECONDS',
                                 self.config.getint(section, 'get_stats_run_seconds')))
