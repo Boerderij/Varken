@@ -53,13 +53,13 @@ class GeoIPHandler(object):
 
         try:
             dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
-            db_next_update = date.fromtimestamp(stat(self.dbfile).st_mtime) + timedelta(days=60)
+            db_next_update = date.fromtimestamp(stat(self.dbfile).st_mtime) + timedelta(days=30)
 
         except FileNotFoundError:
             self.logger.error("Could not find GeoLite2 DB as: %s", self.dbfile)
             self.download()
             dbdate = date.fromtimestamp(stat(self.dbfile).st_mtime)
-            db_next_update = date.fromtimestamp(stat(self.dbfile).st_mtime) + timedelta(days=60)
+            db_next_update = date.fromtimestamp(stat(self.dbfile).st_mtime) + timedelta(days=30)
 
         if db_next_update < today:
             self.logger.info("Newer GeoLite2 DB available, Updating...")
