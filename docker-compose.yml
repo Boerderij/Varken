@@ -29,6 +29,7 @@ services:
       - VRKN_GLOBAL_OMBI_SERVER_IDS=1
       - VRKN_GLOBAL_SICKCHILL_SERVER_IDS=false
       - VRKN_GLOBAL_UNIFI_SERVER_IDS=false
+      - VRKN_GLOBAL_MAXMIND_LICENSE_KEY=xxxxxxxxxxxxxxxx
       - VRKN_INFLUXDB_URL=influxdb.domain.tld
       - VRKN_INFLUXDB_PORT=8086
       - VRKN_INFLUXDB_SSL=false

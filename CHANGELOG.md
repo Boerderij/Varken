@@ -1,5 +1,19 @@
 # Change Log
 
+## [v1.7.6](https://github.com/Boerderij/Varken/tree/v1.7.6) (2020-01-01)
+[Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.5...v1.7.6)
+
+**Merged pull requests:**
+
+- v1.7.6 Merge [\#163](https://github.com/Boerderij/Varken/pull/163) ([samwiseg0](https://github.com/samwiseg0))
+
+**Fixed bugs:**
+
+- \[BUG\] Geolite database download failing [\#164](https://github.com/Boerderij/Varken/issues/164)
+
+**Notes:**
+- A MaxMind license key will be required in order to download the GeoLite2 DB. Please see the [wiki](https://wiki.cajun.pro/link/5#bkmrk-maxmind) for more details.
+
 ## [v1.7.5](https://github.com/Boerderij/Varken/tree/v1.7.5) (2019-12-11)
 [Full Changelog](https://github.com/Boerderij/Varken/compare/1.7.4...v1.7.5)
 
