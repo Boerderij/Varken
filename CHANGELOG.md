@@ -5,7 +5,7 @@
 
 **Merged pull requests:**
 
-- v1.7.6 Merge [\#163](https://github.com/Boerderij/Varken/pull/163) ([samwiseg0](https://github.com/samwiseg0))
+- v1.7.6 Merge [\#165](https://github.com/Boerderij/Varken/pull/165) ([samwiseg0](https://github.com/samwiseg0))
 
 **Fixed bugs:**
 
