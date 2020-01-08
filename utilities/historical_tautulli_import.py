@@ -5,7 +5,7 @@ from os.path import isdir, abspath, dirname, join
 from logging import getLogger, StreamHandler, Formatter, DEBUG
 
 from varken.iniparser import INIParser
-from varken.dbmanager import DBManager
+from varken.datamanager import DataManager
 from varken.helpers import GeoIPHandler
 from varken.tautulli import TautulliAPI
 
