@@ -14,11 +14,13 @@ class DataManager(object):
         self.prometheus = None
         self.influx = None
         if type(self.config).__name__ == "PrometheusClient":
+            self.type = 'prometheus'
             self.prometheus = PrometheusExporter(self.config)
         else:
+            self.type = 'influxdb'
             self.influx = InfluxClient(config)
 
-    def update(self, data):
+    def update(self, data_type, data):
         json_data = data
         if self.influx:
             self.influx.write_points(data)
@@ -75,4 +77,24 @@ class PrometheusExporter(object):
         self.logger = getLogger()
 
     def parse_data(self, data):
-        pass
+        json_data = data
+        for d in json_data:
+            app = d['measurement'].lower()
+            prefix = f'varken_{app}'
+            if app == 'unifi':
+                for k, v in d.get('fields'):
+                    field = f'{prefix}_{k}'
+                    tags = d.get('tags')
+                    attr = getattr(self, field)
+                    if not attr:
+                        n = Gauge(field, field, labelnames=tuple(tags.keys()), labelvalues=tuple(tags.values()))
+                        setattr(self, field, n)
+                        attr = getattr(self, field)
+                    attr.set(v)
+            elif app == 'ombi':
+
+
+
+
+
+

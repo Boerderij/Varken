@@ -124,28 +124,38 @@ class OmbiAPI(object):
 
             else:
                 status = 3
-
-            influx_payload.append(
-                {
-                    "measurement": "Ombi",
-                    "tags": {
-                        "type": "Requests",
-                        "server": self.server.id,
-                        "request_type": 0,
-                        "status": status,
-                        "title": show.title,
-                        "requested_user": show.childRequests[0]['requestedUser']['userAlias'],
-                        "requested_date": show.childRequests[0]['requestedDate']
-                    },
-                    "time": now,
-                    "fields": {
-                        "hash": hash_id
+            if self.datamanager.type == 'influxdb':
+                influx_payload.append(
+                    {
+                        "measurement": "Ombi",
+                        "tags": {
+                            "type": "Requests",
+                            "server": self.server.id,
+                            "request_type": 0,
+                            "status": status,
+                            "title": show.title,
+                            "requested_user": show.childRequests[0]['requestedUser']['userAlias'],
+                            "requested_date": show.childRequests[0]['requestedDate']
+                        },
+                        "time": now,
+                        "fields": {
+                            "hash": hash_id
+                        }
                     }
+                )
+            elif self.datamanager.type == 'prometheus':
+                labels = {
+                    'url': self.server.url,
+                    'id': self.server.id,
+                    # Continue here
                 }
-            )
-
+                prometheus_payload = [
+                    ('enum', ombi_requests_status', labels, requests.pending),
+                ]
         if influx_payload:
-            self.datamanager.update(influx_payload)
+            self.datamanager.update('json', influx_payload)
+        if prometheus_payload:
+            self.datamanager.update('tuple', prometheus_payload)
         else:
             self.logger.debug("Empty dataset for ombi module. Discarding...")
 
@@ -160,22 +170,30 @@ class OmbiAPI(object):
             return
 
         requests = OmbiRequestCounts(**get)
-        influx_payload = [
-            {
-                "measurement": "Ombi",
-                "tags": {
-                    "type": "Request_Counts"
-                },
-                "time": now,
-                "fields": {
-                    "pending": requests.pending,
-                    "approved": requests.approved,
-                    "available": requests.available
+        if self.datamanager.type == 'influxdb':
+            influx_payload = [
+                {
+                    "measurement": "Ombi",
+                    "tags": {
+                        "type": "Request_Counts"
+                    },
+                    "time": now,
+                    "fields": {
+                        "pending": requests.pending,
+                        "approved": requests.approved,
+                        "available": requests.available
+                    }
                 }
-            }
-        ]
-
-        self.datamanager.update(influx_payload)
+            ]
+            self.datamanager.update('json', influx_payload)
+        elif self.datamanager.type == 'prometheus':
+            labels = {'url': self.server.url, 'id': self.server.id}
+            prometheus_payload = [
+                ('ombi_request_counts_pending', labels, requests.pending),
+                ('ombi_request_counts_approved', labels, requests.approved),
+                ('ombi_request_counts_available', labels, requests.available)
+            ]
+            self.datamanager.update('tuple', prometheus_payload)
 
     def get_issue_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -188,19 +206,28 @@ class OmbiAPI(object):
             return
 
         requests = OmbiIssuesCounts(**get)
-        influx_payload = [
-            {
-                "measurement": "Ombi",
-                "tags": {
-                    "type": "Issues_Counts"
-                },
-                "time": now,
-                "fields": {
-                    "pending": requests.pending,
-                    "in_progress": requests.inProgress,
-                    "resolved": requests.resolved
-                }
-            }
-        ]
 
-        self.datamanager.update(influx_payload)
+        if self.datamanager.type == 'influxdb':
+            influx_payload = [
+                {
+                    "measurement": "Ombi",
+                    "tags": {
+                        "type": "Issues_Counts"
+                    },
+                    "time": now,
+                    "fields": {
+                        "pending": requests.pending,
+                        "in_progress": requests.inProgress,
+                        "resolved": requests.resolved
+                    }
+                }
+            ]
+            self.datamanager.update('json', influx_payload)
+        elif self.datamanager.type == 'prometheus':
+            labels = {'url': self.server.url, 'id': self.server.id}
+            prometheus_payload = [
+                ('ombi_issues_counts_pending', labels, requests.pending),
+                ('ombi_issues_counts_in_progress', labels, requests.inProgress),
+                ('ombi_issues_counts_resolved', labels, requests.resolved)
+            ]
+            self.datamanager.update('tuple', prometheus_payload)
