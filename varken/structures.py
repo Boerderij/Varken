@@ -20,6 +20,11 @@ class InfluxServer(NamedTuple):
     verify_ssl: bool = False
 
 
+class PrometheusClient(NamedTuple):
+    port: int = 8000
+    url: str = 'localhost'
+
+
 class SonarrServer(NamedTuple):
     api_key: str = None
     future_days: int = 0
