@@ -9,7 +9,7 @@ from configparser import ConfigParser, NoOptionError, NoSectionError
 from varken.varkenlogger import BlacklistFilter
 from varken.structures import SickChillServer, UniFiServer
 from varken.helpers import clean_sid_check, rfc1918_ip_check, boolcheck
-from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer
+from varken.structures import SonarrServer, RadarrServer, OmbiServer, TautulliServer, InfluxServer, PrometheusClient
 
 
 class INIParser(object):
@@ -20,7 +20,8 @@ class INIParser(object):
         self.services = ['sonarr', 'radarr', 'lidarr', 'ombi', 'tautulli', 'sickchill', 'unifi']
 
         self.logger = getLogger()
-        self.influx_server = InfluxServer()
+        self.influx_server = None
+        self.prometheus_client = None
 
         try:
             self.parse_opts(read_file=True)
@@ -144,23 +145,32 @@ class INIParser(object):
         if read_file:
             self.config = self.read_file('varken.ini')
             self.config_blacklist()
-        # Parse InfluxDB options
+        # Parse data_export options
+        data_export = 'global'
         try:
-            url = self.url_check(env.get('VRKN_INFLUXDB_URL', self.config.get('influxdb', 'url')),
-                                 include_port=False, section='influxdb')
-            port = int(env.get('VRKN_INFLUXDB_PORT', self.config.getint('influxdb', 'port')))
-            ssl = boolcheck(env.get('VRKN_INFLUXDB_SSL', self.config.get('influxdb', 'ssl')))
-            verify_ssl = boolcheck(env.get('VRKN_INFLUXDB_VERIFY_SSL', self.config.get('influxdb', 'verify_ssl')))
+            data_export_var = env.get('VRKN_DATA_EXPORT', self.config.get(data_export, 'data_export'))
+            data_export = data_export_var.lower()
+            if data_export in ['influxdb', 'prometheus']:
+                url = self.url_check(env.get(f'VRKN_{data_export.upper()}_URL', self.config.get(data_export, 'url')),
+                                     include_port=False, section=data_export)
+                port = int(env.get(f'VRKN_{data_export.upper()}_PORT', self.config.getint(data_export, 'port')))
+            else:
+                raise NoOptionError("influxdb/prometheus", "global")
+            if data_export == "influxdb":
+                ssl = boolcheck(env.get(f'VRKN_{data_export.upper()}_SSL', self.config.get(data_export, 'ssl')))
+                verify_ssl = boolcheck(env.get(f'VRKN_{data_export.upper()}_VERIFY_SSL',
+                                               self.config.get(data_export, 'verify_ssl')))
 
-            username = env.get('VRKN_INFLUXDB_USERNAME', self.config.get('influxdb', 'username'))
-            password = env.get('VRKN_INFLUXDB_PASSWORD', self.config.get('influxdb', 'password'))
+                username = env.get(f'VRKN_{data_export.upper()}_USERNAME', self.config.get(data_export, 'username'))
+                password = env.get(f'VRKN_{data_export.upper()}_PASSWORD', self.config.get(data_export, 'password'))
+                self.influx_server = InfluxServer(url=url, port=port, username=username, password=password, ssl=ssl,
+                                                  verify_ssl=verify_ssl)
+            elif data_export == "prometheus":
+                self.prometheus_client = PrometheusClient(url=url, port=port)
         except NoOptionError as e:
-            self.logger.error('Missing key in %s. Error: %s', "influxdb", e)
+            self.logger.error('Missing key in %s. Error: %s', data_export, e)
             self.rectify_ini()
             return
-
-        self.influx_server = InfluxServer(url=url, port=port, username=username, password=password, ssl=ssl,
-                                          verify_ssl=verify_ssl)
 
         # Check for all enabled services
         for service in self.services:
