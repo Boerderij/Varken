@@ -7,8 +7,8 @@ from varken.helpers import hashit, connection_handler
 
 
 class SonarrAPI(object):
-    def __init__(self, server, dbmanager):
-        self.dbmanager = dbmanager
+    def __init__(self, server, datamanager):
+        self.datamanager = datamanager
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
@@ -81,7 +81,7 @@ class SonarrAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        self.datamanager.update(influx_payload)
 
     def get_queue(self):
         influx_payload = []
@@ -144,6 +144,6 @@ class SonarrAPI(object):
                 }
             )
         if influx_payload:
-            self.dbmanager.write_points(influx_payload)
+            self.datamanager.update(influx_payload)
         else:
             self.logger.debug("No data to send to influx for sonarr instance, discarding.")

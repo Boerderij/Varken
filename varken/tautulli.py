@@ -9,8 +9,8 @@ from varken.helpers import hashit, connection_handler, itemgetter_with_default
 
 
 class TautulliAPI(object):
-    def __init__(self, server, dbmanager, geoiphandler):
-        self.dbmanager = dbmanager
+    def __init__(self, server, datamanager, geoiphandler):
+        self.datamanager = datamanager
         self.server = server
         self.geoiphandler = geoiphandler
         self.session = Session()
@@ -184,7 +184,7 @@ class TautulliAPI(object):
             }
         )
 
-        self.dbmanager.write_points(influx_payload)
+        self.datamanager.update(influx_payload)
 
     def get_stats(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -223,7 +223,7 @@ class TautulliAPI(object):
                 data['fields']['tracks'] = int(library['child_count'])
             influx_payload.append(data)
 
-        self.dbmanager.write_points(influx_payload)
+        self.datamanager.update(influx_payload)
 
     def get_historical(self, days=30):
         influx_payload = []
@@ -360,7 +360,7 @@ class TautulliAPI(object):
                 }
             )
             try:
-                self.dbmanager.write_points(influx_payload)
+                self.datamanager.update(influx_payload)
             except InfluxDBClientError as e:
                 if "beyond retention policy" in str(e):
                     self.logger.debug('Only imported 30 days of data per retention policy')

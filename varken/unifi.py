@@ -6,8 +6,8 @@ from varken.helpers import connection_handler
 
 
 class UniFiAPI(object):
-    def __init__(self, server, dbmanager):
-        self.dbmanager = dbmanager
+    def __init__(self, server, datamanager):
+        self.datamanager = datamanager
         self.server = server
         self.site = self.server.site
         # Create session to reduce server web thread load, and globally define pageSize for all requests
@@ -99,6 +99,6 @@ class UniFiAPI(object):
                     }
                 }
             ]
-            self.dbmanager.write_points(influx_payload)
+            self.datamanager.update(influx_payload)
         except KeyError as e:
             self.logger.error('Error building payload for unifi. Discarding. Error: %s', e)

@@ -7,8 +7,8 @@ from varken.helpers import hashit, connection_handler
 
 
 class LidarrAPI(object):
-    def __init__(self, server, dbmanager):
-        self.dbmanager = dbmanager
+    def __init__(self, server, datamanager):
+        self.datamanager = datamanager
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
@@ -78,7 +78,7 @@ class LidarrAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        self.datamanager.update(influx_payload)
 
     def get_queue(self):
         endpoint = '/api/v1/queue'
@@ -129,4 +129,4 @@ class LidarrAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        self.datamanager.update(influx_payload)

@@ -7,8 +7,8 @@ from varken.structures import OmbiRequestCounts, OmbiIssuesCounts, OmbiMovieRequ
 
 
 class OmbiAPI(object):
-    def __init__(self, server, dbmanager):
-        self.dbmanager = dbmanager
+    def __init__(self, server, datamanager):
+        self.datamanager = datamanager
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
@@ -145,7 +145,7 @@ class OmbiAPI(object):
             )
 
         if influx_payload:
-            self.dbmanager.write_points(influx_payload)
+            self.datamanager.update(influx_payload)
         else:
             self.logger.debug("Empty dataset for ombi module. Discarding...")
 
@@ -175,7 +175,7 @@ class OmbiAPI(object):
             }
         ]
 
-        self.dbmanager.write_points(influx_payload)
+        self.datamanager.update(influx_payload)
 
     def get_issue_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -203,4 +203,4 @@ class OmbiAPI(object):
             }
         ]
 
-        self.dbmanager.write_points(influx_payload)
+        self.datamanager.update(influx_payload)

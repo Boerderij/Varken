@@ -7,8 +7,8 @@ from varken.helpers import hashit, connection_handler
 
 
 class SickChillAPI(object):
-    def __init__(self, server, dbmanager):
-        self.dbmanager = dbmanager
+    def __init__(self, server, datamanager):
+        self.datamanager = datamanager
         self.server = server
         # Create session to reduce server web thread load, and globally define pageSize for all requests
         self.session = Session()
@@ -65,4 +65,4 @@ class SickChillAPI(object):
                     self.logger.error('Error building payload for sickchill. Discarding. Error: %s', e)
 
         if influx_payload:
-            self.dbmanager.write_points(influx_payload)
+            self.datamanager.update(influx_payload)
