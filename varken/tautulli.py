@@ -122,6 +122,24 @@ class TautulliAPI(object):
             if platform_name in 'windows':
                 platform_name = 'Windows'
 
+            # TV Show episode renaming
+            if session.media_type == "episode": 
+                season = session.parent_title.split(' ')
+                #Season number padding
+                season = "S"+season[1].zfill(2)
+                #Episode number padding
+                
+                if len(session.media_index) == 1:
+                    episode = "E"+session.media_index.zfill(2)
+                else:
+                    episode = "E"+session.media_index
+                    
+                #Update title for episodes only
+                ep_title = session.grandparent_title+" - "+season+episode+" - "+session.title
+            else:
+                ep_title = session.full_title
+
+
             hash_id = hashit(f'{session.session_id}{session.session_key}{session.username}{session.full_title}')
             influx_payload.append(
                 {
@@ -131,7 +149,7 @@ class TautulliAPI(object):
                         "session_id": session.session_id,
                         "friendly_name": session.friendly_name,
                         "username": session.username,
-                        "title": session.full_title,
+                        "title": ep_title,
                         "product": session.product,
                         "platform": platform_name,
                         "product_version": product_version,
