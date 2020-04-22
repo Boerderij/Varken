@@ -400,6 +400,7 @@ class TautulliStream(NamedTuple):
     stream_video_codec: str = None
     stream_video_codec_level: str = None
     stream_video_decision: str = None
+    stream_video_dynamic_range: str = None
     stream_video_framerate: str = None
     stream_video_full_resolution: str = None
     stream_video_height: str = None
@@ -459,6 +460,7 @@ class TautulliStream(NamedTuple):
     video_codec: str = None
     video_codec_level: str = None
     video_decision: str = None
+    video_dynamic_range: str = None
     video_frame_rate: str = None
     video_framerate: str = None
     video_full_resolution: str = None
