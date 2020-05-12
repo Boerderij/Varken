@@ -494,6 +494,7 @@ class LidarrQueue(NamedTuple):
     protocol: str = None
     downloadClient: str = None
     indexer: str = None
+    outputPath: str = None
     downloadForced: bool = None
     id: int = None
 
