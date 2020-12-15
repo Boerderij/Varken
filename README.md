@@ -17,7 +17,7 @@ ecosystem into InfluxDB using Grafana for a frontend
 Requirements:
 * [Python 3.6.7+](https://www.python.org/downloads/release/python-367/)
 * [Python3-pip](https://pip.pypa.io/en/stable/installing/)
-* [InfluxDB](https://www.influxdata.com/)
+* [InfluxDB 1.8.x](https://www.influxdata.com/)
 * [Grafana](https://grafana.com/)
 
 <p align="center">
@@ -32,7 +32,6 @@ Supported Modules:
 * [Radarr](https://radarr.video/) - A fork of Sonarr to work with movies à la Couchpotato.
 * [Tautulli](https://tautulli.com/) - A Python based monitoring and tracking tool for Plex Media Server.
 * [Ombi](https://ombi.io/) - Want a Movie or TV Show on Plex or Emby? Use Ombi!
-* [Unifi](https://unifi-sdn.ubnt.com/) - The Global Leader in Managed Wi-Fi Systems
 * [Lidarr](https://lidarr.audio/) - Looks and smells like Sonarr but made for music.
 
 Key features:
@@ -51,7 +50,8 @@ Please read [Asking for Support](https://wiki.cajun.pro/books/varken/chapter/ask
     
 ### InfluxDB
 [InfluxDB Installation Documentation](https://wiki.cajun.pro/books/varken/page/influxdb-d1f)
-
+Note: Only v1.8.x is currently supported.
+ 
 Influxdb is required but not packaged as part of Varken. Varken will create
 its database on its own. If you choose to give varken user permissions that
 do not include database creation, please ensure you create an influx database
