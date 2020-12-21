@@ -15,7 +15,7 @@ from logging import getLogger, StreamHandler, Formatter, DEBUG
 from varken import structures  # noqa
 from varken.ombi import OmbiAPI
 from varken.unifi import UniFiAPI
-from varken import VERSION, BRANCH
+from varken import VERSION, BRANCH, BUILD_DATE
 from varken.sonarr import SonarrAPI
 from varken.radarr import RadarrAPI
 from varken.lidarr import LidarrAPI
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
     vl.logger.info(u"Python %s", version)
 
-    vl.logger.info("Varken v%s-%s", VERSION, BRANCH)
+    vl.logger.info("Varken v%s-%s %s", VERSION, BRANCH, BUILD_DATE)
 
     CONFIG = INIParser(DATA_FOLDER)
     DBMANAGER = DBManager(CONFIG.influx_server)

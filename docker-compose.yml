@@ -107,14 +107,6 @@ services:
       - VRKN_SICKCHILL_1_VERIFY_SSL=false
       - VRKN_SICKCHILL_1_GET_MISSING=true
       - VRKN_SICKCHILL_1_GET_MISSING_RUN_SECONDS=300
-      - VRKN_UNIFI_1_URL=unifi.domain.tld:8443
-      - VRKN_UNIFI_1_USERNAME=ubnt
-      - VRKN_UNIFI_1_PASSWORD=ubnt
-      - VRKN_UNIFI_1_SITE=default
-      - VRKN_UNIFI_1_USG_NAME=MyRouter
-      - VRKN_UNIFI_1_SSL=false
-      - VRKN_UNIFI_1_VERIFY_SSL=false
-      - VRKN_UNIFI_1_GET_USG_STATS_RUN_SECONDS=300
     depends_on:
       - influxdb
     restart: unless-stopped

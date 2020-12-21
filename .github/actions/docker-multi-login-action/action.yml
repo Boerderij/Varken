@@ -1,0 +1,23 @@
+name: 'Docker Multi Login Action'
+description: 'Log in to dockerhub, quay, and github container registry'
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        echo "🔑 Logging into dockerhub..."
+        if docker login --username ${{ fromJSON(env.secrets).DOCKERHUB_USERNAME }} --password ${{ fromJSON(env.secrets).DOCKERHUB_PASSWORD }} > /dev/null 2>&1; then
+          echo "🎉 Login Succeeded!"
+        fi
+    - shell: bash
+      run: |
+        echo "🔑 Logging into quay.io..."
+        if docker login quay.io --username ${{ fromJSON(env.secrets).QUAY_USERNAME }} --password ${{ fromJSON(env.secrets).QUAY_PASSWORD }} > /dev/null 2>&1; then
+          echo "🎉 Login Succeeded!"
+        fi
+    - shell: bash
+      run: |
+        echo "🔑 Logging into ghcr.io..."
+        if docker login ghcr.io --username ${{ fromJSON(env.secrets).GHCR_USERNAME }} --password ${{ fromJSON(env.secrets).GHCR_PASSWORD }} > /dev/null 2>&1; then
+          echo "🎉 Login Succeeded!"
+        fi

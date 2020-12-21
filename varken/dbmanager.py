@@ -20,7 +20,7 @@ class DBManager(object):
             self.logger.info('Influxdb version: %s', version)
         except ConnectionError:
             self.logger.critical("Error testing connection to InfluxDB. Please check your url/hostname")
-            exit()
+            exit(1)
 
         databases = [db['name'] for db in self.influx.get_list_database()]
 

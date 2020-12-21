@@ -1,0 +1,46 @@
+name: 'Docker Target Image List Generator'
+description: 'A Github Action to generate a list of fully qualified target images for docker related steps'
+inputs:
+  registries:
+    description: "Comma separated list of docker registries"
+    required: false
+    default: "docker.io,quay.io,ghcr.io"
+  images:
+    description: "Comma separated list of images"
+    required: true
+  tags:
+    description: "Comma separated list of image tags"
+    required: false
+    default: "edge"
+outputs:
+  fully-qualified-target-images:
+    description: "List of fully qualified docker target images"
+    value: ${{ steps.gen-fqti.outputs.fully-qualified-target-images }}
+runs:
+  using: "composite"
+  steps:
+    - name: Generate fully qualified docker target images
+      id: gen-fqti
+      shell: bash
+      run: |
+        IFS=',' read -r -a registries <<< "${{ inputs.registries }}"
+        IFS=',' read -r -a images <<< "${{ inputs.images }}"
+        IFS=',' read -r -a tags <<< "${{ inputs.tags }}"
+        FQTI=""
+        echo "Generating fully qualified docker target images for:"
+        echo "🐋 Registries: ${#registries[@]}"
+        echo "📷 Images:     ${#images[@]}"
+        echo "🏷️ Tags:       ${#tags[@]}"
+        echo "🧮 Total:      $((${#registries[@]}*${#images[@]}*${#tags[@]}))"
+        for registry in "${registries[@]}"; do
+          for image in "${images[@]}"; do
+            for tag in "${tags[@]}"; do
+              if [ -z "$FQTI" ]; then
+                FQTI="${registry}/${image}:${tag}"
+              else
+                FQTI="$FQTI,${registry}/${image}:${tag}"
+              fi
+            done
+          done
+        done
+        echo ::set-output name=fully-qualified-target-images::${FQTI}

@@ -27,7 +27,7 @@ class UniFiAPI(object):
         post = connection_handler(self.session, req, self.server.verify_ssl, as_is_reply=True)
 
         if not post or not post.cookies.get('unifises'):
-            self.logger.error(f"Could not retrieve session cookie from UniFi Controller")
+            self.logger.error("Could not retrieve session cookie from UniFi Controller")
             return
 
         cookies = {'unifises': post.cookies.get('unifises')}
@@ -39,7 +39,7 @@ class UniFiAPI(object):
         get = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not get:
-            self.logger.error(f"Could not get list of sites from UniFi Controller")
+            self.logger.error("Could not get list of sites from UniFi Controller")
             return
         site = [site['name'] for site in get['data'] if site['name'].lower() == self.server.site.lower()
                 or site['desc'].lower() == self.server.site.lower()]

@@ -1,2 +1,3 @@
-VERSION = "1.7.6"
-BRANCH = 'master'
+VERSION = "0.0.0"
+BRANCH = 'develop'
+BUILD_DATE = '1/1/1970'
