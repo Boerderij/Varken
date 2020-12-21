@@ -254,7 +254,7 @@ class INIParser(object):
                                                   server_id)
                                 exit(1)
 
-                            maxmind_license_key = env.get(f'VRKN_GLOBAL_MAXMIND_LICENSE_KEY',
+                            maxmind_license_key = env.get('VRKN_GLOBAL_MAXMIND_LICENSE_KEY',
                                                           self.config.get('global', 'maxmind_license_key'))
 
                             server = TautulliServer(id=server_id, url=scheme + url, api_key=apikey,
