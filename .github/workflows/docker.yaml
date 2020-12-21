@@ -61,12 +61,16 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ]; then
             VERSION=nightly
           fi
+          if [[ ${GITHUB_REF##*/} == "develop" ]]; then
+            VERSION=develop
+          fi
           TAGS="${VERSION}"
           if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
             TAGS="$TAGS,latest"
           fi
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=branch::${GITHUB_REF##*/}
           echo ::set-output name=build_date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
           echo ::set-output name=vcs_ref::${GITHUB_SHA::8}
       - uses: ./.github/actions/docker-target-image-list-action
@@ -100,6 +104,7 @@ jobs:
           tags: ${{ steps.gen-tags.outputs.fully-qualified-target-images }}
           build-args: |
             VERSION=${{ steps.prep.outputs.version }}
+            BRANCH=${{ steps.prep.outputs.branch }}
             BUILD_DATE=${{ steps.prep.outputs.build_date }}
             VCS_REF=${{ steps.prep.outputs.vcs_ref }}
       - name: Inspect
