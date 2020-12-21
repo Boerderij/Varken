@@ -2,8 +2,8 @@ FROM python:3.9.1-alpine
 
 ENV DEBUG="True" \
     DATA_FOLDER="/config" \
-    VERSION="0.0.0"
-    BRANCH="edge"
+    VERSION="0.0.0" \
+    BRANCH="edge" \
     BUILD_DATE="1/1/1970"
 
 LABEL maintainer="dirtycajunrice,samwiseg0" \
