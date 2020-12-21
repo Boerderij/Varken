@@ -1,5 +1,11 @@
 FROM python:3.9.1-alpine
 
+ENV DEBUG="True" \
+    DATA_FOLDER="/config" \
+    VERSION="0.0.0"
+    BRANCH="edge"
+    BUILD_DATE="1/1/1970"
+
 LABEL maintainer="dirtycajunrice,samwiseg0" \
   org.opencontainers.image.created=$BUILD_DATE \
   org.opencontainers.image.url="https://github.com/Boerderij/Varken" \
@@ -11,10 +17,6 @@ LABEL maintainer="dirtycajunrice,samwiseg0" \
   org.opencontainers.image.description="Varken is a standalone application to aggregate data from the Plex ecosystem into InfluxDB using Grafana for a frontend" \
   org.opencontainers.image.licenses="MIT"
 
-ENV DEBUG="True"
-
-ENV DATA_FOLDER="/config"
-
 WORKDIR /app
 
 COPY /requirements.txt /Varken.py /app/
@@ -25,7 +27,9 @@ COPY /data /app/data
 
 COPY /utilities /app/data/utilities
 
-RUN apk add --no-cache tzdata && \
-    pip install --no-cache-dir -r /app/requirements.txt
+RUN \
+  apk add --no-cache tzdata \
+  && pip install --no-cache-dir -r /app/requirements.txt \
+  && sed -i "s/0.0.0/${VERSION}/;s/develop/${BRANCH}/;s/1\/1\/1970/${BUILD_DATE//\//\\/}/" varken/__init__.py
 
 CMD cp /app/data/varken.example.ini /config/varken.example.ini && python3 /app/Varken.py

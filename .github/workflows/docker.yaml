@@ -3,7 +3,9 @@ on:
   schedule:
     - cron: '0 10 * * *'
   push:
-    branches: master
+    branches:
+      - master
+      - develop
     tags:
       - 'v*.*.*'
     paths:
@@ -11,7 +13,9 @@ on:
       - 'Varken.py'
       - 'Dockerfile'
   pull_request:
-    branches: master
+    branches:
+      - master
+      - develop
     paths:
       - 'varken/**'
       - 'Varken.py'
