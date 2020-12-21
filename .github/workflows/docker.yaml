@@ -42,7 +42,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-verison: '3.x'
+          python-version: '3.x'
       - name: Lint
         run: pip install flake8 && flake8 --max-line-length 120 Varken.py varken/*.py
   build:
