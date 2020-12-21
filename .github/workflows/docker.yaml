@@ -9,6 +9,7 @@ on:
     tags:
       - 'v*.*.*'
     paths:
+      - '.github/workflows/docker.yaml'
       - 'varken/**'
       - 'Varken.py'
       - 'Dockerfile'
@@ -17,6 +18,7 @@ on:
       - master
       - develop
     paths:
+      - '.github/workflows/docker.yaml'
       - 'varken/**'
       - 'Varken.py'
       - 'Dockerfile'
