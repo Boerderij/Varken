@@ -17,7 +17,7 @@ ecosystem into InfluxDB using Grafana for a frontend
 Requirements:
 * [Python 3.6.7+](https://www.python.org/downloads/release/python-367/)
 * [Python3-pip](https://pip.pypa.io/en/stable/installing/)
-* [InfluxDB 1.8.x](https://www.influxdata.com/)
+* [InfluxDB 1.8.x or 2.0.x](https://www.influxdata.com/)
 * [Grafana](https://grafana.com/)
 
 <p align="center">
