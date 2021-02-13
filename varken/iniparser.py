@@ -146,12 +146,14 @@ class INIParser(object):
             self.config_blacklist()
 
         # Parse InfluxDB options
-        self.influx2_enabled = env.get('VRKN_GLOBAL_INFLUXDB2_ENABLED', self.config.getboolean('global', 'influx2_enabled'))
-        
+        self.influx2_enabled = env.get('VRKN_GLOBAL_INFLUXDB2_ENABLED',
+                                       self.config.getboolean('global', 'influx2_enabled'))
+
         if self.influx2_enabled:
             # Use INFLUX version 2
             try:
-                url = self.url_check(env.get('VRKN_INFLUXDB2_URL', self.config.get('influx2', 'url')), section='influx2')
+                url = self.url_check(env.get('VRKN_INFLUXDB2_URL', self.config.get('influx2', 'url')),
+                                     section='influx2')
                 ssl = boolcheck(env.get('VRKN_INFLUXDB2_SSL', self.config.get('influx2', 'ssl')))
                 verify_ssl = boolcheck(env.get('VRKN_INFLUXDB2_VERIFY_SSL', self.config.get('influx2', 'verify_ssl')))
 
@@ -164,11 +166,11 @@ class INIParser(object):
                 return
 
             self.influx_server = Influx2Server(url=url, token=token, org=org, timeout=timeout, ssl=ssl,
-                                            verify_ssl=verify_ssl)
+                                               verify_ssl=verify_ssl)
         else:
             try:
                 url = self.url_check(env.get('VRKN_INFLUXDB_URL', self.config.get('influxdb', 'url')),
-                                    include_port=False, section='influxdb')
+                                     include_port=False, section='influxdb')
                 port = int(env.get('VRKN_INFLUXDB_PORT', self.config.getint('influxdb', 'port')))
                 ssl = boolcheck(env.get('VRKN_INFLUXDB_SSL', self.config.get('influxdb', 'ssl')))
                 verify_ssl = boolcheck(env.get('VRKN_INFLUXDB_VERIFY_SSL', self.config.get('influxdb', 'verify_ssl')))
@@ -181,7 +183,7 @@ class INIParser(object):
                 return
 
             self.influx_server = InfluxServer(url=url, port=port, username=username, password=password, ssl=ssl,
-                                            verify_ssl=verify_ssl)
+                                              verify_ssl=verify_ssl)
 
         # Check for all enabled services
         for service in self.services:

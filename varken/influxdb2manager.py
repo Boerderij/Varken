@@ -1,8 +1,7 @@
 from sys import exit
 from logging import getLogger
-from requests.exceptions import ConnectionError
 import influxdb_client
-from influxdb_client import InfluxDBClient, Point
+from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 
@@ -15,7 +14,8 @@ class InfluxDB2Manager(object):
             exit()
 
         self.influx = InfluxDBClient(url=self.server.url, token=self.server.token, org=self.server.org,
-                                    timeout=self.server.timeout, verify_ssl=self.server.verify_ssl, ssl_ca_cert=self.server.ssl)
+                                     timeout=self.server.timeout, verify_ssl=self.server.verify_ssl,
+                                     ssl_ca_cert=self.server.ssl)
         self.influx_write_api = self.influx.write_api(write_options=SYNCHRONOUS)
 
         # Create the bucket if needed
@@ -41,6 +41,6 @@ class InfluxDB2Manager(object):
 
         try:
             self.influx_write_api.write(bucket=self.server.bucket, record=d)
-        except (InfluxDBServerError, ConnectionError) as e:
+        except Exception as e:
             self.logger.error('Error writing data to influxdb2. Dropping this set of data. '
                               'Check your database! Error: %s', e)
