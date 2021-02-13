@@ -21,6 +21,7 @@ from varken.radarr import RadarrAPI
 from varken.lidarr import LidarrAPI
 from varken.iniparser import INIParser
 from varken.dbmanager import DBManager
+from varken.influxdb2manager import InfluxDB2Manager
 from varken.helpers import GeoIPHandler
 from varken.tautulli import TautulliAPI
 from varken.sickchill import SickChillAPI
@@ -90,7 +91,15 @@ if __name__ == "__main__":
     vl.logger.info("Varken v%s-%s %s", VERSION, BRANCH, BUILD_DATE)
 
     CONFIG = INIParser(DATA_FOLDER)
-    DBMANAGER = DBManager(CONFIG.influx_server)
+
+    if CONFIG.influx2_enabled:
+        # Use INFLUX version 2
+        vl.logger.info('Using INFLUXDBv2')
+        DBMANAGER = InfluxDB2Manager(CONFIG.influx_server)
+    else:
+        vl.logger.info('Using INFLUXDB')
+        DBMANAGER = DBManager(CONFIG.influx_server)
+
     QUEUE = Queue()
 
     if CONFIG.sonarr_enabled:
