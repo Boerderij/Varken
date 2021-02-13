@@ -22,18 +22,21 @@ class InfluxDB2Manager(object):
 
         bucket_api = self.influx.buckets_api()
 
-        bucket = bucket_api.find_bucket_by_name(self.server.bucket)
+        try:
+            bucket = bucket_api.find_bucket_by_name(self.server.bucket)
 
-        if bucket is None:
-            self.logger.info('Creating bucket %s', self.server.bucket)
+            if bucket is None:
+                self.logger.info('Creating bucket %s', self.server.bucket)
 
-            org_api = influxdb_client.service.organizations_service.OrganizationsService(self.influx.api_client)
-            orgs = org_api.get_orgs()
-            for org in orgs.orgs:
-                if org.name == self.server.org:
-                    my_org = org
+                org_api = influxdb_client.service.organizations_service.OrganizationsService(self.influx.api_client)
+                orgs = org_api.get_orgs()
+                for org in orgs.orgs:
+                    if org.name == self.server.org:
+                        my_org = org
 
-            self.influx.buckets_api().create_bucket(bucket_name=self.server.bucket, org_id=my_org.id)
+                self.influx.buckets_api().create_bucket(bucket_name=self.server.bucket, org_id=my_org.id)
+        except Exception as e:
+            self.logger.error('Failed creating new InfluxDB bucket! Error: %s', e)
 
     def write_points(self, data):
         d = data
