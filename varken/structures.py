@@ -20,6 +20,16 @@ class InfluxServer(NamedTuple):
     verify_ssl: bool = False
 
 
+class Influx2Server(NamedTuple):
+    url: str = 'localhost'
+    org: str = 'server'
+    token: str = 'TOKEN'
+    bucket: str = 'varken'
+    timeout: int = 10000
+    ssl: bool = False
+    verify_ssl: bool = False
+
+
 class SonarrServer(NamedTuple):
     api_key: str = None
     future_days: int = 0
