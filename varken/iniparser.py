@@ -158,6 +158,7 @@ class INIParser(object):
                 verify_ssl = boolcheck(env.get('VRKN_INFLUXDB2_VERIFY_SSL', self.config.get('influx2', 'verify_ssl')))
 
                 org = env.get('VRKN_INFLUXDB2_ORG', self.config.get('influx2', 'org'))
+                bucket = env.get('VRKN_INFLUXDB2_BUCKET', self.config.get('influx2', 'bucket'))
                 token = env.get('VRKN_INFLUXDB2_TOKEN', self.config.get('influx2', 'token'))
                 timeout = env.get('VRKN_INFLUXDB2_TIMEOUT', self.config.get('influx2', 'timeout'))
             except NoOptionError as e:
@@ -166,7 +167,7 @@ class INIParser(object):
                 return
 
             self.influx_server = Influx2Server(url=url, token=token, org=org, timeout=timeout, ssl=ssl,
-                                               verify_ssl=verify_ssl)
+                                               verify_ssl=verify_ssl, bucket=bucket)
         else:
             try:
                 url = self.url_check(env.get('VRKN_INFLUXDB_URL', self.config.get('influxdb', 'url')),
