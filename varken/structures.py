@@ -71,13 +71,13 @@ class OverseerrServer(NamedTuple):
     id: int = None
     url: str = None
     verify_ssl: bool = False
-    overseerr_get_request_total_counts: bool = False
-    overseerr_request_total_run_seconds: int = 30
-    overseerr_get_request_status_counts: bool = False
-    overseerr_request_status_run_seconds: int = 30
-    overseerr_get_latest_requests: bool = False
-    overseerr_num_latest_requests_to_fetch: int = 10
-    overseerr_num_latest_requests_seconds: int = 30
+    get_request_total_counts: bool = False
+    request_total_run_seconds: int = 30
+    get_request_status_counts: bool = False
+    request_status_run_seconds: int = 30
+    get_latest_requests: bool = False
+    num_latest_requests_to_fetch: int = 10
+    num_latest_requests_seconds: int = 30
 
 class TautulliServer(NamedTuple):
     api_key: str = None
@@ -225,43 +225,6 @@ class OverseerrRequestCounts(NamedTuple):
     processing: int = None
     available: int = None
 
-# class OverseerrTVInfo(NamedTuple):
-#     createdBy: list = None
-#     episodeRunTime: list = None
-#     firstAirDate: str = None
-#     genres: list = None
-#     relatedVideos: list = None
-#     homepage: str = None
-#     id: int = None
-#     inProduction: bool = None
-#     languages: list = None
-#     lastAirDate: str = None
-#     name: str = None
-#     networks: list = None
-#     numberOfEpisodes: int = None
-#     numberOfSeasons: int = None
-#     originCountry: list = None
-#     originalLanguage: str = None
-#     originalName: str = None
-#     tagline: str = None
-#     overview: str = None
-#     popularity: float = None
-#     productionCompanies: list = None
-#     contentRatings: dict = None
-#     spokenLanguages: list = None
-#     seasons: list = None
-#     status: str = None
-#     type: str = None
-#     voteAverage: float = None
-#     voteCount: int = None
-#     backdropPath: str = None
-#     lastEpisodeToAir: dict = None
-#     posterPath: str = None
-#     credits: dict = None
-#     externalIds: dict = None
-#     keywords: list = None
-#     mediaInfo: dict = None
-
 # Sonarr
 class SonarrTVShow(NamedTuple):
     absoluteEpisodeNumber: int = None
@@ -283,7 +246,6 @@ class SonarrTVShow(NamedTuple):
     seriesId: int = None
     title: str = None
     unverifiedSceneNumbering: bool = None
-
 
 # Radarr
 class RadarrMovie(NamedTuple):
