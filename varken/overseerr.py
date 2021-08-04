@@ -54,7 +54,7 @@ class OverseerrAPI(object):
         tv_requests = []
         movie_requests = []
 
-        for result in get_req.results:
+        for result in get_req['results']:
             if results.type == 'tv':
                 try:
                     tv_requests.append(OverseerrTVRequest(**result))
