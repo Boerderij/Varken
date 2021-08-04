@@ -3,8 +3,7 @@ from requests import Session, Request
 from datetime import datetime, timezone
 
 from varken.helpers import connection_handler, hashit
-#from varken.structures import OmbiRequestCounts, OmbiIssuesCounts, OmbiMovieRequest, OmbiTVRequest
-from varken.structures import OverseerrRequest
+from varken.structures import OverseerrRequest, OverseerrRequestCounts
 
 
 class OverseerrAPI(object):
