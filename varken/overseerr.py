@@ -117,63 +117,95 @@ class OverseerrAPI(object):
         if not get_latest_req:
             return
 
-        #SPLIT REQUESTS INTO TV/MOVIE LISTS AS THEY USE 2 DIFFERENT ENDPOINTS TO RETRIEVE DATA
         tv_requests = []
-        movie_requests = []
+        influx_payload = []
 
         for result in get_latest_req['results']:
             if result['type'] == 'tv':
-                try:
-                    tv_requests.append(OverseerrRequest(**result))
-                except TypeError as e:
-                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for show. '
-                                        'data attempted is: %s', e, result)
+                req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(result.media['tmdbId'])))
+                get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
+                hash_id = hashit(f'{get_tv_req["id"]}{get_tv_req["name"]}')
+
+                influx_payload.append(
+                    {
+                        "measurement": "Overseerr",
+                        "tags": {
+                            "type": "Requests",
+                            "server": self.server.id,
+                            "request_type": 0,
+                            "status": get_tv_req['mediaInfo']['status'],
+                            "title": get_tv_req['name'],
+                            "requested_user": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
+                            "requested_date": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
+                        },
+                        "time": now,
+                        "fields": {
+                            "hash": hash_id
+                        }
+                    }
+                )
 
             if result['type'] == 'movie':
-                try:
-                    movie_requests.append(OverseerrRequest(**result))
-                except TypeError as e:
-                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for movie. '
-                                        'data attempted is: %s', e, result)
-
-        # Request Type: Movie = 1, TV Show = 0
-        influx_payload = []
-        tv_requests_info = []
-        movie_requests_info = []
-
-        #GET TV REQUESTS INFO
-        for tv in tv_requests:
-            req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(tv.media['tmdbId'])))
-            get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
-            hash_id = hashit(f'{get_tv_req["id"]}{get_tv_req["name"]}')
-
-            # try:
-            #     tv_requests_info.append(OverseerrTVInfo(**tv))
-            # except TypeError as e:
-            #         self.logger.error('TypeError has occurred : %s while creating OverseerrTVInfo structure for show. '
-            #                             'data attempted is: %s', e, tv)
-
-            influx_payload.append(
-                {
-                    "measurement": "Overseerr",
-                    "tags": {
-                        "type": "Requests",
-                        "server": self.server.id,
-                        "request_type": 0,
-                        "status": get_tv_req['mediaInfo']['status'],
-                        "title": get_tv_req['name'],
-                        "requested_user": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
-                        "requested_date": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
-                    },
-                    "time": now,
-                    "fields": {
-                        "hash": hash_id
-                    }
-                }
-            )
-
 
         self.dbmanager.write_points(influx_payload)
+
+        #SPLIT REQUESTS INTO TV/MOVIE LISTS AS THEY USE 2 DIFFERENT ENDPOINTS TO RETRIEVE DATA
+        # tv_requests = []
+        # movie_requests = []
+
+        # for result in get_latest_req['results']:
+        #     if result['type'] == 'tv':
+        #         try:
+        #             tv_requests.append(OverseerrRequest(**result))
+        #         except TypeError as e:
+        #             self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for show. '
+        #                                 'data attempted is: %s', e, result)
+
+        #     if result['type'] == 'movie':
+        #         try:
+        #             movie_requests.append(OverseerrRequest(**result))
+        #         except TypeError as e:
+        #             self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for movie. '
+        #                                 'data attempted is: %s', e, result)
+
+        # Request Type: Movie = 1, TV Show = 0
+        # influx_payload = []
+        # tv_requests_info = []
+        # movie_requests_info = []
+
+        #GET TV REQUESTS INFO
+        # for tv in tv_requests:
+        #     req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(tv.media['tmdbId'])))
+        #     get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
+        #     hash_id = hashit(f'{get_tv_req["id"]}{get_tv_req["name"]}')
+
+        #     # try:
+        #     #     tv_requests_info.append(OverseerrTVInfo(**tv))
+        #     # except TypeError as e:
+        #     #         self.logger.error('TypeError has occurred : %s while creating OverseerrTVInfo structure for show. '
+        #     #                             'data attempted is: %s', e, tv)
+
+        #     influx_payload.append(
+        #         {
+        #             "measurement": "Overseerr",
+        #             "tags": {
+        #                 "type": "Requests",
+        #                 "server": self.server.id,
+        #                 "request_type": 0,
+        #                 "status": get_tv_req['mediaInfo']['status'],
+        #                 "title": get_tv_req['name'],
+        #                 "requested_user": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
+        #                 "requested_date": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
+        #             },
+        #             "time": now,
+        #             "fields": {
+        #                 "hash": hash_id
+        #             }
+        #         }
+        #     )
+
+
+        # self.dbmanager.write_points(influx_payload)
 
 
     # def get_issue_counts(self):
