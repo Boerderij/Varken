@@ -55,14 +55,14 @@ class OverseerrAPI(object):
         movie_requests = []
 
         for result in get_req['results']:
-            if results['type'] == 'tv':
+            if result['type'] == 'tv':
                 try:
                     tv_requests.append(OverseerrTVRequest(**result))
                 except TypeError as e:
                     self.logger.error('TypeError has occurred : %s while creating OverseerrTVRequest structure for show. '
                                         'data attempted is: %s', e)
             
-            if results['type'] == 'movie':
+            if result['type'] == 'movie':
                 try:
                     movie_requests.append(OverseerrMovieRequest(**result))
                 except TypeError as e:
