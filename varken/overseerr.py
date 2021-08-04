@@ -166,9 +166,9 @@ class OverseerrAPI(object):
                         "requested_date": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
                     },
                     "time": now,
-                    # "fields": {
-                    #     "hash": hash_id
-                    # }
+                    "fields": {
+                        "hash": 'asdfasdf'
+                    }
                 }
             )
 
