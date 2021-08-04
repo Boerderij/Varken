@@ -318,20 +318,26 @@ class INIParser(object):
                                                 issue_status_run_seconds=issue_status_run_seconds)
                         
                         if service == 'overseerr':
+                            overseerr_get_latest_requests = boolcheck(env.get(
+                                f'VRKN_{envsection}_OVERSEERR_GET_LATEST_REQUESTS',
+                                self.config.get(section, 'overseerr_get_latest_requests')))                            
+                            overseerr_num_latest_requests = int(env.get(
+                                f'VRKN_{envsection}_OVERSEERR_NUM_LATEST_REQUESTS',
+                                self.config.getint(section, 'overseerr_num_latest_requests')))
+                            overseerr_num_latest_requests_seconds = int(env.get(
+                                f'VRKN_{envsection}_OVERSEERR_NUM_LATEST_REQUESTS_SECONDS',
+                                self.config.getint(section, 'overseerr_num_latest_requests_seconds')))
                             overseerr_get_request_total_counts = boolcheck(env.get(
                                 f'VRKN_{envsection}_OVERSEERR_GET_REQUEST_TOTAL_COUNTS',
                                 self.config.get(section, 'overseerr_get_request_total_counts')))
-
                             overseerr_request_total_run_seconds = int(env.get(
                                 f'VRKN_{envsection}_OVERSEERR_REQUEST_TOTAL_RUN_SECONDS',
                                 self.config.getint(section, 'overseerr_request_total_run_seconds')))
-                            num_latest_requests = int(env.get(
-                                f'VRKN_{envsection}_NUM_LATEST_REQUESTS',
-                                self.config.getint(section, 'num_latest_requests')))
+                            
 
                             server = OverseerrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
                                                 overseerr_get_latest_requests=overseerr_get_latest_requests,
-                                                overseerr_num_latest_requests=num_latest_requests,
+                                                overseerr_num_latest_requests=overseerr_num_latest_requests,
                                                 overseerr_num_latest_requests_seconds=overseerr_num_latest_requests_seconds,
                                                 overseerr_get_request_total_counts=overseerr_get_request_total_counts,
                                                 overseerr_request_total_run_seconds=overseerr_request_total_run_seconds)
