@@ -122,7 +122,7 @@ class OverseerrAPI(object):
 
         for result in get_latest_req['results']:
             if result['type'] == 'tv':
-                req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(result.media['tmdbId'])))
+                req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(result['media']['tmdbId'])))
                 get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
                 hash_id = hashit(f'{get_tv_req["id"]}{get_tv_req["name"]}')
 
