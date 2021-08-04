@@ -318,9 +318,9 @@ class INIParser(object):
                                                 issue_status_run_seconds=issue_status_run_seconds)
                         
                         if service == 'overseerr':
-                            overseerr_request_total_counts = boolcheck(env.get(
+                            overseerr_get_request_total_counts = boolcheck(env.get(
                                 f'VRKN_{envsection}_OVERSEERR_GET_REQUEST_TOTAL_COUNTS',
-                                self.config.get(section, 'overseerr_request_total_counts')))
+                                self.config.get(section, 'overseerr_get_request_total_counts')))
 
                             overseerr_request_total_run_seconds = int(env.get(
                                 f'VRKN_{envsection}_OVERSEERR_REQUEST_TOTAL_RUN_SECONDS',
@@ -333,7 +333,7 @@ class INIParser(object):
                                                 overseerr_get_latest_requests=overseerr_get_latest_requests,
                                                 overseerr_num_latest_requests=num_latest_requests,
                                                 overseerr_num_latest_requests_seconds=overseerr_num_latest_requests_seconds,
-                                                overseerr_request_total_counts=overseerr_request_total_counts,
+                                                overseerr_get_request_total_counts=overseerr_get_request_total_counts,
                                                 overseerr_request_total_run_seconds=overseerr_request_total_run_seconds)
 
                         if service == 'sickchill':
