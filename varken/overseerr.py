@@ -142,7 +142,7 @@ class OverseerrAPI(object):
             req = self.session.prepare_request(Request('GET', self.server.url + endpoint + tv['media']['tmdbId']))
             get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
 
-            print get_tv_req
+            print(get_tv_req)
 
 
 
