@@ -18,7 +18,7 @@ class OverseerrAPI(object):
     def __repr__(self):
         return f"<overseerr-{self.server.id}>"
 
-    def get_requests(self):
+    def get_total_requests(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/request?take=99999999999&filter=all&sort=added'
 
@@ -69,83 +69,12 @@ class OverseerrAPI(object):
             }
         ]
 
-        # # Request Type: Movie = 1, TV Show = 0
-        # for movie in movie_requests:
-        #     hash_id = hashit(f'{movie.id}{movie.theMovieDbId}{movie.title}')
-
-        #     # Denied = 0, Approved = 1, Completed = 2, Pending = 3
-        #     if movie.denied:
-        #         status = 0
-
-        #     elif movie.approved and movie.available:
-        #         status = 2
-
-        #     elif movie.approved:
-        #         status = 1
-
-        #     else:
-        #         status = 3
-
-        #     influx_payload.append(
-        #         {
-        #             "measurement": "Ombi",
-        #             "tags": {
-        #                 "type": "Requests",
-        #                 "server": self.server.id,
-        #                 "request_type": 1,
-        #                 "status": status,
-        #                 "title": movie.title,
-        #                 "requested_user": movie.requestedUser['userAlias'],
-        #                 "requested_date": movie.requestedDate
-        #             },
-        #             "time": now,
-        #             "fields": {
-        #                 "hash": hash_id
-        #             }
-        #         }
-        #     )
-
-    #     for show in tv_show_requests:
-    #         hash_id = hashit(f'{show.id}{show.tvDbId}{show.title}')
-
-    #         # Denied = 0, Approved = 1, Completed = 2, Pending = 3
-    #         if show.childRequests[0].get('denied'):
-    #             status = 0
-
-    #         elif show.childRequests[0].get('approved') and show.childRequests[0].get('available'):
-    #             status = 2
-
-    #         elif show.childRequests[0].get('approved'):
-    #             status = 1
-
-    #         else:
-    #             status = 3
-
-    #         influx_payload.append(
-    #             {
-    #                 "measurement": "Ombi",
-    #                 "tags": {
-    #                     "type": "Requests",
-    #                     "server": self.server.id,
-    #                     "request_type": 0,
-    #                     "status": status,
-    #                     "title": show.title,
-    #                     "requested_user": show.childRequests[0]['requestedUser']['userAlias'],
-    #                     "requested_date": show.childRequests[0]['requestedDate']
-    #                 },
-    #                 "time": now,
-    #                 "fields": {
-    #                     "hash": hash_id
-    #                 }
-    #             }
-    #         )
-
         if influx_payload:
             self.dbmanager.write_points(influx_payload)
         else:
             self.logger.debug("Empty dataset for overseerr module. Discarding...")
 
-    def get_request_counts(self):
+    def get_request_status_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/request/count'
 
@@ -173,6 +102,51 @@ class OverseerrAPI(object):
         ]
 
         self.dbmanager.write_points(influx_payload)
+
+    def get_latest_requests(self):
+        now = datetime.now(timezone.utc).astimezone().isoformat()
+        endpoint = '/api/v1/request?take=' + self.server.overseerr_num_latest_requests_to_fetch + '&filter=all&sort=added'
+        movie_endpoint = 'https://requests.redredbeard.com/api/v1/movie/'
+        tv_endpoint = 'https://requests.redredbeard.com/api/v1/tv/'
+
+        #GET THE LATEST REQUESTS
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get_latest_req = connection_handler(self.session, req, self.server.verify_ssl)
+
+        #RETURN NOTHING IF NO RESULTS
+        if not get_latest_req:
+            return
+
+        #SPLIT REQUESTS INTO TV/MOVIE LISTS AS THEY USE 2 DIFFERENT ENDPOINTS TO RETRIEVE DATA
+        tv_requests = []
+        movie_requests = []
+
+        for result in get_latest_req['results']:
+            if result['type'] == 'tv':
+                try:
+                    tv_requests.append(OverseerrRequest(**result))
+                except TypeError as e:
+                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for show. '
+                                        'data attempted is: %s', e, result)
+
+            if result['type'] == 'movie':
+                try:
+                    movie_requests.append(OverseerrRequest(**result))
+                except TypeError as e:
+                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for movie. '
+                                        'data attempted is: %s', e, result)
+
+        influx_payload = []
+
+        for tv in tv_requests:
+            req = self.session.prepare_request(Request('GET', self.server.url + endpoint + tv['media']['tmdbId']))
+            get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
+
+            print get_tv_req
+
+
+
+
 
     # def get_issue_counts(self):
     #     now = datetime.now(timezone.utc).astimezone().isoformat()
