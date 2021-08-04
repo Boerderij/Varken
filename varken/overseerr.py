@@ -139,9 +139,9 @@ class OverseerrAPI(object):
         influx_payload = []
 
         for tv in tv_requests:
-            print(self.server.url + endpoint + str(tv.media['tmdbId']))
+            print(self.server.url + tv_endpoint + str(tv.media['tmdbId']))
 
-            req = self.session.prepare_request(Request('GET', self.server.url + endpoint + str(tv.media['tmdbId'])))
+            req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(tv.media['tmdbId'])))
             get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
 
             print(get_tv_req)
