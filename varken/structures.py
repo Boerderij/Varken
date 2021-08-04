@@ -72,7 +72,7 @@ class OverseerrServer(NamedTuple):
     # issue_status_counts: bool = False
     # issue_status_run_seconds: int = 30
     overseerr_get_latest_requests: bool = False
-    overseerr_num_latest_requests: int = 10
+    overseerr_num_latest_requests_to_fetch: int = 10
     overseerr_num_latest_requests_seconds: int = 300
     overseerr_get_request_total_counts: bool = False
     overseerr_request_total_run_seconds: int = 30
