@@ -172,7 +172,7 @@ if __name__ == "__main__":
             if server.overseerr_get_latest_requests:
                 at_time = schedule.every(server.overseerr_num_latest_requests_seconds).seconds
                 at_time.do(thread, OVERSEER.get_requests).tag("overseerr-{}-get_requests".format(server.id))
-            if server.overseerr_request_total_counts:
+            if server.overseerr_get_request_total_counts:
                 at_time = schedule.every(server.overseerr_request_total_run_seconds).seconds
                 at_time.do(thread, OVERSEER.get_request_counts).tag("overseerr-{}-get_request_counts".format(server.id))
 
