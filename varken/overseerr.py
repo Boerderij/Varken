@@ -145,7 +145,7 @@ class OverseerrAPI(object):
         for tv in tv_requests:
             req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(tv.media['tmdbId'])))
             get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
-            hash_id = hashit(f'{get_tv_req.id}{get_tv_req['lastEpisodeToAir']['id']}{get_tv_req['name']}')
+            #hash_id = hashit(f'{get_tv_req.id}{get_tv_req['lastEpisodeToAir']['id']}{get_tv_req['name']}')
 
             # try:
             #     tv_requests_info.append(OverseerrTVInfo(**tv))
@@ -166,9 +166,9 @@ class OverseerrAPI(object):
                         "requested_date": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
                     },
                     "time": now,
-                    "fields": {
-                        "hash": hash_id
-                    }
+                    # "fields": {
+                    #     "hash": hash_id
+                    # }
                 }
             )
 
