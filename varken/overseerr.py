@@ -173,8 +173,7 @@ class OverseerrAPI(object):
             )
 
 
-
-
+        self.dbmanager.write_points(influx_payload)
 
 
     # def get_issue_counts(self):
