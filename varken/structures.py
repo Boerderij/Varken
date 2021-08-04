@@ -201,7 +201,6 @@ class OmbiMovieRequest(NamedTuple):
     requestStatus: str = None
 
 # Overseerr
-
 class OverseerrRequest(NamedTuple):
     id: int = None
     status: int = None
@@ -225,6 +224,43 @@ class OverseerrRequestCounts(NamedTuple):
     approved: int = None
     processing: int = None
     available: int = None
+
+class OverseerrTVInfo(NamedTuple):
+    createdBy: list = None
+    episodeRunTime: list = None
+    firstAirDate: str = None
+    genres: list = None
+    relatedVideos: list = None
+    homepage: str = None
+    id: int = None
+    inProduction: bool = None
+    languages: list = None
+    lastAirDate: str = None
+    name: str = None
+    networks: list = None
+    numberOfEpisodes: int = None
+    numberOfSeasons: int = None
+    originCountry: list = None
+    originalLanguage: str = None
+    originalName: str = None
+    tagline: str = None
+    overview: str = None
+    popularity: float = None
+    productionCompanies: list = None
+    contentRatings: dict = None
+    spokenLanguages: list = None
+    seasons: list = None
+    status: str = None
+    type: str = None
+    voteAverage: float = None
+    voteCount: int = None
+    backdropPath: str = None
+    lastEpisodeToAir: dict = None
+    posterPath: str = None
+    credits: dict = None
+    externalIds: dict = None
+    keywords: list = None
+    mediaInfo: dict = None
 
 # Sonarr
 class SonarrTVShow(NamedTuple):
