@@ -58,6 +58,7 @@ class OverseerrAPI(object):
             if results.type == 'tv':
                 try:
                     tv_requests.append(OverseerrTVRequest(**result))
+            
             if results.type == 'movie':
                 try:
                     movie_requests.append(OverseerrMovieRequest(**result))
