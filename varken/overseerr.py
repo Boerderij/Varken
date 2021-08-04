@@ -57,7 +57,7 @@ class OverseerrAPI(object):
             {
                 "measurement": "Overseerr",
                 "tags": {
-                    "type": "Requests",
+                    "type": "Request_Totals",
                     "server": self.server.id
                 },
                 "time": now,
@@ -120,6 +120,7 @@ class OverseerrAPI(object):
         tv_requests = []
         influx_payload = []
 
+        # Request Type: Movie = 1, TV Show = 0
         for result in get_latest_req['results']:
             if result['type'] == 'tv':
                 req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint + str(result['media']['tmdbId'])))
@@ -145,7 +146,29 @@ class OverseerrAPI(object):
                     }
                 )
 
-            # if result['type'] == 'movie':
+            if result['type'] == 'movie':
+                req = self.session.prepare_request(Request('GET', self.server.url + movie_endpoint + str(result['media']['tmdbId'])))
+                get_movie_req = connection_handler(self.session, req, self.server.verify_ssl)
+                hash_id = hashit(f'{get_movie_req["id"]}{get_movie_req["title"]}')
+
+                influx_payload.append(
+                    {
+                        "measurement": "Overseerr",
+                        "tags": {
+                            "type": "Requests",
+                            "server": self.server.id,
+                            "request_type": 1,
+                            "status": get_movie_req['mediaInfo']['status'],
+                            "title": get_movie_req['title'],
+                            "requested_user": get_movie_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
+                            "requested_date": get_movie_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
+                        },
+                        "time": now,
+                        "fields": {
+                            "hash": hash_id
+                        }
+                    }
+                )
 
         self.dbmanager.write_points(influx_payload)
 
