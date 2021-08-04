@@ -145,7 +145,7 @@ class OverseerrAPI(object):
                     }
                 )
 
-            if result['type'] == 'movie':
+            # if result['type'] == 'movie':
 
         self.dbmanager.write_points(influx_payload)
 
