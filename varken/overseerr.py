@@ -60,14 +60,14 @@ class OverseerrAPI(object):
                     tv_requests.append(OverseerrTVRequest(**result))
                 except TypeError as e:
                     self.logger.error('TypeError has occurred : %s while creating OverseerrTVRequest structure for show. '
-                                        'data attempted is: %s', e)
+                                        'data attempted is: %s', e, result)
             
             if result['type'] == 'movie':
                 try:
                     movie_requests.append(OverseerrMovieRequest(**result))
                 except TypeError as e:
                     self.logger.error('TypeError has occurred : %s while creating OverseerrMovieRequest structure for movie. '
-                                        'data attempted is: %s', e)
+                                        'data attempted is: %s', e, result)
 
         if tv_requests:
             tv_request_count = len(tv_requests)
