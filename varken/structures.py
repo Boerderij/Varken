@@ -81,8 +81,6 @@ class OverseerrServer(NamedTuple):
     url: str = None
     verify_ssl: bool = False
 
-
-
 class TautulliServer(NamedTuple):
     api_key: str = None
     fallback_ip: str = None
@@ -168,25 +166,6 @@ class OmbiTVRequest(NamedTuple):
     requestedByAlias: str = None
     requestStatus: str = None
 
-class OverseerrRequest(NamedTuple):
-    id: int = None
-    status: int = None
-    createdAt: str = None
-    updatedAt: str = None
-    type: str = None
-    is4k: bool = None
-    serverId: int = None
-    profileId: int = None
-    rootFolder: str = None
-    languageProfileId: int = None
-    tags: list = None
-    media: dict = None
-    seasons: list = None
-    modifiedBy: dict = None
-    requestedBy: dict = None
-    seasonCount: int = None
-
-
 class OmbiMovieRequest(NamedTuple):
     approved: bool = None
     available: bool = None
@@ -223,7 +202,32 @@ class OmbiMovieRequest(NamedTuple):
     requestedByAlias: str = None
     requestStatus: str = None
 
+# Overseerr
 
+class OverseerrRequest(NamedTuple):
+    id: int = None
+    status: int = None
+    createdAt: str = None
+    updatedAt: str = None
+    type: str = None
+    is4k: bool = None
+    serverId: int = None
+    profileId: int = None
+    rootFolder: str = None
+    languageProfileId: int = None
+    tags: list = None
+    media: dict = None
+    seasons: list = None
+    modifiedBy: dict = None
+    requestedBy: dict = None
+    seasonCount: int = None
+
+class OverseerrRequestCounts(NamedTuple):
+    pending: int = None
+    approved: int = None
+    processing: int = None
+    available: int = None
+    
 # Sonarr
 class SonarrTVShow(NamedTuple):
     absoluteEpisodeNumber: int = None

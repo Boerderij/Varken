@@ -22,34 +22,13 @@ class OverseerrAPI(object):
     def get_requests(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/request?take=99999999999&filter=all&sort=added'
-        # tv_endpoint = '/api/v1/request/tv'
-        # movie_endpoint = "/api/v1/Request/movie"
 
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
         get_req = connection_handler(self.session, req, self.server.verify_ssl) or []
 
-        # tv_req = self.session.prepare_request(Request('GET', self.server.url + tv_endpoint))
-        # movie_req = self.session.prepare_request(Request('GET', self.server.url + movie_endpoint))
-        # get_tv = connection_handler(self.session, tv_req, self.server.verify_ssl) or []
-        # get_movie = connection_handler(self.session, movie_req, self.server.verify_ssl) or []
-
         if not any([get_req]):
             self.logger.error('No json replies. Discarding job')
             return
-
-        # if not any([get_tv, get_movie]):
-        #     self.logger.error('No json replies. Discarding job')
-        #     return
-
-        # if get_movie:
-        #     movie_request_count = len(get_movie)
-        # else:
-        #     movie_request_count = 0
-
-        # if get_tv:
-        #     tv_request_count = len(get_tv)
-        # else:
-        #     tv_request_count = 0
 
         tv_requests = []
         movie_requests = []
@@ -74,32 +53,6 @@ class OverseerrAPI(object):
 
         if movie_requests:
             movie_request_count = len(movie_requests)
-        
-        # for type in get_req.results:
-        #     if type == 'movie':
-        #         try:
-        #             movie_requests.append
-        #     try:
-        #         tv_show_requests.append(OmbiTVRequest(**show))
-        #     except TypeError as e:
-        #         self.logger.error('TypeError has occurred : %s while creating OmbiTVRequest structure for show. '
-        #                           'data attempted is: %s', e, show)
-
-        # tv_show_requests = []
-        # for show in get_tv:
-        #     try:
-        #         tv_show_requests.append(OmbiTVRequest(**show))
-        #     except TypeError as e:
-        #         self.logger.error('TypeError has occurred : %s while creating OmbiTVRequest structure for show. '
-        #                           'data attempted is: %s', e, show)
-
-        # movie_requests = []
-        # for movie in get_movie:
-        #     try:
-        #         movie_requests.append(OmbiMovieRequest(**movie))
-        #     except TypeError as e:
-        #         self.logger.error('TypeError has occurred : %s while creating OmbiMovieRequest structure for movie. '
-        #                           'data attempted is: %s', e, movie)
 
         influx_payload = [
             {
@@ -112,7 +65,7 @@ class OverseerrAPI(object):
                 "fields": {
                     "total": movie_request_count + tv_request_count,
                     "movies": movie_request_count,
-                    "tv_shows": tv_request_count
+                    "tv": tv_request_count
                 }
             }
         ]
@@ -195,31 +148,32 @@ class OverseerrAPI(object):
 
     def get_request_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
-        # endpoint = '/api/v1/Request/count'
+        endpoint = '/api/v1/request/count'
 
-        # req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
-        # get = connection_handler(self.session, req, self.server.verify_ssl)
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
+        get_req = connection_handler(self.session, req, self.server.verify_ssl)
 
-        # if not get:
-        #     return
+        if not get_req:
+            return
 
-        # requests = OmbiRequestCounts(**get)
-        # influx_payload = [
-        #     {
-        #         "measurement": "Ombi",
-        #         "tags": {
-        #             "type": "Request_Counts"
-        #         },
-        #         "time": now,
-        #         "fields": {
-        #             "pending": requests.pending,
-        #             "approved": requests.approved,
-        #             "available": requests.available
-        #         }
-        #     }
-        # ]
+        requests = OverseerrRequestCounts(**get_req)
+        influx_payload = [
+            {
+                "measurement": "Overseerr",
+                "tags": {
+                    "type": "Request_Counts"
+                },
+                "time": now,
+                "fields": {
+                    "pending": requests.pending,
+                    "approved": requests.approved,
+                    "processing": requests.processing,
+                    "available": requests.available
+                }
+            }
+        ]
 
-        # self.dbmanager.write_points(influx_payload)
+        self.dbmanager.write_points(influx_payload)
 
     # def get_issue_counts(self):
     #     now = datetime.now(timezone.utc).astimezone().isoformat()
