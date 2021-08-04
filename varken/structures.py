@@ -168,22 +168,23 @@ class OmbiTVRequest(NamedTuple):
     requestedByAlias: str = None
     requestStatus: str = None
 
-class OverseerrTVRequest(NamedTuple):
+class OverseerrRequest(NamedTuple):
     id: int = None
     status: int = None
     createdAt: str = None
+    updatedAt: str = None
     type: str = None
+    is4k: bool = None
+    serverId: int = None
+    profileId: int = None
+    rootFolder: str = None
+    languageProfileId: int = None
+    tags: list = None
+    media: dict = None
+    seasons: list = None
+    modifiedBy: dict = None
+    requestedBy: dict = None
     seasonCount: int = None
-
-class OverseerrMovieRequest(NamedTuple):
-    id: int = None
-    status: int = None
-    createdAt: str = None
-    type: str = None
-    
-
-
-
 
 
 class OmbiMovieRequest(NamedTuple):

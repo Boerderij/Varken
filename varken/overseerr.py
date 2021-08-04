@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from varken.helpers import connection_handler, hashit
 #from varken.structures import OmbiRequestCounts, OmbiIssuesCounts, OmbiMovieRequest, OmbiTVRequest
-from varken.structures import OverseerrTVRequest, OverseerrMovieRequest
+from varken.structures import OverseerrRequest
 
 
 class OverseerrAPI(object):
@@ -57,16 +57,16 @@ class OverseerrAPI(object):
         for result in get_req['results']:
             if result['type'] == 'tv':
                 try:
-                    tv_requests.append(OverseerrTVRequest(**result))
+                    tv_requests.append(OverseerrRequest(**result))
                 except TypeError as e:
-                    self.logger.error('TypeError has occurred : %s while creating OverseerrTVRequest structure for show. '
+                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for show. '
                                         'data attempted is: %s', e, result)
             
             if result['type'] == 'movie':
                 try:
-                    movie_requests.append(OverseerrMovieRequest(**result))
+                    movie_requests.append(OverseerrRequest(**result))
                 except TypeError as e:
-                    self.logger.error('TypeError has occurred : %s while creating OverseerrMovieRequest structure for movie. '
+                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for movie. '
                                         'data attempted is: %s', e, result)
 
         if tv_requests:
