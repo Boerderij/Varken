@@ -106,8 +106,8 @@ class OverseerrAPI(object):
     def get_latest_requests(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/request?take=' + str(self.server.overseerr_num_latest_requests_to_fetch) + '&filter=all&sort=added'
-        movie_endpoint = 'https://requests.redredbeard.com/api/v1/movie/'
-        tv_endpoint = 'https://requests.redredbeard.com/api/v1/tv/'
+        movie_endpoint = '/api/v1/movie/'
+        tv_endpoint = '/api/v1/tv/'
 
         #GET THE LATEST REQUESTS
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
