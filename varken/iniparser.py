@@ -17,7 +17,7 @@ class INIParser(object):
         self.config = None
         self.data_folder = data_folder
         self.filtered_strings = None
-        self.services = ['sonarr', 'radarr', 'lidarr', 'ombi', 'tautulli', 'sickchill', 'unifi']
+        self.services = ['sonarr', 'radarr', 'lidarr', 'ombi', 'overseerr', 'tautulli', 'sickchill', 'unifi']
 
         self.logger = getLogger()
         self.influx_server = InfluxServer()
@@ -316,6 +316,25 @@ class INIParser(object):
                                                 request_total_run_seconds=request_total_run_seconds,
                                                 issue_status_counts=issue_status_counts,
                                                 issue_status_run_seconds=issue_status_run_seconds)
+                        
+                        if service == 'overseerr':
+                            overseerr_request_total_counts = boolcheck(env.get(
+                                f'VRKN_{envsection}_OVERSEERR_GET_REQUEST_TOTAL_COUNTS',
+                                self.config.get(section, 'overseerr_request_total_counts')))
+
+                            overseerr_request_total_run_seconds = int(env.get(
+                                f'VRKN_{envsection}_OVERSEERR_REQUEST_TOTAL_RUN_SECONDS',
+                                self.config.getint(section, 'overseerr_request_total_run_seconds')))
+                            num_latest_requests = int(env.get(
+                                f'VRKN_{envsection}_NUM_LATEST_REQUESTS',
+                                self.config.getint(section, 'num_latest_requests')))
+
+                            server = OverseerrServer(id=server_id, url=scheme + url, api_key=apikey, verify_ssl=verify_ssl,
+                                                overseerr_get_latest_requests=overseerr_get_latest_requests,
+                                                overseerr_num_latest_requests=num_latest_requests,
+                                                overseerr_num_latest_requests_seconds=overseerr_num_latest_requests_seconds,
+                                                overseerr_request_total_counts=overseerr_request_total_counts,
+                                                overseerr_request_total_run_seconds=overseerr_request_total_run_seconds)
 
                         if service == 'sickchill':
                             get_missing = boolcheck(env.get(f'VRKN_{envsection}_GET_MISSING',
