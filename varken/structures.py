@@ -1,3 +1,5 @@
+import typing
+
 from sys import version_info
 from typing import NamedTuple
 from logging import getLogger
@@ -8,6 +10,32 @@ if version_info < (3, 6, 2):
     logger.error('Varken requires python3.6.2 or newer. You are on python%s.%s.%s - Exiting...',
                  version_info.major, version_info.minor, version_info.micro)
     exit(1)
+
+
+def wrap(original):
+    # typing._make_nmtuple is replaced with this local
+    def wrapped_nmtuple(*args, **kwargs):
+        # we create the namedtuple instance like normal
+        nt = original(*args, **kwargs)
+
+        def kwargs_stripper_wrap(original_new):
+            # namedtuple.__new__ is replaced with this,
+            # which strips out kwargs which aren't in NamedTuple._fields
+            def kwarg_stripper(*args, **kwargs):
+                # actually strip the kwargs before generating the namedtuple instance
+                return original_new(*args, **{k: v for k, v in kwargs.items() if k in nt._fields})
+
+            return kwarg_stripper
+
+        # replace __new__ with a wrapped version
+        nt.__new__ = kwargs_stripper_wrap(nt.__new__)
+        return nt
+
+    return wrapped_nmtuple
+
+
+# assign the wrapped namedtuple factory function
+typing._make_nmtuple = wrap(typing._make_nmtuple)
 
 
 # Server Structures
