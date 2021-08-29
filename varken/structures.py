@@ -78,6 +78,10 @@ class OverseerrServer(NamedTuple):
     get_latest_requests: bool = False
     num_latest_requests_to_fetch: int = 10
     num_latest_requests_seconds: int = 30
+<<<<<<< HEAD
+=======
+
+>>>>>>> 07cc5946f37b14ab268c795fbdc5092988c10e97
 
 class TautulliServer(NamedTuple):
     api_key: str = None
@@ -224,6 +228,32 @@ class OverseerrRequestCounts(NamedTuple):
     approved: int = None
     processing: int = None
     available: int = None
+
+# Overseerr
+class OverseerrRequest(NamedTuple):
+    id: int = None
+    status: int = None
+    createdAt: str = None
+    updatedAt: str = None
+    type: str = None
+    is4k: bool = None
+    serverId: int = None
+    profileId: int = None
+    rootFolder: str = None
+    languageProfileId: int = None
+    tags: list = None
+    media: dict = None
+    seasons: list = None
+    modifiedBy: dict = None
+    requestedBy: dict = None
+    seasonCount: int = None
+
+class OverseerrRequestCounts(NamedTuple):
+    pending: int = None
+    approved: int = None
+    processing: int = None
+    available: int = None
+
 
 # Sonarr
 class SonarrTVShow(NamedTuple):

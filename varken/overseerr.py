@@ -126,6 +126,11 @@ class OverseerrAPI(object):
                 get_tv_req = connection_handler(self.session, req, self.server.verify_ssl)
                 hash_id = hashit(f'{get_tv_req["id"]}{get_tv_req["name"]}')
 
+<<<<<<< HEAD
+=======
+                print(result)
+
+>>>>>>> 07cc5946f37b14ab268c795fbdc5092988c10e97
                 influx_payload.append(
                     {
                         "measurement": "Overseerr",

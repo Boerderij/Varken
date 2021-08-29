@@ -9,7 +9,11 @@ from configparser import ConfigParser, NoOptionError, NoSectionError
 from varken.varkenlogger import BlacklistFilter
 from varken.structures import SickChillServer, UniFiServer
 from varken.helpers import clean_sid_check, rfc1918_ip_check, boolcheck
+<<<<<<< HEAD
 from varken.structures import SonarrServer, RadarrServer, OmbiServer, OverseerrServer, TautulliServer, InfluxServer, Influx2Server
+=======
+from varken.structures import SonarrServer, RadarrServer, OmbiServer, OverseerrServer, TautulliServer, InfluxServer
+>>>>>>> 07cc5946f37b14ab268c795fbdc5092988c10e97
 
 
 class INIParser(object):
