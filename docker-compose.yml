@@ -6,7 +6,7 @@ services:
   influxdb:
     hostname: influxdb
     container_name: influxdb
-    image: influxdb
+    image: influxdb:1.8.4
     networks:
       - internal
     volumes:
