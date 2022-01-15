@@ -2,7 +2,7 @@
 # Potential requirements.
 # pip3 install -r requirements.txt
 #---------------------------------------------------------
-requests==2.21
+requests==2.25.1
 geoip2==2.9.0
 influxdb==5.2.0
 schedule==0.6.0
