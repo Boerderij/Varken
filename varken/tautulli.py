@@ -327,6 +327,7 @@ class TautulliAPI(object):
                     "tags": {
                         "type": "Session",
                         "session_id": session.session_id,
+                        "ip_address": session.ip_address,
                         "friendly_name": session.friendly_name,
                         "username": session.user,
                         "title": session.full_title,
