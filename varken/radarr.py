@@ -18,7 +18,7 @@ class RadarrAPI(object):
     def __repr__(self):
         return f"<radarr-{self.server.id}>"
 
-    def get_movie(self,id):
+    def get_movie(self, id):
         endpoint = '/api/v3/movie/'
 
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint + str(id)))
@@ -88,19 +88,19 @@ class RadarrAPI(object):
         queueResponse = []
         queue = []
 
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint,params=params))
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
         get = connection_handler(self.session, req, self.server.verify_ssl)
         if not get:
             return
-        
+
         response = QueuePages(**get)
         queueResponse.extend(response.records)
 
         while response.totalRecords > response.page * response.pageSize:
             page = response.page + 1
             params = {'pageSize': pageSize, 'page': page}
-            req = self.session.prepare_request(Request('GET', self.server.url + endpoint,params=params))
-            get = connection_handler(self.session, req, self.server.verify_ssl)           
+            req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
+            get = connection_handler(self.session, req, self.server.verify_ssl)
             if not get:
                 return
 

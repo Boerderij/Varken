@@ -18,7 +18,7 @@ class SonarrAPI(object):
 
     def __repr__(self):
         return f"<sonarr-{self.server.id}>"
- 
+
     def get_series(self, id):
         endpoint = '/api/v3/series/'
 
@@ -27,14 +27,14 @@ class SonarrAPI(object):
 
         if not get:
             return
-        
+
         return SonarrTVShow(**get)
 
     def get_episode(self, id):
         endpoint = '/api/v3/episode'
         params = {'episodeIds': id}
 
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint,params = params))
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
         get = connection_handler(self.session, req, self.server.verify_ssl)
 
         if not get:
@@ -117,19 +117,19 @@ class SonarrAPI(object):
         queueResponse = []
         queue = []
 
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint,params=params))
+        req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
         get = connection_handler(self.session, req, self.server.verify_ssl)
         if not get:
             return
-        
+
         response = QueuePages(**get)
         queueResponse.extend(response.records)
 
         while response.totalRecords > response.page * response.pageSize:
             page = response.page + 1
             params = {'pageSize': pageSize, 'page': page}
-            req = self.session.prepare_request(Request('GET', self.server.url + endpoint,params=params))
-            get = connection_handler(self.session, req, self.server.verify_ssl)           
+            req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
+            get = connection_handler(self.session, req, self.server.verify_ssl)
             if not get:
                 return
 
