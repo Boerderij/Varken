@@ -247,6 +247,8 @@ class SonarrQueue(NamedTuple):
     trackedDownloadState: str = None
     trackedDownloadStatus: str = None
     seriesId: int = None
+    errorMessage: str = None
+    outputPath: str = None
 
 
 # Radarr
@@ -308,6 +310,10 @@ class RadarrQueue(NamedTuple):
     title: str = None
     trackedDownloadState: str = None
     trackedDownloadStatus: str = None
+    timeleft: str = None
+    estimatedCompletionTime: str = None
+    errorMessage: str = None
+    outputPath: str = None
 
 
 # Sickchill
