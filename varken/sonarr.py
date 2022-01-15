@@ -42,7 +42,6 @@ class SonarrAPI(object):
 
         return SonarrEpisode(**get[0])
 
-
     def get_calendar(self, query="Missing"):
         endpoint = '/api/v3/calendar/'
         today = str(date.today())
