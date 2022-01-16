@@ -2,7 +2,7 @@ from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
-from varken.structures import SonarrEpisode, SonarrQueue, QueuePages, SonarrTVShow
+from varken.structures import SonarrEpisode, SonarrQueue, QueuePages
 from varken.helpers import hashit, connection_handler
 
 
@@ -18,17 +18,6 @@ class SonarrAPI(object):
 
     def __repr__(self):
         return f"<sonarr-{self.server.id}>"
-
-    def get_series(self, id):
-        endpoint = '/api/v3/series/'
-
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint + str(id)))
-        get = connection_handler(self.session, req, self.server.verify_ssl)
-
-        if not get:
-            return
-
-        return SonarrTVShow(**get)
 
     def get_episode(self, id):
         endpoint = '/api/v3/episode'
@@ -49,9 +38,9 @@ class SonarrAPI(object):
         future = str(date.today() + timedelta(days=self.server.future_days))
         now = datetime.now(timezone.utc).astimezone().isoformat()
         if query == "Missing":
-            params = {'start': last_days, 'end': today}
+            params = {'start': last_days, 'end': today, 'includeSeries': True}
         else:
-            params = {'start': today, 'end': future}
+            params = {'start': today, 'end': future, 'includeSeries': True}
         influx_payload = []
         air_days = []
         missing = []
@@ -71,7 +60,7 @@ class SonarrAPI(object):
                                   'attempted is: %s', e, show)
 
         for episode in tv_shows:
-            tvShow = self.get_series(episode.seriesId)
+            tvShow = episode.series
             sxe = f'S{episode.seasonNumber:0>2}E{episode.episodeNumber:0>2}'
             if episode.hasFile:
                 downloaded = 1
@@ -126,7 +115,7 @@ class SonarrAPI(object):
 
         while response.totalRecords > response.page * response.pageSize:
             page = response.page + 1
-            params = {'pageSize': pageSize, 'page': page}
+            params = {'pageSize': pageSize, 'page': page, 'includeSeries': True, 'includeEpisode': True}
             req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
             get = connection_handler(self.session, req, self.server.verify_ssl)
             if not get:
@@ -146,8 +135,8 @@ class SonarrAPI(object):
             return
 
         for queueItem in download_queue:
-            tvShow = self.get_series(queueItem.seriesId)
-            episode = self.get_episode(queueItem.episodeId)
+            tvShow = queueItem.series
+            episode = queueItem.episode
             try:
                 sxe = f"S{episode.seasonNumber:0>2}E{episode.episodeNumber:0>2}"
             except TypeError as e:
