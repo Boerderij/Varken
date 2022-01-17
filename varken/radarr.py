@@ -18,17 +18,6 @@ class RadarrAPI(object):
     def __repr__(self):
         return f"<radarr-{self.server.id}>"
 
-    def get_movie(self, id):
-        endpoint = '/api/v3/movie/'
-
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint + str(id)))
-        get = connection_handler(self.session, req, self.server.verify_ssl)
-
-        if not get:
-            return
-
-        return RadarrMovie(**get)
-
     def get_missing(self):
         endpoint = '/api/v3/movie'
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -84,7 +73,7 @@ class RadarrAPI(object):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
         pageSize = 250
-        params = {'pageSize': pageSize}
+        params = {'pageSize': pageSize, 'includeMovie': True}
         queueResponse = []
         queue = []
 
@@ -118,7 +107,7 @@ class RadarrAPI(object):
             return
 
         for queue_item in download_queue:
-            movie = self.get_movie(queue_item.movieId)
+            movie = queue_item.movie
 
             name = f'{movie.title} ({movie.year})'
 

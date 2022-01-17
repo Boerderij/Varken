@@ -272,6 +272,7 @@ class SonarrEpisode(NamedTuple):
     sceneAbsoluteEpisodeNumber: int = None
     sceneEpisodeNumber: int = None
     sceneSeasonNumber: int = None
+    series: SonarrTVShow = None
 
 
 class SonarrQueue(NamedTuple):
@@ -293,6 +294,8 @@ class SonarrQueue(NamedTuple):
     seriesId: int = None
     errorMessage: str = None
     outputPath: str = None
+    series: SonarrTVShow = None
+    episode: SonarrEpisode = None
 
 
 # Radarr
@@ -358,6 +361,7 @@ class RadarrQueue(NamedTuple):
     estimatedCompletionTime: str = None
     errorMessage: str = None
     outputPath: str = None
+    movie: RadarrMovie = None
 
 
 # Sickchill
