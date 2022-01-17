@@ -68,7 +68,8 @@ class SonarrAPI(object):
                 downloaded = 0
             if query == "Missing":
                 if episode.monitored and not downloaded:
-                    missing.append((tvShow.title, downloaded, sxe, episode.title, episode.airDateUtc, episode.seriesId))
+                    missing.append((tvShow['title'], downloaded, sxe, episode.title,
+                                    episode.airDateUtc, episode.seriesId))
             else:
                 air_days.append((tvShow.title, downloaded, sxe, episode.title, episode.airDateUtc, episode.seriesId))
 
@@ -149,7 +150,7 @@ class SonarrAPI(object):
             else:
                 protocol_id = 0
 
-            queue.append((tvShow.title, episode.title, queueItem.protocol.upper(),
+            queue.append((tvShow['title'], episode.title, queueItem.protocol.upper(),
                           protocol_id, sxe, queueItem.seriesId, queueItem.quality['quality']['name']))
 
         for series_title, episode_title, protocol, protocol_id, sxe, sonarr_id, quality in queue:
