@@ -71,7 +71,7 @@ class SonarrAPI(object):
                     missing.append((tvShow['title'], downloaded, sxe, episode.title,
                                     episode.airDateUtc, episode.seriesId))
             else:
-                air_days.append((tvShow.title, downloaded, sxe, episode.title, episode.airDateUtc, episode.seriesId))
+                air_days.append((tvShow['title'], downloaded, sxe, episode.title, episode.airDateUtc, episode.seriesId))
 
         for series_title, dl_status, sxe, episode_title, air_date_utc, sonarr_id in (air_days or missing):
             hash_id = hashit(f'{self.server.id}{series_title}{sxe}')
