@@ -608,7 +608,9 @@ class LidarrQueue(NamedTuple):
     sizeleft: float = None
     status: str = None
     trackedDownloadStatus: str = None
+    trackedDownloadState: str = None
     statusMessages: list = None
+    errorMessage: str = None
     downloadId: str = None
     protocol: str = None
     downloadClient: str = None
