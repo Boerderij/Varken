@@ -64,8 +64,6 @@ class OverseerrServer(NamedTuple):
     verify_ssl: bool = False
     get_request_total_counts: bool = False
     request_total_run_seconds: int = 30
-    get_request_status_counts: bool = False
-    request_status_run_seconds: int = 30
     get_latest_requests: bool = False
     num_latest_requests_to_fetch: int = 10
     num_latest_requests_seconds: int = 30

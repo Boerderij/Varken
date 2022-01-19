@@ -18,7 +18,7 @@ class OverseerrAPI(object):
     def __repr__(self):
         return f"<overseerr-{self.server.id}>"
 
-    def get_request_status_counts(self):
+    def get_request_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/request/count'
 

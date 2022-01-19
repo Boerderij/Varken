@@ -162,8 +162,8 @@ if __name__ == "__main__":
             OVERSEER = OverseerrAPI(server, DBMANAGER)
             if server.get_request_total_counts:
                 at_time = schedule.every(server.request_total_run_seconds).seconds
-                at_time.do(thread, OVERSEER.get_request_status_counts).tag("overseerr-{}-get_request_status_counts"
-                                                                           .format(server.id))
+                at_time.do(thread, OVERSEER.get_request_counts).tag("overseerr-{}-get_request_counts"
+                                                                    .format(server.id))
             if server.get_latest_requests:
                 at_time = schedule.every(server.num_latest_requests_seconds).seconds
                 at_time.do(thread, OVERSEER.get_latest_requests).tag("overseerr-{}-get_latest_requests"
