@@ -278,8 +278,8 @@ class SonarrQueue(NamedTuple):
     outputPath: str = None
     series: SonarrTVShow = None
     episode: SonarrEpisode = None
-    timeleft: int = None
-    estimatedCompletionTime: int = None
+    timeleft: str = None
+    estimatedCompletionTime: str = None
 
 
 # Radarr
