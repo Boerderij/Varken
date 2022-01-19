@@ -45,7 +45,6 @@ class OverseerrAPI(object):
                     "movies": requests.movie,
                     "tv": requests.tv,
                     "declined": requests.declined
-
                 }
             }
         ]
