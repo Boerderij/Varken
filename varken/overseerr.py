@@ -86,8 +86,8 @@ class OverseerrAPI(object):
                             "request_type": 0,
                             "status": get_tv_req['mediaInfo']['status'],
                             "title": get_tv_req['name'],
-                            "requested_date": get_tv_req['mediaInfo']['requests'][0]['media']['createdAt'],
-                            "requested_date": get_movie_req['mediaInfo']['requests'][0]['media']['createdAt']
+                            "requested_user": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
+                            "requested_date": get_tv_req['mediaInfo']['requests'][0]['media']['createdAt']
                         },
                         "time": now,
                         "fields": {
@@ -114,7 +114,7 @@ class OverseerrAPI(object):
                             "status": get_movie_req['mediaInfo']['status'],
                             "title": get_movie_req['title'],
                             "requested_user": get_movie_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
-                            "requested_date": get_movie_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
+                            "requested_date": get_movie_req['mediaInfo']['requests'][0]['media']['createdAt']
                         },
                         "time": now,
                         "fields": {
