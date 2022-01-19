@@ -160,8 +160,8 @@ if __name__ == "__main__":
     if CONFIG.overseerr_enabled:
         for server in CONFIG.overseerr_servers:
             OVERSEER = OverseerrAPI(server, DBMANAGER)
-            if server.get_request_status_counts:
-                at_time = schedule.every(server.request_status_run_seconds).seconds
+            if server.get_request_total_counts:
+                at_time = schedule.every(server.request_total_run_seconds).seconds
                 at_time.do(thread, OVERSEER.get_request_status_counts).tag("overseerr-{}-get_request_status_counts"
                                                                            .format(server.id))
             if server.get_latest_requests:
