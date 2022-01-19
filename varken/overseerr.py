@@ -3,7 +3,7 @@ from requests import Session, Request
 from datetime import datetime, timezone
 
 from varken.helpers import connection_handler, hashit
-from varken.structures import OverseerrRequest, OverseerrRequestCounts
+from varken.structures import OverseerrRequestCounts
 
 
 class OverseerrAPI(object):
@@ -86,8 +86,8 @@ class OverseerrAPI(object):
                             "request_type": 0,
                             "status": get_tv_req['mediaInfo']['status'],
                             "title": get_tv_req['name'],
-                            "requested_user": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
-                            "requested_date": get_tv_req['mediaInfo']['requests'][0]['media']['createdAt']
+                            "requested_user": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['displayName'],
+                            "requested_date": get_tv_req['mediaInfo']['requests'][0]['createdAt']
                         },
                         "time": now,
                         "fields": {
@@ -113,8 +113,8 @@ class OverseerrAPI(object):
                             "request_type": 1,
                             "status": get_movie_req['mediaInfo']['status'],
                             "title": get_movie_req['title'],
-                            "requested_user": get_movie_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
-                            "requested_date": get_movie_req['mediaInfo']['requests'][0]['media']['createdAt']
+                            "requested_user": get_movie_req['mediaInfo']['requests'][0]['requestedBy']['displayName'],
+                            "requested_date": get_movie_req['mediaInfo']['requests'][0]['createdAt']
                         },
                         "time": now,
                         "fields": {
