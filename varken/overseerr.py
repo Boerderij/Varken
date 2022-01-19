@@ -18,63 +18,6 @@ class OverseerrAPI(object):
     def __repr__(self):
         return f"<overseerr-{self.server.id}>"
 
-    def get_total_requests(self):
-        now = datetime.now(timezone.utc).astimezone().isoformat()
-        endpoint = '/api/v1/request?take=200&filter=all&sort=added'
-
-        req = self.session.prepare_request(Request('GET', self.server.url + endpoint))
-        get_req = connection_handler(self.session, req, self.server.verify_ssl) or []
-
-        if not any([get_req]):
-            self.logger.error('No json replies. Discarding job')
-            return
-
-        tv_requests = []
-        movie_requests = []
-
-        for result in get_req['results']:
-            if result['type'] == 'tv':
-                try:
-                    tv_requests.append(OverseerrRequest(**result))
-                except TypeError as e:
-                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest structure for show. '
-                                      'data attempted is: %s', e, result)
-
-            if result['type'] == 'movie':
-                try:
-                    movie_requests.append(OverseerrRequest(**result))
-                except TypeError as e:
-                    self.logger.error('TypeError has occurred : %s while creating OverseerrRequest \
-                                      structure for movie. '
-                                      'data attempted is: %s', e, result)
-
-        if tv_requests:
-            tv_request_count = len(tv_requests)
-
-        if movie_requests:
-            movie_request_count = len(movie_requests)
-
-        influx_payload = [
-            {
-                "measurement": "Overseerr",
-                "tags": {
-                    "type": "Request_Totals",
-                    "server": self.server.id
-                },
-                "time": now,
-                "fields": {
-                    "total": movie_request_count + tv_request_count,
-                    "movies": movie_request_count,
-                    "tv": tv_request_count
-                }
-            }
-        ]
-
-        if influx_payload:
-            self.dbmanager.write_points(influx_payload)
-        else:
-            self.logger.debug("Empty dataset for overseerr module. Discarding...")
-
     def get_request_status_counts(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         endpoint = '/api/v1/request/count'
@@ -97,7 +40,12 @@ class OverseerrAPI(object):
                     "pending": requests.pending,
                     "approved": requests.approved,
                     "processing": requests.processing,
-                    "available": requests.available
+                    "available": requests.available,
+                    "total": requests.total,
+                    "movies": requests.movie,
+                    "tv": requests.tv,
+                    "declined": requests.declined
+
                 }
             }
         ]
@@ -139,8 +87,8 @@ class OverseerrAPI(object):
                             "request_type": 0,
                             "status": get_tv_req['mediaInfo']['status'],
                             "title": get_tv_req['name'],
-                            "requested_user": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['plexUsername'],
-                            "requested_date": get_tv_req['mediaInfo']['requests'][0]['requestedBy']['createdAt']
+                            "requested_date": get_tv_req['mediaInfo']['requests'][0]['media']['createdAt']
+                            "requested_date": get_movie_req['mediaInfo']['requests'][0]['media']['createdAt']
                         },
                         "time": now,
                         "fields": {

@@ -212,6 +212,10 @@ class OverseerrRequestCounts(NamedTuple):
     approved: int = None
     processing: int = None
     available: int = None
+    total: int = None
+    movie: int = None
+    tv: int = None
+    declined: int = None
 
 
 # Sonarr
