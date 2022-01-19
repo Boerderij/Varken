@@ -2,7 +2,7 @@ from logging import getLogger
 from requests import Session, Request
 from datetime import datetime, timezone, date, timedelta
 
-from varken.structures import SonarrEpisode, SonarrQueue, QueuePages
+from varken.structures import SonarrEpisode, SonarrTVShow, SonarrQueue, QueuePages
 from varken.helpers import hashit, connection_handler
 
 
@@ -102,7 +102,7 @@ class SonarrAPI(object):
         endpoint = '/api/v3/queue'
         now = datetime.now(timezone.utc).astimezone().isoformat()
         pageSize = 250
-        params = {'pageSize': pageSize}
+        params = {'pageSize': pageSize, 'includeEpisode': True, 'includeSeries': True}
         queueResponse = []
         queue = []
 
@@ -136,8 +136,8 @@ class SonarrAPI(object):
             return
 
         for queueItem in download_queue:
-            tvShow = queueItem.series
-            episode = queueItem.episode
+            tvShow = SonarrTVShow(**queueItem.series)
+            episode = SonarrEpisode(**queueItem.episode)
             try:
                 sxe = f"S{episode.seasonNumber:0>2}E{episode.episodeNumber:0>2}"
             except TypeError as e:
@@ -150,7 +150,7 @@ class SonarrAPI(object):
             else:
                 protocol_id = 0
 
-            queue.append((tvShow['title'], episode.title, queueItem.protocol.upper(),
+            queue.append((tvShow.title, episode.title, queueItem.protocol.upper(),
                           protocol_id, sxe, queueItem.seriesId, queueItem.quality['quality']['name']))
 
         for series_title, episode_title, protocol, protocol_id, sxe, sonarr_id, quality in queue:

@@ -107,7 +107,7 @@ class RadarrAPI(object):
             return
 
         for queue_item in download_queue:
-            movie = queue_item.movie
+            movie = RadarrMovie(**queue_item.movie)
 
             name = f'{movie.title} ({movie.year})'
 
