@@ -294,28 +294,29 @@ class INIParser(object):
                                                 issue_status_run_seconds=issue_status_run_seconds)
 
                         if service == 'overseerr':
-                            get_latest_requests = boolcheck(env.get(
-                                f'VRKN_{envsection}_GET_LATEST_REQUESTS',
-                                self.config.get(section, 'get_latest_requests')))
                             get_request_total_counts = boolcheck(env.get(
                                 f'VRKN_{envsection}_GET_REQUEST_TOTAL_COUNTS',
                                 self.config.get(section, 'get_request_total_counts')))
                             request_total_run_seconds = int(env.get(
                                 f'VRKN_{envsection}_REQUEST_TOTAL_RUN_SECONDS',
                                 self.config.getint(section, 'request_total_run_seconds')))
-                            get_request_status_counts = boolcheck(env.get(
-                                f'VRKN_{envsection}_GET_REQUEST_STATUS_COUNTS',
-                                self.config.get(section, 'get_request_status_counts')))
-                            request_status_run_seconds = int(env.get(
-                                f'VRKN_{envsection}_REQUEST_STATUS_RUN_SECONDS',
-                                self.config.getint(section, 'request_status_run_seconds')))
+                            get_latest_requests = boolcheck(env.get(
+                                f'VRKN_{envsection}_GET_LATEST_REQUESTS',
+                                self.config.get(section, 'get_latest_requests')))
+                            num_latest_requests_to_fetch = boolcheck(env.get(
+                                f'VRKN_{envsection}_GET_LATEST_REQUESTS_TO_FETCH',
+                                self.config.get(section, 'num_latest_requests_to_fetch')))
+                            num_latest_requests_seconds = int(env.get(
+                                f'VRKN_{envsection}_NUM_LATEST_REQUESTS_SECONDS',
+                                self.config.getint(section, 'num_latest_requests_seconds')))
 
                             server = OverseerrServer(id=server_id, url=scheme + url, api_key=apikey,
-                                                     verify_ssl=verify_ssl, get_latest_requests=get_latest_requests,
+                                                     verify_ssl=verify_ssl,
                                                      get_request_total_counts=get_request_total_counts,
                                                      request_total_run_seconds=request_total_run_seconds,
-                                                     get_request_status_counts=get_request_status_counts,
-                                                     request_status_run_seconds=request_status_run_seconds)
+                                                     get_latest_requests=get_latest_requests,
+                                                     num_latest_requests_to_fetch=num_latest_requests_to_fetch,
+                                                     num_latest_requests_seconds=num_latest_requests_seconds)
 
                         if service == 'sickchill':
                             get_missing = boolcheck(env.get(f'VRKN_{envsection}_GET_MISSING',
