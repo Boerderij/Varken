@@ -102,7 +102,7 @@ class SonarrAPI(object):
         endpoint = '/api/v3/queue'
         now = datetime.now(timezone.utc).astimezone().isoformat()
         pageSize = 250
-        params = {'pageSize': pageSize, 'includeEpisode': True, 'includeSeries': True}
+        params = {'pageSize': pageSize, 'includeSeries': True, 'includeEpisode': True}
         queueResponse = []
         queue = []
 
