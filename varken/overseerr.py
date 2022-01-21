@@ -49,7 +49,10 @@ class OverseerrAPI(object):
             }
         ]
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.warning("No data to send to influx for overseerr-request-counts instance, discarding.")
 
     def get_latest_requests(self):
         now = datetime.now(timezone.utc).astimezone().isoformat()
@@ -63,6 +66,7 @@ class OverseerrAPI(object):
 
         # RETURN NOTHING IF NO RESULTS
         if not get_latest_req:
+            self.logger.warning("No data to send to influx for overseerr-latest-requests instance, discarding.")
             return
 
         influx_payload = []
@@ -123,4 +127,7 @@ class OverseerrAPI(object):
                     }
                 )
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.warning("No data to send to influx for overseerr-latest-requests instance, discarding.")
