@@ -41,7 +41,7 @@ if __name__ == "__main__":
     DBMANAGER = DBManager(CONFIG.influx_server)
 
     if CONFIG.tautulli_enabled:
-        GEOIPHANDLER = GeoIPHandler(DATA_FOLDER)
+        GEOIPHANDLER = GeoIPHandler(DATA_FOLDER, CONFIG.tautulli_servers[0].maxmind_license_key)
         for server in CONFIG.tautulli_servers:
             TAUTULLI = TautulliAPI(server, DBMANAGER, GEOIPHANDLER)
             TAUTULLI.get_historical(days=opts.days)
