@@ -66,7 +66,10 @@ class RadarrAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.warning("No data to send to influx for radarr-missing instance, discarding.")
 
     def get_queue(self):
         endpoint = '/api/v3/queue'
@@ -79,6 +82,7 @@ class RadarrAPI(object):
 
         req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
         get = connection_handler(self.session, req, self.server.verify_ssl)
+
         if not get:
             return
 
@@ -101,9 +105,10 @@ class RadarrAPI(object):
             try:
                 download_queue.append(RadarrQueue(**queueItem))
             except TypeError as e:
-                self.logger.error('TypeError has occurred : %s while creating RadarrQueue structure', e)
+                self.logger.warning('TypeError has occurred : %s while creating RadarrQueue structure', e)
                 return
         if not download_queue:
+            self.logger.warning("No data to send to influx for radarr-queue instance, discarding.")
             return
 
         for queue_item in download_queue:
@@ -141,4 +146,7 @@ class RadarrAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.warning("No data to send to influx for radarr-queue instance, discarding.")

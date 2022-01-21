@@ -95,7 +95,10 @@ class SonarrAPI(object):
                 }
             )
 
-        self.dbmanager.write_points(influx_payload)
+        if influx_payload:
+            self.dbmanager.write_points(influx_payload)
+        else:
+            self.logger.warning("No data to send to influx for sonarr-calendar instance, discarding.")
 
     def get_queue(self):
         influx_payload = []
@@ -178,4 +181,4 @@ class SonarrAPI(object):
         if influx_payload:
             self.dbmanager.write_points(influx_payload)
         else:
-            self.logger.debug("No data to send to influx for sonarr instance, discarding.")
+            self.logger.warning("No data to send to influx for sonarr-queue instance, discarding.")
