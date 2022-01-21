@@ -73,7 +73,7 @@ class RadarrAPI(object):
         now = datetime.now(timezone.utc).astimezone().isoformat()
         influx_payload = []
         pageSize = 250
-        params = {'pageSize': pageSize, 'includeMovie': True}
+        params = {'pageSize': pageSize, 'includeMovie': True, 'includeUnknownMovieItems': False}
         queueResponse = []
         queue = []
 
@@ -87,7 +87,7 @@ class RadarrAPI(object):
 
         while response.totalRecords > response.page * response.pageSize:
             page = response.page + 1
-            params = {'pageSize': pageSize, 'page': page}
+            params = {'pageSize': pageSize, 'page': page, 'includeMovie': True, 'includeUnknownMovieItems': False}
             req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
             get = connection_handler(self.session, req, self.server.verify_ssl)
             if not get:
