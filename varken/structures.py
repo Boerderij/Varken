@@ -606,6 +606,7 @@ class LidarrQueue(NamedTuple):
     outputPath: str = None
     downloadForced: bool = None
     id: int = None
+    estimatedCompletionTime: str = None
 
 
 class LidarrAlbum(NamedTuple):
