@@ -255,6 +255,7 @@ class SonarrEpisode(NamedTuple):
     sceneEpisodeNumber: int = None
     sceneSeasonNumber: int = None
     series: SonarrTVShow = None
+    tvdbId: int = None
 
 
 class SonarrQueue(NamedTuple):
