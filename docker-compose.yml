@@ -101,7 +101,7 @@ services:
       - VRKN_OMBI_1_REQUEST_TOTAL_RUN_SECONDS=300
       - VRKN_OMBI_1_GET_ISSUE_STATUS_COUNTS=true
       - VRKN_OMBI_1_ISSUE_STATUS_RUN_SECONDS=300
-      - VRKN_OVERSEERR_1_URL=ombi.domain.tld
+      - VRKN_OVERSEERR_1_URL=overseerr.domain.tld
       - VRKN_OVERSEERR_1_APIKEY=xxxxxxxxxxxxxxxx
       - VRKN_OVERSEERR_1_SSL=false
       - VRKN_OVERSEERR_1_VERIFY_SSL=false
