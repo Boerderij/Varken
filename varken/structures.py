@@ -322,6 +322,7 @@ class RadarrMovie(NamedTuple):
     year: int = None
     youTubeTrailerId: str = None
     title: str = None
+    originalLanguage: str = None
 
 
 # Radarr Queue
