@@ -149,39 +149,50 @@ class OmbiTVRequest(NamedTuple):
 
 class OmbiMovieRequest(NamedTuple):
     approved: bool = None
+    approved4K: bool = None
     available: bool = None
+    available4K: bool = None
     background: str = None
     canApprove: bool = None
     denied: bool = None
+    denied4K: None = None
     deniedReason: None = None
+    deniedReason4K: None = None
     digitalRelease: bool = None
     digitalReleaseDate: None = None
+    has4KRequest: bool = None
     id: int = None
     imdbId: str = None
+    is4kRequest: bool = None
     issueId: None = None
     issues: None = None
+    langCode: str = None
+    languageCode: str = None
     markedAsApproved: str = None
+    markedAsApproved4K: str = None
     markedAsAvailable: None = None
+    markedAsAvailable4K: None = None
     markedAsDenied: str = None
+    markedAsDenied4K: str = None
     overview: str = None
     posterPath: str = None
     qualityOverride: int = None
     released: bool = None
     releaseDate: str = None
+    requestedByAlias: str = None
     requestedDate: str = None
+    requestedDate4k: str = None
     requestedUser: dict = None
     requestedUserId: str = None
+    requestStatus: str = None
     requestType: int = None
     rootPathOverride: int = None
     showSubscribe: bool = None
+    source: int = None
     status: str = None
     subscribed: bool = None
     theMovieDbId: int = None
     title: str = None
-    langCode: str = None
-    languageCode: str = None
-    requestedByAlias: str = None
-    requestStatus: str = None
 
 
 # Overseerr
