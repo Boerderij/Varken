@@ -17,7 +17,7 @@ ecosystem into InfluxDB using Grafana for a frontend
 Requirements:
 * [Python 3.6.7+](https://www.python.org/downloads/release/python-367/)
 * [Python3-pip](https://pip.pypa.io/en/stable/installing/)
-* [InfluxDB 1.8.x](https://www.influxdata.com/)
+* [InfluxDB 1.8.x or 2.x](https://www.influxdata.com/)
 * [Grafana](https://grafana.com/)
 
 <p align="center">
@@ -50,7 +50,7 @@ Please read [Asking for Support](https://wiki.cajun.pro/books/varken/chapter/ask
     
 ### InfluxDB
 [InfluxDB Installation Documentation](https://wiki.cajun.pro/books/varken/page/influxdb-d1f)
-Note: Only v1.8.x is currently supported.
+Note: Only v1.8.x or v2.x are supported.
  
 Influxdb is required but not packaged as part of Varken. Varken will create
 its database on its own. If you choose to give varken user permissions that
