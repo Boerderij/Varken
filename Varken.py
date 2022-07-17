@@ -1,15 +1,16 @@
 import platform
 import schedule
+import distro
 from time import sleep
 from queue import Queue
 from sys import version
 from threading import Thread
 from os import environ as env
 from os import access, R_OK, getenv
-from distro import linux_distribution
 from os.path import isdir, abspath, dirname, join
 from argparse import ArgumentParser, RawTextHelpFormatter
 from logging import getLogger, StreamHandler, Formatter, DEBUG
+
 
 # Needed to check version of python
 from varken import structures  # noqa
@@ -28,7 +29,7 @@ from varken.sickchill import SickChillAPI
 from varken.varkenlogger import VarkenLogger
 
 
-PLATFORM_LINUX_DISTRO = ' '.join(x for x in linux_distribution() if x)
+PLATFORM_LINUX_DISTRO = ' '.join(distro.id() + distro.version() + distro.name())
 
 
 def thread(job, **kwargs):

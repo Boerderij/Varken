@@ -51,5 +51,6 @@
   <Labels/>
   <Config Name="PGID" Target="PGID" Default="" Mode="" Description="Container Variable: PGID" Type="Variable" Display="always" Required="true" Mask="false">99</Config>
   <Config Name="PUID" Target="PUID" Default="" Mode="" Description="Container Variable: PUID" Type="Variable" Display="always" Required="true" Mask="false">100</Config>
+  <Config Name="Debug" Target="DEBUG" Default="False" Mode="" Description="Turn Debug on or off" Type="Variable" Display="always" Required="false" Mask="false">False</Config>
   <Config Name="Varken DataDir" Target="/config" Default="" Mode="rw" Description="Container Path: /config" Type="Path" Display="advanced-hide" Required="true" Mask="false">/mnt/user/appdata/varken</Config>
 </Container>
