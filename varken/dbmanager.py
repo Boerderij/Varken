@@ -43,6 +43,10 @@ class DBManager(object):
             exit(1)
 
         if self.version >= 2:
+            # If we pass username/password to a v1 server, it breaks :(
+            self.influx = InfluxDBClient(url=url, username=self.server.username,
+                                         password=self.server.password,
+                                         verify_ssl=self.server.verify_ssl, org=self.server.org)
             self.create_v2_bucket()
         else:
             self.create_v1_database()
