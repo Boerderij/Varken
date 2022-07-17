@@ -31,7 +31,7 @@ class DBManager(object):
         try:
             version = self.influx.version()
             self.logger.info('Influxdb version: %s', version)
-            match = re.match(r'(\d+)\.', version)
+            match = re.match(r'v?(\d+)\.', version)
             if match:
                 self.version = int(match[1])
                 self.logger.info("Using InfluxDB API v%s", self.version)
