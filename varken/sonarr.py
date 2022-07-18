@@ -140,8 +140,8 @@ class SonarrAPI(object):
 
         for queueItem in download_queue:
             tvShow = SonarrTVShow(**queueItem.series)
-            episode = SonarrEpisode(**queueItem.episode)
             try:
+                episode = SonarrEpisode(**queueItem.episode)
                 sxe = f"S{episode.seasonNumber:0>2}E{episode.episodeNumber:0>2}"
             except TypeError as e:
                 self.logger.error('TypeError has occurred : %s while processing the sonarr queue. \
