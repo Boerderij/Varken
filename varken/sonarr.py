@@ -105,7 +105,8 @@ class SonarrAPI(object):
         endpoint = '/api/v3/queue'
         now = datetime.now(timezone.utc).astimezone().isoformat()
         pageSize = 250
-        params = {'pageSize': pageSize, 'includeSeries': True, 'includeEpisode': True}
+        params = {'pageSize': pageSize, 'includeSeries': True, 'includeEpisode': True,
+                  'includeUnknownSeriesItems': False}
         queueResponse = []
         queue = []
 
@@ -119,7 +120,8 @@ class SonarrAPI(object):
 
         while response.totalRecords > response.page * response.pageSize:
             page = response.page + 1
-            params = {'pageSize': pageSize, 'page': page, 'includeSeries': True, 'includeEpisode': True}
+            params = {'pageSize': pageSize, 'page': page, 'includeSeries': True, 'includeEpisode': True,
+                      'includeUnknownSeriesItems': False}
             req = self.session.prepare_request(Request('GET', self.server.url + endpoint, params=params))
             get = connection_handler(self.session, req, self.server.verify_ssl)
             if not get:
@@ -140,8 +142,8 @@ class SonarrAPI(object):
 
         for queueItem in download_queue:
             tvShow = SonarrTVShow(**queueItem.series)
-            episode = SonarrEpisode(**queueItem.episode)
             try:
+                episode = SonarrEpisode(**queueItem.episode)
                 sxe = f"S{episode.seasonNumber:0>2}E{episode.episodeNumber:0>2}"
             except TypeError as e:
                 self.logger.error('TypeError has occurred : %s while processing the sonarr queue. \
