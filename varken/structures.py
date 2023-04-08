@@ -257,6 +257,7 @@ class SonarrEpisode(NamedTuple):
     hasFile: bool = None
     id: int = None
     monitored: bool = None
+    runtime: int = None
     overview: str = None
     seasonNumber: int = None
     seriesId: int = None
