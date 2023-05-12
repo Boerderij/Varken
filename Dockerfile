@@ -6,15 +6,15 @@ ENV DEBUG="True" \
     BRANCH="edge" \
     BUILD_DATE="1/1/1970"
 
-LABEL maintainer="dirtycajunrice,samwiseg0" \
+LABEL maintainer="MDHMatt" \
   org.opencontainers.image.created=$BUILD_DATE \
-  org.opencontainers.image.url="https://github.com/Boerderij/Varken" \
-  org.opencontainers.image.source="https://github.com/Boerderij/Varken" \
+  org.opencontainers.image.url="https://github.com/MDHMatt/Biggetje" \
+  org.opencontainers.image.source="https://github.com/MDHMatt/Biggetje" \
   org.opencontainers.image.version=$VERSION \
   org.opencontainers.image.revision=$VCS_REF \
-  org.opencontainers.image.vendor="boerderij" \
-  org.opencontainers.image.title="varken" \
-  org.opencontainers.image.description="Varken is a standalone application to aggregate data from the Plex ecosystem into InfluxDB using Grafana for a frontend" \
+  org.opencontainers.image.vendor="MDHMatt" \
+  org.opencontainers.image.title="Biggetje" \
+  org.opencontainers.image.description="Biggetje (Piglet) child of Varken (Pig), is a standalone application to aggregate data from the Plex and the *arrs into InfluxDB using Grafana for a frontend" \
   org.opencontainers.image.licenses="MIT"
 
 WORKDIR /app
