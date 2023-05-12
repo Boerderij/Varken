@@ -193,6 +193,7 @@ class OmbiMovieRequest(NamedTuple):
     subscribed: bool = None
     theMovieDbId: int = None
     title: str = None
+    watchedByRequestedUser: str = None
 
 
 # Overseerr
