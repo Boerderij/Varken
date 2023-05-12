@@ -1,4 +1,4 @@
-name: varken
+name: Build Biggetje
 on:
   schedule:
     - cron: '0 10 * * *'
