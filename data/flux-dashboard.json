@@ -1,0 +1,3214 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Dashboard for Varken using InfluxDB v2 and Flux",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 8,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "CNdQvAkVz"
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 50,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "# THIS DASHBOARD IS NOT COMPATIBLE WITH InfluxQL!\n\n## Notes\nThis dashboard is a WIP and is not 100% complete. It relies on a specific build of Varken using a PR for InfluxDB v2 Support. This dashboard is for dev testing InfluxDB v2 support and updated to support Grafana v9+. Not all features from the v1.6.x of Varken's dashboard are supported.\n\nMost panels are in working order with minor issues. Panels that are still WIP are collapsed in a row at the bottom. If you are familiar with Flux queries feel free to submit a PR to update the dev dashboard! :)\n\n## How to use\nUpdate the variables in this dashboard's settings to reflect your environment. Then save it!",
+          "mode": "markdown"
+        },
+        "pluginVersion": "9.2.6",
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "Streaming Brain Estimate",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 100000
+                },
+                {
+                  "color": "semi-dark-red",
+                  "value": 400000
+                }
+              ]
+            },
+            "unit": "Kbits"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 1,
+          "y": 7
+        },
+        "id": 13,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "mean"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"total_bandwidth\")\r\n  |> filter(fn: (r) => r.type == \"current_stream_stats\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "title": "Total BW",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "Streaming Brain Estimate",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 100000
+                },
+                {
+                  "color": "semi-dark-red",
+                  "value": 400000
+                }
+              ]
+            },
+            "unit": "Kbits"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 3,
+          "y": 7
+        },
+        "id": 14,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "mean"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"lan_bandwidth\")\r\n  |> filter(fn: (r) => r.type == \"current_stream_stats\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "title": "LAN BW",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "Streaming Brain Estimate",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 100000
+                },
+                {
+                  "color": "semi-dark-red",
+                  "value": 400000
+                }
+              ]
+            },
+            "unit": "Kbits"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 5,
+          "y": 7
+        },
+        "id": 15,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "mean"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"wan_bandwidth\")\r\n  |> filter(fn: (r) => r.type == \"current_stream_stats\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "title": "WAN BW",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-green",
+                  "value": null
+                },
+                {
+                  "color": "dark-orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "dark-red",
+                  "value": 5
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 8,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 20,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Ombi",
+            "url": "${Ombi}"
+          }
+        ],
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"pending\")\r\n  |> filter(fn: (r) => r.type == \"Request_Counts\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Req. Pending",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-red",
+                  "value": null
+                },
+                {
+                  "color": "dark-orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "dark-green",
+                  "value": 5
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 10,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 21,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Ombi",
+            "url": "${Ombi}"
+          }
+        ],
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"approved\")\r\n  |> filter(fn: (r) => r.type == \"Request_Counts\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Req. Approved",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-red",
+                  "value": null
+                },
+                {
+                  "color": "dark-orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "dark-green",
+                  "value": 5
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 12,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 22,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Ombi",
+            "url": "${Ombi}"
+          }
+        ],
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"available\")\r\n  |> filter(fn: (r) => r.type == \"Request_Counts\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Req. Completed",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 14,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 27,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "diff"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"total\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${movieslibrary}/)\r\n  |> distinct()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "24h",
+        "title": "Recently Added Movies",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 16,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 28,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"total\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${movieslibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "3630s",
+        "title": "Movies",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 18,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 29,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"total\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${tvlibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "3630s",
+        "title": "TV Shows",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 20,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 30,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"seasons\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${tvlibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "3630s",
+        "title": "TV Seasons",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 22,
+          "y": 7
+        },
+        "hideTimeOverride": true,
+        "id": 31,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"episodes\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${tvlibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "3630s",
+        "title": "TV Episodes",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-blue",
+                  "value": 5
+                },
+                {
+                  "color": "semi-dark-orange",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 0,
+          "y": 9
+        },
+        "id": 16,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Tautulli",
+            "url": "${Tautulli}"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"stream_count\")\r\n  |> filter(fn: (r) => r.type == \"current_stream_stats\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "title": "Total Streams",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-orange",
+                  "value": 5
+                },
+                {
+                  "color": "semi-dark-red",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 2,
+          "y": 9
+        },
+        "id": 17,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Tautulli",
+            "url": "${Tautulli}"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"transcode_streams\")\r\n  |> filter(fn: (r) => r.type == \"current_stream_stats\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "title": "Transocde Streams",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-blue",
+                  "value": 5
+                },
+                {
+                  "color": "semi-dark-orange",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 4,
+          "y": 9
+        },
+        "id": 18,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Tautulli",
+            "url": "${Tautulli}"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"direct_play_streams\")\r\n  |> filter(fn: (r) => r.type == \"current_stream_stats\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "title": "Direct Play Streams",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-blue",
+                  "value": 5
+                },
+                {
+                  "color": "semi-dark-orange",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 6,
+          "y": 9
+        },
+        "id": 19,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Tautulli",
+            "url": "${Tautulli}"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"direct_streams\")\r\n  |> filter(fn: (r) => r.type == \"current_stream_stats\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "title": "Direct Stream",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-green",
+                  "value": null
+                },
+                {
+                  "color": "dark-orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "dark-red",
+                  "value": 5
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 8,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 23,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Ombi",
+            "url": "${Ombi}"
+          }
+        ],
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"pending\")\r\n  |> filter(fn: (r) => r.type == \"Issues_Counts\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Issues Pending",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-red",
+                  "value": null
+                },
+                {
+                  "color": "dark-orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "dark-green",
+                  "value": 5
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 10,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 24,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Ombi",
+            "url": "${Ombi}"
+          }
+        ],
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"resolved\")\r\n  |> filter(fn: (r) => r.type == \"Issues_Counts\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Issues Resolved",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-green",
+                  "value": null
+                },
+                {
+                  "color": "dark-orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "dark-red",
+                  "value": 5
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 12,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 25,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Ombi",
+            "url": "${Ombi}"
+          }
+        ],
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"in_progress\")\r\n  |> filter(fn: (r) => r.type == \"Issues_Counts\")\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Issues In Progress",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 14,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 32,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "diff"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"episodes\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${tvlibrary}/)\r\n  |> distinct()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "24h",
+        "title": "Recently Added TV",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 16,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 33,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "diff"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"total\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${movies4klibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "24h",
+        "title": "4K Movies",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 18,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 36,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "diff"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"total\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${tv4klibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "24h",
+        "title": "4K TV Shows",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 20,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 34,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "diff"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"seasons\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${tv4klibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "24h",
+        "title": "4K TV Seasons",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "noValue": "N/A",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 2,
+          "x": 22,
+          "y": 9
+        },
+        "hideTimeOverride": true,
+        "id": 35,
+        "maxDataPoints": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "diff"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"episodes\")\r\n  |> filter(fn: (r) => r.type == \"library_stats\")\r\n  |> filter(fn: (r) => r.section_name =~ /^${tv4klibrary}/)\r\n  |> last()\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "24h",
+        "title": "4K TV Episodes",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              }
+            },
+            "mappings": [],
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 3,
+          "x": 0,
+          "y": 11
+        },
+        "hideTimeOverride": false,
+        "id": 4,
+        "maxDataPoints": 3,
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true,
+            "values": [
+              "value"
+            ]
+          },
+          "pieType": "donut",
+          "reduceOptions": {
+            "calcs": [
+              "sum"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Session\")\r\n  |> group(columns: [\"device_type\"], mode: \"by\")\r\n  |> distinct()\r\n  |> count()\r\n  |> keep(columns: [\"_time\", \"_value\", \"device_type\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "1w",
+        "title": "Device Types",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "device_type"
+              ],
+              "valueLabel": "device_type"
+            }
+          }
+        ],
+        "type": "piechart"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              }
+            },
+            "mappings": [],
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 3,
+          "x": 3,
+          "y": 11
+        },
+        "hideTimeOverride": false,
+        "id": 5,
+        "maxDataPoints": 3,
+        "options": {
+          "displayLabels": [],
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true,
+            "values": [
+              "value"
+            ]
+          },
+          "pieType": "donut",
+          "reduceOptions": {
+            "calcs": [
+              "sum"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "asc"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Session\")\r\n  |> group(columns: [\"video_decision\"], mode: \"by\")\r\n  |> distinct()\r\n  |> count()\r\n  |> keep(columns: [\"_time\", \"_value\", \"video_decision\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "1w",
+        "title": "Stream Types",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "video_decision"
+              ],
+              "mode": "columns",
+              "valueLabel": "video_decision"
+            }
+          }
+        ],
+        "type": "piechart"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "mappings": [],
+            "noValue": "no movies in queue",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "T"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "index": 0,
+                          "text": "Torrent"
+                        },
+                        "1": {
+                          "index": 1,
+                          "text": "Usenet"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 8,
+          "x": 6,
+          "y": 11
+        },
+        "hideTimeOverride": true,
+        "id": 37,
+        "interval": "32s",
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Radarr Activity",
+            "url": "${Radarr}/activity/queue"
+          }
+        ],
+        "maxDataPoints": 998,
+        "options": {
+          "footer": {
+            "enablePagination": true,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Radarr\")\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Queue\")\r\n  |> group(columns: [\"name\", \"protocol_id\", \"quality\"], mode: \"by\")\r\n  |> distinct()\r\n  |> keep(columns: [\"_time\", \"_value\", \"name\", \"protocol_id\", \"quality\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Movies in Queue",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "airsUTC",
+                "downloaded",
+                "epname",
+                "sxe",
+                "name",
+                "protocol_id",
+                "quality"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "_value": true,
+                "airsUTC": true,
+                "epname": true,
+                "sxe": false
+              },
+              "indexByName": {
+                "_value": 0,
+                "airsUTC": 1,
+                "downloaded": 2,
+                "epname": 5,
+                "name": 3,
+                "sxe": 4
+              },
+              "renameByName": {
+                "_value": "",
+                "downloaded": "DL",
+                "epname": "",
+                "name": "Name",
+                "protocol_id": "T",
+                "quality": "Quality",
+                "sxe": "S/E"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "circleMaxSize": "4",
+        "circleMinSize": 2,
+        "colors": [
+          "#1F60C4",
+          "rgba(237, 129, 40, 0.89)",
+          "#8F3BB8"
+        ],
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "decimals": 0,
+        "esMetric": "Count",
+        "gridPos": {
+          "h": 13,
+          "w": 10,
+          "x": 14,
+          "y": 11
+        },
+        "hideEmpty": false,
+        "hideTimeOverride": true,
+        "hideZero": false,
+        "id": 9,
+        "initialZoom": "4",
+        "locationData": "table",
+        "mapCenter": "North America",
+        "mapCenterLatitude": 40,
+        "mapCenterLongitude": -100,
+        "maxDataPoints": 1,
+        "mouseWheelZoom": false,
+        "showLegend": false,
+        "stickyLabels": false,
+        "tableQueryOptions": {
+          "geohashField": "geohash",
+          "labelField": "full_location",
+          "latitudeField": "latitude",
+          "longitudeField": "longitude",
+          "metricField": "metric",
+          "queryType": "coordinates"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Session\")\r\n  |> group(columns: [\"latitude\", \"longitude\", \"full_location\", \"name\"], mode: \"by\")\r\n  |> distinct()\r\n  |> count()\r\n  |> keep(columns: [\"_time\", \"_value\", \"latitude\", \"longitude\", \"full_location\", \"name\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "thresholds": "2,3",
+        "timeFrom": "33s",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "full_location",
+                "latitude",
+                "longitude",
+                "username"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "metric",
+              "mode": "reduceRow",
+              "reduce": {
+                "include": [],
+                "reducer": "sum"
+              }
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          }
+        ],
+        "type": "grafana-worldmap-panel",
+        "unitPlural": "Streams",
+        "unitSingle": "",
+        "unitSingular": "Stream",
+        "valueName": "current"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "mappings": [],
+            "noValue": "no tv shows in queue",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "T"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "index": 0,
+                          "text": "Torrent"
+                        },
+                        "1": {
+                          "index": 1,
+                          "text": "Usenet"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 8,
+          "x": 6,
+          "y": 18
+        },
+        "hideTimeOverride": true,
+        "id": 38,
+        "interval": "32s",
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Radarr Activity",
+            "url": "${Radarr}/activity/queue"
+          }
+        ],
+        "maxDataPoints": 856,
+        "options": {
+          "footer": {
+            "enablePagination": true,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sonarr\")\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Queue\")\r\n  |> group(columns: [\"protocol_id\", \"sxe\", \"name\"], mode: \"by\")\r\n  |> distinct()\r\n  |> keep(columns: [\"_time\", \"_value\", \"protocol_id\", \"sxe\", \"name\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "TV Shows in Queue",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "airsUTC",
+                "downloaded",
+                "epname",
+                "sxe",
+                "name",
+                "protocol_id",
+                "quality"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "_value": true,
+                "airsUTC": true,
+                "epname": true,
+                "sxe": false
+              },
+              "indexByName": {
+                "_value": 0,
+                "name": 1,
+                "protocol_id": 2,
+                "sxe": 3
+              },
+              "renameByName": {
+                "_value": "",
+                "downloaded": "DL",
+                "epname": "",
+                "name": "Name",
+                "protocol_id": "T",
+                "quality": "Quality",
+                "sxe": "S/E"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "mappings": [],
+            "noValue": "no shows airing today",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "DL"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 75
+                },
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "dark-blue",
+                          "index": 0,
+                          "text": "No"
+                        },
+                        "1": {
+                          "color": "dark-green",
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.displayMode",
+                  "value": "color-background-solid"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 10,
+          "x": 14,
+          "y": 24
+        },
+        "hideTimeOverride": true,
+        "id": 2,
+        "interval": "32s",
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Sonarr Release Calendar",
+            "url": "${Sonarr}/calendar"
+          }
+        ],
+        "maxDataPoints": 475,
+        "options": {
+          "footer": {
+            "enablePagination": true,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sonarr\")\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Future\")\r\n  |> group(columns: [\"downloaded\", \"name\", \"sxe\"], mode: \"by\")\r\n  |> distinct()\r\n  |> keep(columns: [\"_time\", \"_value\", \"downloaded\", \"name\", \"sxe\"])\r\n  |> sort(columns: [\"_time\"])\r\n",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "24h",
+        "title": "TV Shows on Today (Sonarr)",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "airsUTC",
+                "downloaded",
+                "epname",
+                "sxe",
+                "name"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "_value": true,
+                "airsUTC": true,
+                "epname": true,
+                "sxe": false
+              },
+              "indexByName": {
+                "_value": 0,
+                "airsUTC": 1,
+                "downloaded": 2,
+                "epname": 5,
+                "name": 3,
+                "sxe": 4
+              },
+              "renameByName": {
+                "_value": "",
+                "downloaded": "DL",
+                "epname": "",
+                "name": "TV Show",
+                "sxe": "S/E"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "mappings": [],
+            "noValue": "no users online",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Player State"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "dark-green",
+                          "index": 0,
+                          "text": "Playing"
+                        },
+                        "1": {
+                          "color": "dark-blue",
+                          "index": 1,
+                          "text": "Paused"
+                        },
+                        "3": {
+                          "color": "dark-orange",
+                          "index": 2,
+                          "text": "Buffering"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.displayMode",
+                  "value": "color-background-solid"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 14,
+          "x": 0,
+          "y": 25
+        },
+        "hideTimeOverride": true,
+        "id": 42,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Tautulli",
+            "url": "${Tautulli}"
+          }
+        ],
+        "maxDataPoints": 796,
+        "options": {
+          "footer": {
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Session\")\r\n  |> group(columns: [\"friendly_name\", \"title\", \"quality\", \"video_decision\", \"quality_profile\", \"platform\", \"product_version\", \"location\", \"player_state\"], mode: \"by\")\r\n  |> distinct()\r\n  |> keep(columns: [\"_time\", \"_value\", \"friendly_name\", \"title\", \"quality\", \"video_decision\", \"quality_profile\", \"platform\", \"product_version\", \"location\", \"player_state\"])\r\n  |> sort(columns: [\"_time\"])",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "33s",
+        "title": "Users Online",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {}
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "_value": true
+              },
+              "indexByName": {},
+              "renameByName": {
+                "_value": "",
+                "friendly_name": "User",
+                "location": "Location",
+                "platform": "Device",
+                "player_state": "Player State",
+                "product_version": "Version",
+                "quality": "Quality",
+                "quality_profile": "Limits",
+                "title": "Media",
+                "video_decision": "Decision"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "mappings": [],
+            "noValue": "no missing show episodes",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "DL"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 75
+                },
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "dark-blue",
+                          "index": 0,
+                          "text": "No"
+                        },
+                        "1": {
+                          "color": "dark-green",
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.displayMode",
+                  "value": "color-background-solid"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 31
+        },
+        "hideTimeOverride": true,
+        "id": 11,
+        "links": [
+          {
+            "targetBlank": true,
+            "title": "Sonarr Missing",
+            "url": "${Sonarr}/wanted/missing"
+          }
+        ],
+        "maxDataPoints": 440,
+        "options": {
+          "footer": {
+            "enablePagination": true,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sonarr\")\r\n  |> filter(fn: (r) => r[\"type\"] == \"Missing\")\r\n  |> group(columns: [\"server\", \"sxe\", \"name\"])\r\n  |> distinct()\r\n  |> yield(name: \"distinct\")",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Missing TV Shows (Last 7 Days)",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "airsUTC",
+                "downloaded",
+                "epname",
+                "sxe",
+                "name",
+                "server"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "_value": true,
+                "airsUTC": true,
+                "downloaded": true,
+                "epname": true,
+                "sxe": false
+              },
+              "indexByName": {
+                "_value": 0,
+                "name": 1,
+                "server": 2,
+                "sxe": 3
+              },
+              "renameByName": {
+                "_value": "",
+                "downloaded": "DL",
+                "epname": "",
+                "name": "TV Show",
+                "server": "Server ID",
+                "sxe": "S/E"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DB}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "inspect": false
+            },
+            "links": [
+              {
+                "targetBlank": true,
+                "title": "View on Radarr",
+                "url": "${Radarr.raw}/movie/${__data.fields.titleSlug}"
+              }
+            ],
+            "mappings": [],
+            "noValue": "no missing movies",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "titleSlug"
+              },
+              "properties": [
+                {
+                  "id": "custom.hidden",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 31
+        },
+        "hideTimeOverride": true,
+        "id": 10,
+        "links": [
+          {
+            "title": "View on Radarr",
+            "url": "${Radarr}/wanted/missing"
+          }
+        ],
+        "maxDataPoints": 295,
+        "options": {
+          "footer": {
+            "enablePagination": true,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "9.2.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "hide": false,
+            "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Radarr\")\r\n  |> filter(fn: (r) => r[\"Missing_Available\"] == \"0\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"hash\")\r\n  |> group(columns: [\"name\", \"titleSlug\"])\r\n  |> distinct()\r\n  |> yield(name: \"distinct\")",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": "330s",
+        "title": "Missing Available Movies",
+        "transformations": [
+          {
+            "id": "labelsToFields",
+            "options": {
+              "keepLabels": [
+                "name",
+                "titleSlug"
+              ],
+              "mode": "columns"
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "_value": true,
+                "titleSlug": false
+              },
+              "indexByName": {},
+              "renameByName": {
+                "name": "Name"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 39
+        },
+        "id": 48,
+        "panels": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "fillOpacity": 80,
+                  "gradientMode": "scheme",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "lineWidth": 1
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "_time"
+                  },
+                  "properties": [
+                    {
+                      "id": "unit",
+                      "value": "h"
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 14,
+              "x": 0,
+              "y": 40
+            },
+            "hideTimeOverride": true,
+            "id": 40,
+            "maxDataPoints": 858,
+            "options": {
+              "bucketOffset": 0,
+              "bucketSize": 1,
+              "combine": false,
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              }
+            },
+            "pluginVersion": "9.2.6",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "influxdb",
+                  "uid": "${DB}"
+                },
+                "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Tautulli\")\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> group(columns: [\"_time\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: distinct, createEmpty: false)\r\n  |> count()\r\n  |> fill(value: 0)\r\n  |> keep(columns: [\"_time\", \"_value\"])\r\n  |> sort(columns: [\"_time\"])",
+                "refId": "A"
+              }
+            ],
+            "timeFrom": "24h",
+            "title": "Server Popularity",
+            "transformations": [
+              {
+                "id": "labelsToFields",
+                "options": {
+                  "mode": "columns"
+                }
+              },
+              {
+                "id": "merge",
+                "options": {}
+              },
+              {
+                "id": "organize",
+                "options": {
+                  "excludeByName": {
+                    "_time": false,
+                    "_value": false
+                  },
+                  "indexByName": {
+                    "_time": 1,
+                    "_value": 0
+                  },
+                  "renameByName": {
+                    "_time": ""
+                  }
+                }
+              },
+              {
+                "id": "groupBy",
+                "options": {
+                  "fields": {
+                    "_time": {
+                      "aggregations": [],
+                      "operation": "groupby"
+                    },
+                    "_value": {
+                      "aggregations": [
+                        "sum"
+                      ],
+                      "operation": "aggregate"
+                    }
+                  }
+                }
+              }
+            ],
+            "type": "histogram"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "${DB}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "displayMode": "auto",
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 10,
+              "x": 14,
+              "y": 40
+            },
+            "hideTimeOverride": true,
+            "id": 44,
+            "maxDataPoints": 856,
+            "options": {
+              "footer": {
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true
+            },
+            "pluginVersion": "9.2.6",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "influxdb",
+                  "uid": "${DB}"
+                },
+                "query": "from(bucket: \"varken\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._field == \"hash\")\r\n  |> filter(fn: (r) => r.type == \"Requests\")\r\n  |> filter(fn: (r) => r.status != 0)\r\n  |> filter(fn: (r) => r.status != 2)\r\n  |> group(columns: [\"title\", \"requested_date\", \"requested_user\", \"request_type\", \"status\"], mode: \"by\")\r\n  |> distinct()\r\n  |> keep(columns: [\"_time\", \"_value\", \"title\", \"requested_date\", \"requested_user\", \"request_type\", \"status\"])\r\n  |> sort(columns: [\"_time\"])",
+                "refId": "A"
+              }
+            ],
+            "timeFrom": "330s",
+            "title": "Ombi Requests Pending",
+            "type": "table"
+          }
+        ],
+        "title": "WIP Panels",
+        "type": "row"
+      }
+    ],
+    "refresh": false,
+    "schemaVersion": 37,
+    "style": "dark",
+    "tags": [
+      "Varken",
+      "Plex",
+      "Tautulli",
+      "Sonarr",
+      "Radarr"
+    ],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": false,
+            "text": "InfluxDB",
+            "value": "InfluxDB"
+          },
+          "description": "Influx Data Source with Varken bucket",
+          "hide": 2,
+          "includeAll": false,
+          "multi": false,
+          "name": "DB",
+          "options": [],
+          "query": "influxdb",
+          "queryValue": "",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "type": "datasource"
+        },
+        {
+          "current": {
+            "selected": false,
+            "text": "https://movies.yourdomain.com:7878",
+            "value": "https://movies.yourdomain.com:7878"
+          },
+          "description": "URL for Radarr",
+          "hide": 2,
+          "includeAll": false,
+          "multi": false,
+          "name": "Radarr",
+          "options": [
+            {
+              "selected": true,
+              "text": "https://movies.yourdomain.com:7878",
+              "value": "https://movies.yourdomain.com:7878"
+            }
+          ],
+          "query": "https://movies.yourdomain.com:7878",
+          "queryValue": "https://movies.yourdomain.com:7878",
+          "skipUrlSync": false,
+          "type": "custom"
+        },
+        {
+          "current": {
+            "selected": false,
+            "text": "https://tv.yourdomain.com:7878",
+            "value": "https://tv.yourdomain.com:7878"
+          },
+          "description": "URL for Sonarr",
+          "hide": 2,
+          "includeAll": false,
+          "multi": false,
+          "name": "Sonarr",
+          "options": [
+            {
+              "selected": true,
+              "text": "https://tv.yourdomain.com:7878",
+              "value": "https://tv.yourdomain.com:7878"
+            }
+          ],
+          "query": "https://tv.yourdomain.com:7878",
+          "queryValue": "https://tv.yourdomain.com:7878",
+          "skipUrlSync": false,
+          "type": "custom"
+        },
+        {
+          "current": {
+            "selected": false,
+            "text": "https://tautulli.yourdomain.com:8181",
+            "value": "https://tautulli.yourdomain.com:8181"
+          },
+          "description": "URL for Tautulli",
+          "hide": 2,
+          "includeAll": false,
+          "multi": false,
+          "name": "Tautulli",
+          "options": [
+            {
+              "selected": true,
+              "text": "https://tautulli.yourdomain.com:8181",
+              "value": "https://tautulli.yourdomain.com:8181"
+            }
+          ],
+          "query": "https://tautulli.yourdomain.com:8181",
+          "queryValue": "https://tautulli.yourdomain.com:8181",
+          "skipUrlSync": false,
+          "type": "custom"
+        },
+        {
+          "current": {
+            "selected": false,
+            "text": "https://ombi.yourdomain.com:5000",
+            "value": "https://ombi.yourdomain.com:5000"
+          },
+          "description": "URL for Ombi",
+          "hide": 2,
+          "includeAll": false,
+          "multi": false,
+          "name": "Ombi",
+          "options": [
+            {
+              "selected": true,
+              "text": "https://ombi.yourdomain.com:5000",
+              "value": "https://ombi.yourdomain.com:5000"
+            }
+          ],
+          "query": "https://ombi.yourdomain.com:5000",
+          "queryValue": "https://ombi.yourdomain.com:5000",
+          "skipUrlSync": false,
+          "type": "custom"
+        },
+        {
+          "hide": 2,
+          "label": "Movies Library Name",
+          "name": "movieslibrary",
+          "query": "Movies",
+          "skipUrlSync": false,
+          "type": "constant"
+        },
+        {
+          "hide": 2,
+          "label": "TV Show Library Name",
+          "name": "tvlibrary",
+          "query": "TV Shows",
+          "skipUrlSync": false,
+          "type": "constant"
+        },
+        {
+          "hide": 2,
+          "label": "4k Movie Library Name",
+          "name": "movies4klibrary",
+          "query": "Movies 4K",
+          "skipUrlSync": false,
+          "type": "constant"
+        },
+        {
+          "hide": 2,
+          "label": "4k TV Library Name",
+          "name": "tv4klibrary",
+          "query": "TV Shows 4K",
+          "skipUrlSync": false,
+          "type": "constant"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-5m",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Varken [InfluxDB v2 Flux] [dev]",
+    "uid": "h3v515nVk",
+    "version": 33,
+    "weekStart": ""
+  }
