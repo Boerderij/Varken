@@ -160,6 +160,7 @@ class OmbiMovieRequest(NamedTuple):
     markedAsAvailable: None = None
     markedAsDenied: str = None
     overview: str = None
+    playedByUsersCount: int = None
     posterPath: str = None
     qualityOverride: int = None
     released: bool = None
@@ -178,7 +179,7 @@ class OmbiMovieRequest(NamedTuple):
     languageCode: str = None
     requestedByAlias: str = None
     requestStatus: str = None
-
+    watchedByRequestedUser: None = None
 
 # Sonarr
 class SonarrTVShow(NamedTuple):
