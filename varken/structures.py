@@ -322,11 +322,13 @@ class RadarrMovie(NamedTuple):
     physicalRelease: str = None
     qualityProfileId: int = None
     ratings: dict = None
+    rootFolderPath: str = None
     runtime: int = None
     secondaryYear: int = None
     secondaryYearSourceId: int = None
     sizeOnDisk: float = None
     sortTitle: str = None
+    statistics: dict = None
     status: str = None
     studio: str = None
     tags: list = None
