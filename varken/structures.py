@@ -255,6 +255,7 @@ class SonarrEpisode(NamedTuple):
     airDateUtc: str = None
     episodeFileId: int = None
     episodeNumber: int = None
+    finaleType: str = None
     grabbed: bool = None
     hasFile: bool = None
     id: int = None
