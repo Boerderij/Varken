@@ -280,6 +280,7 @@ class SonarrQueue(NamedTuple):
     id: int = None
     indexer: str = None
     language: dict = None
+    languages: list = None
     protocol: str = None
     quality: dict = None
     size: float = None
