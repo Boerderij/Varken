@@ -274,8 +274,13 @@ class SonarrEpisode(NamedTuple):
 
 
 class SonarrQueue(NamedTuple):
+    added: str = None
+    customFormats: list = None
+    customFormatScore: int = None
     downloadClient: str = None
+    downloadClientHasPostImportCategory: bool = None
     downloadId: str = None
+    episodeHasFile: bool = None
     episodeId: int = None
     id: int = None
     indexer: str = None
@@ -283,6 +288,7 @@ class SonarrQueue(NamedTuple):
     languages: list = None
     protocol: str = None
     quality: dict = None
+    seasonNumber: int = None
     size: float = None
     sizeleft: float = None
     status: str = None
