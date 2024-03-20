@@ -3,8 +3,8 @@
 # pip3 install -r requirements.txt
 #---------------------------------------------------------
 requests==2.31.0
-geoip2==2.9.0
-influxdb==5.2.0
-schedule==1.1.0
-distro==1.4.0
-urllib3==1.26.10
+geoip2==4.8.0
+influxdb==5.3.1
+schedule==1.2.1
+distro==1.9.0
+urllib3==2.2.1
