@@ -222,10 +222,13 @@ class SonarrTVShow(NamedTuple):
     id: int = None
     images: list = None
     imdbId: str = None
+    lastAired: str = None
     languageProfileId: int = None
     monitored: bool = None
+    monitorNewItems: str = None
     nextAiring: str = None
     network: str = None
+    originalLanguage: dict = None
     overview: str = None
     path: str = None
     previousAiring: str = None
@@ -255,6 +258,7 @@ class SonarrEpisode(NamedTuple):
     airDateUtc: str = None
     episodeFileId: int = None
     episodeNumber: int = None
+    finaleType: str = None
     grabbed: bool = None
     hasFile: bool = None
     id: int = None
@@ -273,14 +277,21 @@ class SonarrEpisode(NamedTuple):
 
 
 class SonarrQueue(NamedTuple):
+    added: str = None
+    customFormats: list = None
+    customFormatScore: int = None
     downloadClient: str = None
+    downloadClientHasPostImportCategory: bool = None
     downloadId: str = None
+    episodeHasFile: bool = None
     episodeId: int = None
     id: int = None
     indexer: str = None
     language: dict = None
+    languages: list = None
     protocol: str = None
     quality: dict = None
+    seasonNumber: int = None
     size: float = None
     sizeleft: float = None
     status: str = None
@@ -322,11 +333,13 @@ class RadarrMovie(NamedTuple):
     physicalRelease: str = None
     qualityProfileId: int = None
     ratings: dict = None
+    rootFolderPath: str = None
     runtime: int = None
     secondaryYear: int = None
     secondaryYearSourceId: int = None
     sizeOnDisk: float = None
     sortTitle: str = None
+    statistics: dict = None
     status: str = None
     studio: str = None
     tags: list = None
@@ -343,8 +356,11 @@ class RadarrMovie(NamedTuple):
 
 # Radarr Queue
 class RadarrQueue(NamedTuple):
+    added: str = None
     customFormats: list = None
+    customFormatScore: int = None
     downloadClient: str = None
+    downloadClientHasPostImportCategory: bool = None
     downloadId: str = None
     id: int = None
     indexer: str = None
