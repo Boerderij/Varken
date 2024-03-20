@@ -222,8 +222,10 @@ class SonarrTVShow(NamedTuple):
     id: int = None
     images: list = None
     imdbId: str = None
+    lastAired: str = None
     languageProfileId: int = None
     monitored: bool = None
+    monitorNewItems: str = None
     nextAiring: str = None
     network: str = None
     originalLanguage: dict = None
@@ -354,8 +356,11 @@ class RadarrMovie(NamedTuple):
 
 # Radarr Queue
 class RadarrQueue(NamedTuple):
+    added: str = None
     customFormats: list = None
+    customFormatScore: int = None
     downloadClient: str = None
+    downloadClientHasPostImportCategory: bool = None
     downloadId: str = None
     id: int = None
     indexer: str = None
