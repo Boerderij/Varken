@@ -226,6 +226,7 @@ class SonarrTVShow(NamedTuple):
     monitored: bool = None
     nextAiring: str = None
     network: str = None
+    originalLanguage: dict = None
     overview: str = None
     path: str = None
     previousAiring: str = None
